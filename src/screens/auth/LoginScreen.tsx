@@ -294,6 +294,7 @@ const styles = StyleSheet.create({
     },
     eyeIcon: {
         fontSize: 20,
+        marginTop: 15,
     },
     forgotPasswordContainer: {
         alignSelf: 'flex-end',
