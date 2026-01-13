@@ -48,17 +48,22 @@ export const Input: React.FC<InputProps> = ({
 
 const styles = StyleSheet.create({
     container: {
-        marginBottom: theme.spacing.md,
+        marginBottom: theme.spacing.sm,
     },
     label: {
         fontSize: 14,
         fontWeight: '500',
         color: theme.colors.text,
-        marginBottom: theme.spacing.xs,
+        marginBottom: 2,
+        backgroundColor: 'rgba(24, 41, 88, 0.08)',
+        paddingHorizontal: theme.spacing.sm,
+        paddingVertical: theme.spacing.xs - 2,
+        borderRadius: 6,
+        alignSelf: 'flex-start',
     },
     input: {
         borderWidth: 1,
-        borderColor: theme.colors.border,
+        borderColor: 'rgba(24, 41, 88, 0.5)',
         borderRadius: theme.borderRadius.md,
         paddingHorizontal: theme.spacing.md,
         paddingVertical: theme.spacing.md,

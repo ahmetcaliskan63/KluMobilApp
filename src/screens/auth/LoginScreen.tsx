@@ -22,6 +22,8 @@ import { theme } from '../../config/theme';
 import { useAuthStore } from '../../store/authStore';
 
 const { width, height } = Dimensions.get('window');
+const scale = width / 375; // Base design width
+const moderateScale = (size: number, factor = 0.5) => size + (scale - 1) * size * factor;
 
 export const LoginScreen: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -83,8 +85,7 @@ export const LoginScreen: React.FC = () => {
 
     return (
         <KeyboardAvoidingView
-            style={styles.container}
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+            style={styles.container}>
 
             {/* Background */}
             <View style={styles.backgroundOverlay} />
@@ -114,7 +115,7 @@ export const LoginScreen: React.FC = () => {
                     <View style={styles.formCard}>
                         <Text style={styles.welcomeText}>Hoş Geldiniz</Text>
                         <Text style={styles.subtitle}>
-                            Hesabınıza giriş yapın
+                            KLU Öğrenci Portalı
                         </Text>
 
                         <View style={styles.inputContainer}>
@@ -215,9 +216,9 @@ const styles = StyleSheet.create({
         marginBottom: theme.spacing.xl,
     },
     logoWrapper: {
-        width: 120,
-        height: 120,
-        borderRadius: 60,
+        width: moderateScale(120),
+        height: moderateScale(120),
+        borderRadius: moderateScale(60),
         backgroundColor: 'rgba(255, 255, 255, 0.95)',
         alignItems: 'center',
         justifyContent: 'center',
@@ -225,8 +226,8 @@ const styles = StyleSheet.create({
         ...theme.shadows.medium,
     },
     logo: {
-        width: 115,
-        height: 115,
+        width: moderateScale(115),
+        height: moderateScale(115),
     },
     universityName: {
         fontSize: 22,
@@ -243,24 +244,37 @@ const styles = StyleSheet.create({
     },
     formCard: {
         backgroundColor: '#FFFFFF',
-        borderRadius: theme.borderRadius.xl,
+        borderRadius: 20,
         padding: theme.spacing.xl,
         ...theme.shadows.large,
         marginBottom: theme.spacing.lg,
+        borderWidth: 1,
+        borderColor: 'rgba(255, 255, 255, 0.3)',
+        shadowColor: '#000000',
+        shadowOffset: {
+            width: 0,
+            height: 12,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 20,
+        elevation: 12,
     },
     welcomeText: {
-        fontSize: 32,
-        fontWeight: 'bold',
+        fontSize: moderateScale(32),
+        fontWeight: '700',
         color: theme.colors.text,
         marginBottom: theme.spacing.xs,
+        letterSpacing: -0.5,
     },
     subtitle: {
-        fontSize: 16,
+        fontSize: moderateScale(15),
         color: theme.colors.textSecondary,
-        marginBottom: theme.spacing.xl,
+        marginBottom: theme.spacing.xl + theme.spacing.xs,
+        fontWeight: '400',
+        letterSpacing: 0.2,
     },
     inputContainer: {
-        marginBottom: theme.spacing.md,
+        marginBottom: theme.spacing.lg + theme.spacing.xs,
     },
     passwordContainer: {
         position: 'relative',
@@ -283,20 +297,29 @@ const styles = StyleSheet.create({
     },
     forgotPasswordContainer: {
         alignSelf: 'flex-end',
-        marginBottom: theme.spacing.lg,
+        marginBottom: theme.spacing.lg + theme.spacing.sm,
+        marginTop: -theme.spacing.xs,
     },
     forgotPassword: {
         fontSize: 14,
         color: theme.colors.primary,
         fontWeight: '600',
+        letterSpacing: 0.2,
     },
     loginButton: {
         backgroundColor: theme.colors.primary,
-        borderRadius: theme.borderRadius.md,
-        paddingVertical: theme.spacing.md + 2,
+        borderRadius: 12,
+        paddingVertical: theme.spacing.md + 4,
         alignItems: 'center',
         justifyContent: 'center',
-        ...theme.shadows.small,
+        shadowColor: theme.colors.primary,
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 6,
     },
     loginButtonDisabled: {
         opacity: 0.6,
@@ -306,13 +329,15 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',
         fontSize: 16,
         fontWeight: '700',
-        letterSpacing: 0.5,
+        letterSpacing: 0.8,
+        textTransform: 'uppercase',
     },
     footer: {
         fontSize: 12,
-        color: 'rgba(255, 255, 255, 0.7)',
+        color: '#FFFFFF',
         textAlign: 'center',
         marginVertical: theme.spacing.lg,
         fontWeight: '400',
+        opacity: 0.9,
     },
 });
