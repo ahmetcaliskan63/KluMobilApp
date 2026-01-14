@@ -10,8 +10,17 @@ import {
     StyleSheet,
     TextInputProps,
     ViewStyle,
+    Dimensions,
 } from 'react-native';
 import { theme } from '../../config/theme';
+
+const { width, height } = Dimensions.get('window');
+const guidelineBaseWidth = 375;
+const guidelineBaseHeight = 812;
+
+const horizontalScale = (size: number) => (width / guidelineBaseWidth) * size;
+const verticalScale = (size: number) => (height / guidelineBaseHeight) * size;
+const moderateScale = (size: number, factor = 0.5) => size + (horizontalScale(size) - size) * factor;
 
 interface InputProps extends TextInputProps {
     label?: string;
@@ -48,29 +57,25 @@ export const Input: React.FC<InputProps> = ({
 
 const styles = StyleSheet.create({
     container: {
-        marginBottom: theme.spacing.xs,
+        marginBottom: verticalScale(10),
     },
     label: {
-        fontSize: 14,
+        fontSize: moderateScale(13),
         fontWeight: '500',
         color: theme.colors.text,
-        marginBottom: 2,
-        backgroundColor: 'rgba(24, 41, 88, 0.08)',
-        paddingHorizontal: theme.spacing.sm,
-        paddingVertical: theme.spacing.xs - 2,
-        borderRadius: 6,
+        marginBottom: verticalScale(6),
         alignSelf: 'flex-start',
     },
     input: {
         borderWidth: 1,
         borderColor: 'rgba(24, 41, 88, 0.5)',
-        borderRadius: theme.borderRadius.md,
-        paddingHorizontal: theme.spacing.md,
-        paddingVertical: theme.spacing.md,
-        fontSize: 16,
+        borderRadius: moderateScale(10),
+        paddingHorizontal: horizontalScale(15),
+        paddingVertical: verticalScale(12),
+        fontSize: moderateScale(15),
         color: theme.colors.text,
         backgroundColor: theme.colors.background,
-        minHeight: 48,
+        minHeight: verticalScale(50),
     },
     inputFocused: {
         borderColor: theme.colors.primary,
@@ -80,8 +85,8 @@ const styles = StyleSheet.create({
         borderColor: theme.colors.error,
     },
     errorText: {
-        fontSize: 12,
+        fontSize: moderateScale(11),
         color: theme.colors.error,
-        marginTop: theme.spacing.xs,
+        marginTop: verticalScale(4),
     },
 });
