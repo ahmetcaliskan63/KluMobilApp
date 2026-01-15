@@ -191,7 +191,7 @@ export const LoginScreen: React.FC = () => {
                     {/* Footer - Pushed to bottom */}
                     <View style={styles.footerContainer}>
                         <Text style={styles.footer}>
-                            © 2026 Kırklareli Üniversitesi
+                            © 2026 - Bilgi İşlem Daire Başkanlığı
                         </Text>
                     </View>
                 </Animated.View>
@@ -231,9 +231,9 @@ const styles = StyleSheet.create({
         marginBottom: verticalScale(20),
     },
     logoWrapper: {
-        width: horizontalScale(110),
-        height: horizontalScale(110),
-        borderRadius: horizontalScale(55),
+        width: moderateScale(140),
+        height: moderateScale(140),
+        borderRadius: moderateScale(70),
         backgroundColor: 'rgba(255, 255, 255, 0.95)',
         alignItems: 'center',
         justifyContent: 'center',
@@ -241,8 +241,8 @@ const styles = StyleSheet.create({
         ...theme.shadows.medium,
     },
     logo: {
-        width: horizontalScale(100),
-        height: horizontalScale(100),
+        width: moderateScale(130),
+        height: moderateScale(130),
     },
     universityName: {
         fontSize: moderateScale(20),
