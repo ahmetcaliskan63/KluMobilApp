@@ -66,7 +66,7 @@ export const MainTabNavigator: React.FC = () => {
             <Tab.Screen
                 name="Home"
                 component={DashboardScreen}
-                options={{ title: 'Ana Sayfa', headerTitle: 'Bugün Kampüste' }}
+                options={{ title: 'Ana Sayfa', headerShown: false }}
             />
             <Tab.Screen
                 name="Cafeteria"
