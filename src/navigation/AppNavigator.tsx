@@ -7,8 +7,8 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { LoginScreen } from '../screens/auth/LoginScreen';
-import { DashboardScreen } from '../screens/home/DashboardScreen';
 import { SplashScreen } from '../screens/common/SplashScreen';
+import { MainTabNavigator } from './MainTabNavigator';
 import { useAuthStore } from '../store/authStore';
 import { RootStackParamList } from '../types/navigation';
 
@@ -25,7 +25,7 @@ export const AppNavigator: React.FC = () => {
                 }}>
                 <Stack.Screen name="Splash" component={SplashScreen} />
                 <Stack.Screen name="Auth" component={LoginScreen} />
-                <Stack.Screen name="Main" component={DashboardScreen} />
+                <Stack.Screen name="Main" component={MainTabNavigator} />
             </Stack.Navigator>
         </NavigationContainer>
     );
