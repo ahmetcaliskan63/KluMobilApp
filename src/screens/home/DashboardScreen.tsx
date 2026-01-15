@@ -8,6 +8,7 @@ import {
     Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Card } from '../../components/common';
 import { theme } from '../../config/theme';
 import { useAuthStore } from '../../store/authStore';
@@ -18,6 +19,7 @@ const moderateScale = (size: number, factor = 0.5) => size + (horizontalScale(si
 
 export const DashboardScreen: React.FC = () => {
     const { user } = useAuthStore();
+    const insets = useSafeAreaInsets();
 
     const getCurrentDate = () => {
         const options: Intl.DateTimeFormatOptions = {
@@ -30,27 +32,93 @@ export const DashboardScreen: React.FC = () => {
     };
 
     return (
-        <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-            {/* Header Section */}
-            <View style={styles.header}>
-                <Text style={styles.greeting}>
-                    Merhaba, {user?.firstName || 'Öğrenci'} 👋
-                </Text>
-                <Text style={styles.date}>{getCurrentDate()}</Text>
+        <View style={styles.container}>
+            {/* Custom Header with Safe Area */}
+            <View style={[styles.header, { paddingTop: Math.max(insets.top, 20) }]}>
+                <View style={styles.headerTop}>
+                    <View>
+                        <Text style={styles.greeting}>
+                            Merhaba, {user?.firstName || 'Öğrenci'} 👋
+                        </Text>
+                        <Text style={styles.date}>{getCurrentDate()}</Text>
+                    </View>
+                    <TouchableOpacity style={styles.profileButton}>
+                        <View style={styles.profilePlaceholder}>
+                            <Icon name="person" size={24} color={theme.colors.primary} />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+
+                {/* Balance & Status Summary Card */}
+                <View style={styles.summaryContainer}>
+                    <View style={styles.summaryItem}>
+                        <Text style={styles.summaryLabel}>Kampüs Kart</Text>
+                        <Text style={styles.summaryValue}>₺42.50</Text>
+                    </View>
+                    <View style={styles.summaryDivider} />
+                    <View style={styles.summaryItem}>
+                        <Text style={styles.summaryLabel}>Yemek Hakkı</Text>
+                        <Text style={styles.summaryValue}>1</Text>
+                    </View>
+                    <View style={styles.summaryDivider} />
+                    <View style={styles.summaryItem}>
+                        <Text style={styles.summaryLabel}>Kütüphane</Text>
+                        <Text style={styles.summaryValue}>2 Kitap</Text>
+                    </View>
+                </View>
             </View>
 
-            <View style={styles.content}>
+            <ScrollView
+                style={styles.scrollView}
+                contentContainerStyle={styles.scrollContent}
+                showsVerticalScrollIndicator={false}
+            >
+                {/* 0. Hızlı İşlemler Section */}
+                <Text style={styles.sectionHeading}>Hızlı İşlemler</Text>
+                <View style={styles.quickActionsGrid}>
+                    {[
+                        { title: 'OBS', icon: 'school', color: '#4A90E2' },
+                        { title: 'Yemek Menüsü', icon: 'restaurant', color: '#50E3C2' },
+                        { title: 'Kampüs Kart', icon: 'card', color: '#F5A623' },
+                        { title: 'Duyurular', icon: 'megaphone', color: '#D0021B' },
+                    ].map((action, index) => (
+                        <TouchableOpacity key={index} style={styles.actionItem}>
+                            <View style={[styles.actionIcon, { backgroundColor: action.color + '15' }]}>
+                                <Icon name={action.icon} size={24} color={action.color} />
+                            </View>
+                            <Text style={styles.actionText}>{action.title}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
+
                 {/* 1. Bugünün Yemeği */}
-                <Card style={[styles.mainCard, { marginTop: 0 }]} elevation="small">
+                <Card style={styles.mainCard} elevation="small">
                     <View style={styles.cardHeader}>
-                        <Icon name="restaurant" size={20} color={theme.colors.primary} />
-                        <Text style={styles.cardTitle}>Bugün Yemekhanede</Text>
+                        <View style={styles.cardTitleContainer}>
+                            <Icon name="restaurant" size={20} color={theme.colors.primary} />
+                            <Text style={styles.cardTitle}>Bugün Yemekhanede</Text>
+                        </View>
+                        <View style={styles.badge}>
+                            <Text style={styles.badgeText}>Öğle Yemeği</Text>
+                        </View>
                     </View>
                     <View style={styles.mealList}>
-                        <Text style={styles.mealItem}>• Ezogelin Çorbası</Text>
-                        <Text style={styles.mealItem}>• İzmir Köfte</Text>
-                        <Text style={styles.mealItem}>• Pirinç Pilavı</Text>
-                        <Text style={styles.mealItem}>• Mevsim Salata / Ayva Tatlısı</Text>
+                        <View style={styles.mealRow}>
+                            <Icon name="ellipse" size={8} color={theme.colors.primary} style={styles.bullet} />
+                            <Text style={styles.mealItem}>Ezogelin Çorbası</Text>
+                        </View>
+                        <View style={styles.mealRow}>
+                            <Icon name="ellipse" size={8} color={theme.colors.primary} style={styles.bullet} />
+                            <Text style={styles.mealItem}>İzmir Köfte</Text>
+                        </View>
+                        <View style={styles.mealRow}>
+                            <Icon name="ellipse" size={8} color={theme.colors.primary} style={styles.bullet} />
+                            <Text style={styles.mealItem}>Pirinç Pilavı</Text>
+                        </View>
+                        <View style={styles.mealRow}>
+                            <Icon name="ellipse" size={8} color={theme.colors.primary} style={styles.bullet} />
+                            <Text style={styles.mealItem}>Mevsim Salata / Ayva Tatlısı</Text>
+                        </View>
                     </View>
                     <TouchableOpacity style={styles.cardFooter}>
                         <Text style={styles.footerLink}>Tüm haftalık menü...</Text>
@@ -61,8 +129,10 @@ export const DashboardScreen: React.FC = () => {
                 {/* 2. Yaklaşan Ders/Sınav */}
                 <Card style={styles.mainCard} elevation="small">
                     <View style={styles.cardHeader}>
-                        <Icon name="time" size={20} color="#FF9800" />
-                        <Text style={styles.cardTitle}>Yaklaşan Ders</Text>
+                        <View style={styles.cardTitleContainer}>
+                            <Icon name="time" size={20} color={theme.colors.warning} />
+                            <Text style={styles.cardTitle}>Yaklaşan Ders</Text>
+                        </View>
                     </View>
                     <View style={styles.courseContainer}>
                         <Text style={styles.courseTime}>15:00 - 17:50</Text>
@@ -78,8 +148,10 @@ export const DashboardScreen: React.FC = () => {
                 {/* 3. En Yeni Duyuru */}
                 <Card style={styles.mainCard} elevation="small">
                     <View style={styles.cardHeader}>
-                        <Icon name="notifications" size={20} color="#2196F3" />
-                        <Text style={styles.cardTitle}>En Yeni Duyuru</Text>
+                        <View style={styles.cardTitleContainer}>
+                            <Icon name="notifications" size={20} color={theme.colors.info} />
+                            <Text style={styles.cardTitle}>En Yeni Duyuru</Text>
+                        </View>
                     </View>
                     <View style={styles.announcementContent}>
                         <Text style={styles.announcementTitle} numberOfLines={2}>
@@ -93,109 +165,209 @@ export const DashboardScreen: React.FC = () => {
                     </TouchableOpacity>
                 </Card>
 
-                {/* 4. Önemli Bağlantılar */}
-                <Text style={styles.sectionHeading}>Önemli Bağlantılar</Text>
-                <View style={styles.linksGrid}>
-                    {[
-                        { title: 'OBS', icon: 'school', color: '#182958' },
-                        { title: 'E-Posta', icon: 'mail', color: '#182958' },
-                        { title: 'Kütüphane', icon: 'book', color: '#182958' },
-                        { title: 'Harita', icon: 'map', color: '#182958' },
-                    ].map((link, index) => (
-                        <TouchableOpacity key={index} style={styles.linkItem}>
-                            <View style={[styles.linkIcon, { backgroundColor: link.color + '10' }]}>
-                                <Icon name={link.icon} size={24} color={link.color} />
-                            </View>
-                            <Text style={styles.linkText}>{link.title}</Text>
-                        </TouchableOpacity>
-                    ))}
-                </View>
-            </View>
-        </ScrollView>
+                <View style={{ height: 20 }} />
+            </ScrollView>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F8F9FA',
+        backgroundColor: '#F0F2F5',
     },
     header: {
         backgroundColor: theme.colors.primary,
-        padding: theme.spacing.lg,
-        paddingTop: theme.spacing.xl,
-        paddingBottom: theme.spacing.xxl,
-        borderBottomLeftRadius: 20,
-        borderBottomRightRadius: 20,
+        paddingHorizontal: theme.spacing.lg,
+        paddingBottom: theme.spacing.xl,
+        borderBottomLeftRadius: 30,
+        borderBottomRightRadius: 30,
+        ...theme.shadows.medium,
+    },
+    headerTop: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: theme.spacing.lg,
     },
     greeting: {
         fontSize: moderateScale(22),
         fontWeight: 'bold',
         color: '#FFFFFF',
-        marginBottom: 4,
+        marginBottom: 2,
     },
     date: {
-        fontSize: moderateScale(14),
-        color: 'rgba(255, 255, 255, 0.8)',
+        fontSize: moderateScale(13),
+        color: 'rgba(255, 255, 255, 0.7)',
     },
-    content: {
+    profileButton: {
+        width: 44,
+        height: 44,
+        borderRadius: 22,
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        ...theme.shadows.small,
+    },
+    profilePlaceholder: {
+        width: '100%',
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    summaryContainer: {
+        flexDirection: 'row',
+        backgroundColor: 'rgba(255, 255, 255, 0.12)',
+        borderRadius: 15,
         padding: theme.spacing.md,
-        marginTop: theme.spacing.sm,
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    summaryItem: {
+        alignItems: 'center',
+        flex: 1,
+    },
+    summaryLabel: {
+        color: 'rgba(255, 255, 255, 0.7)',
+        fontSize: moderateScale(11),
+        marginBottom: 4,
+        textTransform: 'uppercase',
+    },
+    summaryValue: {
+        color: '#FFFFFF',
+        fontSize: moderateScale(15),
+        fontWeight: 'bold',
+    },
+    summaryDivider: {
+        width: 1,
+        height: '70%',
+        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    },
+    scrollView: {
+        flex: 1,
+    },
+    scrollContent: {
+        padding: theme.spacing.md,
+    },
+    sectionHeading: {
+        fontSize: moderateScale(17),
+        fontWeight: 'bold',
+        color: theme.colors.text,
+        marginBottom: theme.spacing.sm,
+        marginTop: theme.spacing.xs,
+    },
+    quickActionsGrid: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: theme.spacing.lg,
+    },
+    actionItem: {
+        width: '23%',
+        alignItems: 'center',
+    },
+    actionIcon: {
+        width: horizontalScale(56),
+        height: horizontalScale(56),
+        borderRadius: 18,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 8,
+        backgroundColor: '#FFFFFF',
+        ...theme.shadows.small,
+    },
+    actionText: {
+        fontSize: moderateScale(11),
+        fontWeight: '600',
+        color: theme.colors.textSecondary,
+        textAlign: 'center',
     },
     mainCard: {
         marginBottom: theme.spacing.md,
         padding: theme.spacing.md,
-        borderRadius: 12,
+        borderRadius: 20,
         backgroundColor: '#FFFFFF',
+        ...theme.shadows.small,
+        borderWidth: 1,
+        borderColor: 'rgba(0,0,0,0.02)',
     },
     cardHeader: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: theme.spacing.sm,
-        gap: 8,
+        justifyContent: 'space-between',
+        marginBottom: theme.spacing.md,
+    },
+    cardTitleContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
     },
     cardTitle: {
         fontSize: moderateScale(16),
         fontWeight: '700',
         color: theme.colors.text,
     },
+    badge: {
+        backgroundColor: theme.colors.primary + '10',
+        paddingHorizontal: 10,
+        paddingVertical: 4,
+        borderRadius: 10,
+    },
+    badgeText: {
+        fontSize: moderateScale(11),
+        color: theme.colors.primary,
+        fontWeight: '600',
+    },
     mealList: {
-        marginBottom: theme.spacing.sm,
+        marginBottom: theme.spacing.md,
+    },
+    mealRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 8,
+    },
+    bullet: {
+        marginRight: 10,
+        opacity: 0.8,
     },
     mealItem: {
         fontSize: moderateScale(14),
         color: theme.colors.textSecondary,
-        marginBottom: 4,
+        flex: 1,
         lineHeight: 20,
     },
     courseContainer: {
-        marginBottom: theme.spacing.sm,
+        marginBottom: theme.spacing.md,
+        backgroundColor: '#F8F9FA',
+        padding: theme.spacing.md,
+        borderRadius: 12,
+        borderLeftWidth: 4,
+        borderLeftColor: theme.colors.warning,
     },
     courseTime: {
         fontSize: moderateScale(14),
         fontWeight: 'bold',
-        color: theme.colors.primary,
-        marginBottom: 2,
+        color: theme.colors.warning,
+        marginBottom: 4,
     },
     courseName: {
         fontSize: moderateScale(16),
-        fontWeight: '600',
+        fontWeight: 'bold',
         color: theme.colors.text,
-        marginBottom: 2,
+        marginBottom: 4,
     },
     courseInfo: {
         fontSize: moderateScale(13),
         color: theme.colors.textSecondary,
     },
     announcementContent: {
-        marginBottom: theme.spacing.sm,
+        marginBottom: theme.spacing.md,
     },
     announcementTitle: {
         fontSize: moderateScale(15),
-        fontWeight: '500',
+        fontWeight: '600',
         color: theme.colors.text,
         lineHeight: 22,
-        marginBottom: 4,
+        marginBottom: 6,
     },
     announcementDate: {
         fontSize: moderateScale(12),
@@ -207,47 +379,12 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         paddingTop: theme.spacing.sm,
         borderTopWidth: 1,
-        borderTopColor: '#F0F0F0',
+        borderTopColor: '#F5F5F5',
     },
     footerLink: {
         fontSize: moderateScale(13),
         color: theme.colors.primary,
-        fontWeight: '500',
+        fontWeight: '600',
         marginRight: 4,
-    },
-    sectionHeading: {
-        fontSize: moderateScale(18),
-        fontWeight: 'bold',
-        color: theme.colors.text,
-        marginTop: theme.spacing.md,
-        marginBottom: theme.spacing.md,
-    },
-    linksGrid: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'space-between',
-        gap: theme.spacing.md,
-        paddingBottom: theme.spacing.xl,
-    },
-    linkItem: {
-        width: '47%',
-        backgroundColor: '#FFFFFF',
-        padding: theme.spacing.md,
-        borderRadius: 12,
-        alignItems: 'center',
-        ...theme.shadows.small,
-    },
-    linkIcon: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: theme.spacing.xs,
-    },
-    linkText: {
-        fontSize: moderateScale(14),
-        fontWeight: '500',
-        color: theme.colors.text,
     },
 });
