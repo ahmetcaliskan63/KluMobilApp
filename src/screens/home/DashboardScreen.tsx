@@ -1,8 +1,3 @@
-/**
- * Dashboard Screen
- * Ana Sayfa - Öğrenci Portalı
- */
-
 import React from 'react';
 import {
     View,
@@ -10,70 +5,16 @@ import {
     StyleSheet,
     ScrollView,
     TouchableOpacity,
+    Dimensions,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { Card } from '../../components/common';
 import { theme } from '../../config/theme';
 import { useAuthStore } from '../../store/authStore';
-import { DashboardModule } from '../../types/models';
 
-const dashboardModules: DashboardModule[] = [
-    {
-        id: '1',
-        title: 'Ders Programı',
-        icon: '📚',
-        route: 'Schedule',
-        color: theme.colors.primary,
-    },
-    {
-        id: '2',
-        title: 'Sınav Takvimi',
-        icon: '📝',
-        route: 'Exams',
-        color: '#E91E63',
-    },
-    {
-        id: '3',
-        title: 'Yemekhane',
-        icon: '🍽️',
-        route: 'Cafeteria',
-        color: '#FF9800',
-    },
-    {
-        id: '4',
-        title: 'Duyurular',
-        icon: '📢',
-        route: 'Announcements',
-        color: '#2196F3',
-    },
-    {
-        id: '5',
-        title: 'Kütüphane',
-        icon: '📖',
-        route: 'Library',
-        color: '#4CAF50',
-    },
-    {
-        id: '6',
-        title: 'Kampüs Haritası',
-        icon: '🗺️',
-        route: 'Map',
-        color: '#9C27B0',
-    },
-    {
-        id: '7',
-        title: 'Danışmanlık',
-        icon: '👨‍🏫',
-        route: 'Advisor',
-        color: '#00BCD4',
-    },
-    {
-        id: '8',
-        title: 'Geri Bildirim',
-        icon: '💬',
-        route: 'Feedback',
-        color: '#607D8B',
-    },
-];
+const { width } = Dimensions.get('window');
+const horizontalScale = (size: number) => (width / 375) * size;
+const moderateScale = (size: number, factor = 0.5) => size + (horizontalScale(size) - size) * factor;
 
 export const DashboardScreen: React.FC = () => {
     const { user } = useAuthStore();
@@ -89,7 +30,7 @@ export const DashboardScreen: React.FC = () => {
     };
 
     return (
-        <ScrollView style={styles.container}>
+        <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
             {/* Header Section */}
             <View style={styles.header}>
                 <Text style={styles.greeting}>
@@ -98,63 +39,77 @@ export const DashboardScreen: React.FC = () => {
                 <Text style={styles.date}>{getCurrentDate()}</Text>
             </View>
 
-            {/* Quick Stats */}
-            <View style={styles.statsContainer}>
-                <Card style={styles.statCard} elevation="small">
-                    <Text style={styles.statValue}>3.45</Text>
-                    <Text style={styles.statLabel}>GPA</Text>
+            <View style={styles.content}>
+                {/* 1. Bugünün Yemeği */}
+                <Card style={[styles.mainCard, { marginTop: 0 }]} elevation="small">
+                    <View style={styles.cardHeader}>
+                        <Icon name="restaurant" size={20} color={theme.colors.primary} />
+                        <Text style={styles.cardTitle}>Bugün Yemekhanede</Text>
+                    </View>
+                    <View style={styles.mealList}>
+                        <Text style={styles.mealItem}>• Ezogelin Çorbası</Text>
+                        <Text style={styles.mealItem}>• İzmir Köfte</Text>
+                        <Text style={styles.mealItem}>• Pirinç Pilavı</Text>
+                        <Text style={styles.mealItem}>• Mevsim Salata / Ayva Tatlısı</Text>
+                    </View>
+                    <TouchableOpacity style={styles.cardFooter}>
+                        <Text style={styles.footerLink}>Tüm haftalık menü...</Text>
+                        <Icon name="chevron-forward" size={16} color={theme.colors.primary} />
+                    </TouchableOpacity>
                 </Card>
-                <Card style={styles.statCard} elevation="small">
-                    <Text style={styles.statValue}>12</Text>
-                    <Text style={styles.statLabel}>Dersler</Text>
-                </Card>
-                <Card style={styles.statCard} elevation="small">
-                    <Text style={styles.statValue}>5</Text>
-                    <Text style={styles.statLabel}>Sınavlar</Text>
-                </Card>
-            </View>
 
-            {/* Dashboard Modules Grid */}
-            <View style={styles.modulesContainer}>
-                <Text style={styles.sectionTitle}>Hızlı Erişim</Text>
-                <View style={styles.grid}>
-                    {dashboardModules.map((module) => (
-                        <TouchableOpacity
-                            key={module.id}
-                            style={styles.moduleCard}
-                            activeOpacity={0.7}>
-                            <Card style={styles.moduleCardInner} elevation="medium">
-                                <View
-                                    style={[
-                                        styles.iconContainer,
-                                        { backgroundColor: module.color + '20' },
-                                    ]}>
-                                    <Text style={styles.icon}>{module.icon}</Text>
-                                </View>
-                                <Text style={styles.moduleTitle} numberOfLines={2}>
-                                    {module.title}
-                                </Text>
-                            </Card>
+                {/* 2. Yaklaşan Ders/Sınav */}
+                <Card style={styles.mainCard} elevation="small">
+                    <View style={styles.cardHeader}>
+                        <Icon name="time" size={20} color="#FF9800" />
+                        <Text style={styles.cardTitle}>Yaklaşan Ders</Text>
+                    </View>
+                    <View style={styles.courseContainer}>
+                        <Text style={styles.courseTime}>15:00 - 17:50</Text>
+                        <Text style={styles.courseName}>MAT101 Calculus</Text>
+                        <Text style={styles.courseInfo}>HB202 nolu sınıf • Prof. Dr. A. Yılmaz</Text>
+                    </View>
+                    <TouchableOpacity style={styles.cardFooter}>
+                        <Text style={styles.footerLink}>Ders programına git</Text>
+                        <Icon name="chevron-forward" size={16} color={theme.colors.primary} />
+                    </TouchableOpacity>
+                </Card>
+
+                {/* 3. En Yeni Duyuru */}
+                <Card style={styles.mainCard} elevation="small">
+                    <View style={styles.cardHeader}>
+                        <Icon name="notifications" size={20} color="#2196F3" />
+                        <Text style={styles.cardTitle}>En Yeni Duyuru</Text>
+                    </View>
+                    <View style={styles.announcementContent}>
+                        <Text style={styles.announcementTitle} numberOfLines={2}>
+                            2025-2026 Bahar Yarıyılı Kayıt Yenileme İşlemleri Hakkında Önemli Bilgilendirme
+                        </Text>
+                        <Text style={styles.announcementDate}>12 Mart 2026</Text>
+                    </View>
+                    <TouchableOpacity style={styles.cardFooter}>
+                        <Text style={styles.footerLink}>Devamı...</Text>
+                        <Icon name="chevron-forward" size={16} color={theme.colors.primary} />
+                    </TouchableOpacity>
+                </Card>
+
+                {/* 4. Önemli Bağlantılar */}
+                <Text style={styles.sectionHeading}>Önemli Bağlantılar</Text>
+                <View style={styles.linksGrid}>
+                    {[
+                        { title: 'OBS', icon: 'school', color: '#182958' },
+                        { title: 'E-Posta', icon: 'mail', color: '#182958' },
+                        { title: 'Kütüphane', icon: 'book', color: '#182958' },
+                        { title: 'Harita', icon: 'map', color: '#182958' },
+                    ].map((link, index) => (
+                        <TouchableOpacity key={index} style={styles.linkItem}>
+                            <View style={[styles.linkIcon, { backgroundColor: link.color + '10' }]}>
+                                <Icon name={link.icon} size={24} color={link.color} />
+                            </View>
+                            <Text style={styles.linkText}>{link.title}</Text>
                         </TouchableOpacity>
                     ))}
                 </View>
-            </View>
-
-            {/* Today's Schedule Preview */}
-            <View style={styles.todaySection}>
-                <Text style={styles.sectionTitle}>Bugünkü Dersler</Text>
-                <Card elevation="small">
-                    <View style={styles.scheduleItem}>
-                        <View style={styles.timeContainer}>
-                            <Text style={styles.time}>09:00</Text>
-                            <Text style={styles.timeLabel}>11:50</Text>
-                        </View>
-                        <View style={styles.scheduleDetails}>
-                            <Text style={styles.courseName}>Mobil Uygulama Geliştirme</Text>
-                            <Text style={styles.courseInfo}>Prof. Dr. Ahmet Yılmaz • A-201</Text>
-                        </View>
-                    </View>
-                </Card>
             </View>
         </ScrollView>
     );
@@ -163,120 +118,136 @@ export const DashboardScreen: React.FC = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: theme.colors.surface,
+        backgroundColor: '#F8F9FA',
     },
     header: {
         backgroundColor: theme.colors.primary,
         padding: theme.spacing.lg,
-        paddingTop: theme.spacing.xxl,
-        paddingBottom: theme.spacing.xl,
+        paddingTop: theme.spacing.xl,
+        paddingBottom: theme.spacing.xxl,
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
     },
     greeting: {
-        fontSize: 24,
+        fontSize: moderateScale(22),
         fontWeight: 'bold',
-        color: theme.colors.textOnPrimary,
-        marginBottom: theme.spacing.xs,
+        color: '#FFFFFF',
+        marginBottom: 4,
     },
     date: {
-        fontSize: 14,
-        color: theme.colors.textOnPrimary,
-        opacity: 0.9,
+        fontSize: moderateScale(14),
+        color: 'rgba(255, 255, 255, 0.8)',
     },
-    statsContainer: {
-        flexDirection: 'row',
-        paddingHorizontal: theme.spacing.lg,
-        marginTop: -theme.spacing.xl,
-        marginBottom: theme.spacing.lg,
-        gap: theme.spacing.md,
+    content: {
+        padding: theme.spacing.md,
+        marginTop: theme.spacing.sm,
     },
-    statCard: {
-        flex: 1,
-        alignItems: 'center',
-        paddingVertical: theme.spacing.lg,
-    },
-    statValue: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: theme.colors.primary,
-        marginBottom: theme.spacing.xs,
-    },
-    statLabel: {
-        fontSize: 12,
-        color: theme.colors.textSecondary,
-    },
-    modulesContainer: {
-        paddingHorizontal: theme.spacing.lg,
-        marginBottom: theme.spacing.lg,
-    },
-    sectionTitle: {
-        fontSize: 18,
-        fontWeight: '600',
-        color: theme.colors.text,
+    mainCard: {
         marginBottom: theme.spacing.md,
+        padding: theme.spacing.md,
+        borderRadius: 12,
+        backgroundColor: '#FFFFFF',
     },
-    grid: {
+    cardHeader: {
         flexDirection: 'row',
-        flexWrap: 'wrap',
-        gap: theme.spacing.md,
-    },
-    moduleCard: {
-        width: '47%',
-    },
-    moduleCardInner: {
         alignItems: 'center',
-        paddingVertical: theme.spacing.lg,
+        marginBottom: theme.spacing.sm,
+        gap: 8,
     },
-    iconContainer: {
-        width: 60,
-        height: 60,
-        borderRadius: 30,
-        alignItems: 'center',
-        justifyContent: 'center',
+    cardTitle: {
+        fontSize: moderateScale(16),
+        fontWeight: '700',
+        color: theme.colors.text,
+    },
+    mealList: {
         marginBottom: theme.spacing.sm,
     },
-    icon: {
-        fontSize: 32,
-    },
-    moduleTitle: {
-        fontSize: 14,
-        fontWeight: '500',
-        color: theme.colors.text,
-        textAlign: 'center',
-    },
-    todaySection: {
-        paddingHorizontal: theme.spacing.lg,
-        marginBottom: theme.spacing.xl,
-    },
-    scheduleItem: {
-        flexDirection: 'row',
-        gap: theme.spacing.md,
-    },
-    timeContainer: {
-        alignItems: 'center',
-        paddingRight: theme.spacing.md,
-        borderRightWidth: 2,
-        borderRightColor: theme.colors.primary,
-    },
-    time: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: theme.colors.primary,
-    },
-    timeLabel: {
-        fontSize: 12,
+    mealItem: {
+        fontSize: moderateScale(14),
         color: theme.colors.textSecondary,
+        marginBottom: 4,
+        lineHeight: 20,
     },
-    scheduleDetails: {
-        flex: 1,
+    courseContainer: {
+        marginBottom: theme.spacing.sm,
+    },
+    courseTime: {
+        fontSize: moderateScale(14),
+        fontWeight: 'bold',
+        color: theme.colors.primary,
+        marginBottom: 2,
     },
     courseName: {
-        fontSize: 16,
+        fontSize: moderateScale(16),
         fontWeight: '600',
         color: theme.colors.text,
-        marginBottom: theme.spacing.xs,
+        marginBottom: 2,
     },
     courseInfo: {
-        fontSize: 14,
+        fontSize: moderateScale(13),
         color: theme.colors.textSecondary,
+    },
+    announcementContent: {
+        marginBottom: theme.spacing.sm,
+    },
+    announcementTitle: {
+        fontSize: moderateScale(15),
+        fontWeight: '500',
+        color: theme.colors.text,
+        lineHeight: 22,
+        marginBottom: 4,
+    },
+    announcementDate: {
+        fontSize: moderateScale(12),
+        color: theme.colors.textLight,
+    },
+    cardFooter: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        paddingTop: theme.spacing.sm,
+        borderTopWidth: 1,
+        borderTopColor: '#F0F0F0',
+    },
+    footerLink: {
+        fontSize: moderateScale(13),
+        color: theme.colors.primary,
+        fontWeight: '500',
+        marginRight: 4,
+    },
+    sectionHeading: {
+        fontSize: moderateScale(18),
+        fontWeight: 'bold',
+        color: theme.colors.text,
+        marginTop: theme.spacing.md,
+        marginBottom: theme.spacing.md,
+    },
+    linksGrid: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+        gap: theme.spacing.md,
+        paddingBottom: theme.spacing.xl,
+    },
+    linkItem: {
+        width: '47%',
+        backgroundColor: '#FFFFFF',
+        padding: theme.spacing.md,
+        borderRadius: 12,
+        alignItems: 'center',
+        ...theme.shadows.small,
+    },
+    linkIcon: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: theme.spacing.xs,
+    },
+    linkText: {
+        fontSize: moderateScale(14),
+        fontWeight: '500',
+        color: theme.colors.text,
     },
 });
