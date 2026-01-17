@@ -17,9 +17,19 @@ const { width } = Dimensions.get('window');
 const horizontalScale = (size: number) => (width / 375) * size;
 const moderateScale = (size: number, factor = 0.5) => size + (horizontalScale(size) - size) * factor;
 
+import { useNavigation } from '@react-navigation/native';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { MainTabParamList } from '../../types/navigation';
+import {
+    MOCK_ANNOUNCEMENTS,
+    MOCK_WEEKLY_MENU,
+    MOCK_STATS
+} from '../../data/mockData';
+
 export const DashboardScreen: React.FC = () => {
     const { user } = useAuthStore();
     const insets = useSafeAreaInsets();
+    const navigation = useNavigation<BottomTabNavigationProp<MainTabParamList>>();
 
     const getCurrentDate = () => {
         const options: Intl.DateTimeFormatOptions = {
@@ -30,6 +40,10 @@ export const DashboardScreen: React.FC = () => {
         };
         return new Date().toLocaleDateString('tr-TR', options);
     };
+
+    // Bugünün yemeği (Çarşamba - mock verideki 3. item gibi düşünelim veya dinamik bulalım)
+    const todayMeal = MOCK_WEEKLY_MENU[3];
+    const latestAnnouncement = MOCK_ANNOUNCEMENTS[0];
 
     return (
         <View style={styles.container}>
@@ -42,7 +56,10 @@ export const DashboardScreen: React.FC = () => {
                         </Text>
                         <Text style={styles.date}>{getCurrentDate()}</Text>
                     </View>
-                    <TouchableOpacity style={styles.profileButton}>
+                    <TouchableOpacity
+                        style={styles.profileButton}
+                        onPress={() => navigation.navigate('Profile')}
+                    >
                         <View style={styles.profilePlaceholder}>
                             <Icon name="person" size={24} color={theme.colors.primary} />
                         </View>
@@ -53,17 +70,17 @@ export const DashboardScreen: React.FC = () => {
                 <View style={styles.summaryContainer}>
                     <View style={styles.summaryItem}>
                         <Text style={styles.summaryLabel}>Kampüs Kart</Text>
-                        <Text style={styles.summaryValue}>₺42.50</Text>
+                        <Text style={styles.summaryValue}>{MOCK_STATS.balance}</Text>
                     </View>
                     <View style={styles.summaryDivider} />
                     <View style={styles.summaryItem}>
                         <Text style={styles.summaryLabel}>Yemek Hakkı</Text>
-                        <Text style={styles.summaryValue}>1</Text>
+                        <Text style={styles.summaryValue}>{MOCK_STATS.mealCredits}</Text>
                     </View>
                     <View style={styles.summaryDivider} />
                     <View style={styles.summaryItem}>
                         <Text style={styles.summaryLabel}>Kütüphane</Text>
-                        <Text style={styles.summaryValue}>2 Kitap</Text>
+                        <Text style={styles.summaryValue}>{MOCK_STATS.libraryBooks}</Text>
                     </View>
                 </View>
             </View>
@@ -77,12 +94,16 @@ export const DashboardScreen: React.FC = () => {
                 <Text style={styles.sectionHeading}>Hızlı İşlemler</Text>
                 <View style={styles.quickActionsGrid}>
                     {[
-                        { title: 'OBS', icon: 'school', color: '#4A90E2' },
-                        { title: 'Yemek Menüsü', icon: 'restaurant', color: '#50E3C2' },
-                        { title: 'Kampüs Kart', icon: 'card', color: '#F5A623' },
-                        { title: 'Duyurular', icon: 'megaphone', color: '#D0021B' },
+                        { title: 'OBS', icon: 'school', color: '#4A90E2', tab: null },
+                        { title: 'Yemek Menüsü', icon: 'restaurant', color: '#50E3C2', tab: 'Cafeteria' },
+                        { title: 'Kampüs Kart', icon: 'card', color: '#F5A623', tab: 'Cafeteria' },
+                        { title: 'Duyurular', icon: 'megaphone', color: '#D0021B', tab: 'Announcements' },
                     ].map((action, index) => (
-                        <TouchableOpacity key={index} style={styles.actionItem}>
+                        <TouchableOpacity
+                            key={index}
+                            style={styles.actionItem}
+                            onPress={() => action.tab && navigation.navigate(action.tab as any)}
+                        >
                             <View style={[styles.actionIcon, { backgroundColor: action.color + '15' }]}>
                                 <Icon name={action.icon} size={24} color={action.color} />
                             </View>
@@ -103,24 +124,17 @@ export const DashboardScreen: React.FC = () => {
                         </View>
                     </View>
                     <View style={styles.mealList}>
-                        <View style={styles.mealRow}>
-                            <Icon name="ellipse" size={8} color={theme.colors.primary} style={styles.bullet} />
-                            <Text style={styles.mealItem}>Ezogelin Çorbası</Text>
-                        </View>
-                        <View style={styles.mealRow}>
-                            <Icon name="ellipse" size={8} color={theme.colors.primary} style={styles.bullet} />
-                            <Text style={styles.mealItem}>İzmir Köfte</Text>
-                        </View>
-                        <View style={styles.mealRow}>
-                            <Icon name="ellipse" size={8} color={theme.colors.primary} style={styles.bullet} />
-                            <Text style={styles.mealItem}>Pirinç Pilavı</Text>
-                        </View>
-                        <View style={styles.mealRow}>
-                            <Icon name="ellipse" size={8} color={theme.colors.primary} style={styles.bullet} />
-                            <Text style={styles.mealItem}>Mevsim Salata / Ayva Tatlısı</Text>
-                        </View>
+                        {todayMeal.items.map((item, index) => (
+                            <View key={index} style={styles.mealRow}>
+                                <Icon name="ellipse" size={8} color={theme.colors.primary} style={styles.bullet} />
+                                <Text style={styles.mealItem}>{item}</Text>
+                            </View>
+                        ))}
                     </View>
-                    <TouchableOpacity style={styles.cardFooter}>
+                    <TouchableOpacity
+                        style={styles.cardFooter}
+                        onPress={() => navigation.navigate('Cafeteria')}
+                    >
                         <Text style={styles.footerLink}>Tüm haftalık menü...</Text>
                         <Icon name="chevron-forward" size={16} color={theme.colors.primary} />
                     </TouchableOpacity>
@@ -155,11 +169,14 @@ export const DashboardScreen: React.FC = () => {
                     </View>
                     <View style={styles.announcementContent}>
                         <Text style={styles.announcementTitle} numberOfLines={2}>
-                            2025-2026 Bahar Yarıyılı Kayıt Yenileme İşlemleri Hakkında Önemli Bilgilendirme
+                            {latestAnnouncement.title}
                         </Text>
-                        <Text style={styles.announcementDate}>12 Mart 2026</Text>
+                        <Text style={styles.announcementDate}>{latestAnnouncement.date}</Text>
                     </View>
-                    <TouchableOpacity style={styles.cardFooter}>
+                    <TouchableOpacity
+                        style={styles.cardFooter}
+                        onPress={() => navigation.navigate('Announcements')}
+                    >
                         <Text style={styles.footerLink}>Devamı...</Text>
                         <Icon name="chevron-forward" size={16} color={theme.colors.primary} />
                     </TouchableOpacity>
