@@ -71,22 +71,22 @@ export const MainTabNavigator: React.FC = () => {
             <Tab.Screen
                 name="Cafeteria"
                 component={CafeteriaScreen}
-                options={{ title: 'Yemekhane' }}
+                options={{ title: 'Yemekhane', headerShown: false }}
             />
             <Tab.Screen
                 name="Announcements"
                 component={AnnouncementsScreen}
-                options={{ title: 'Duyurular' }}
+                options={{ title: 'Duyurular', headerShown: false }}
             />
             <Tab.Screen
                 name="Library"
                 component={LibraryScreen}
-                options={{ title: 'Kütüphane' }}
+                options={{ title: 'Kütüphane', headerShown: false }}
             />
             <Tab.Screen
                 name="Profile"
                 component={ProfileScreen}
-                options={{ title: 'Profil' }}
+                options={{ title: 'Profil', headerShown: false }}
             />
         </Tab.Navigator>
     );
