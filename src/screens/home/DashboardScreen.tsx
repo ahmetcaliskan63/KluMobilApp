@@ -17,19 +17,25 @@ const { width } = Dimensions.get('window');
 const horizontalScale = (size: number) => (width / 375) * size;
 const moderateScale = (size: number, factor = 0.5) => size + (horizontalScale(size) - size) * factor;
 
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CompositeNavigationProp } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import { MainTabParamList } from '../../types/navigation';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { MainTabParamList, HomeStackParamList } from '../../types/navigation';
 import {
     MOCK_ANNOUNCEMENTS,
     MOCK_WEEKLY_MENU,
     MOCK_STATS
 } from '../../data/mockData';
 
+type DashboardNavigationProp = CompositeNavigationProp<
+    NativeStackNavigationProp<HomeStackParamList, 'Dashboard'>,
+    BottomTabNavigationProp<MainTabParamList>
+>;
+
 export const DashboardScreen: React.FC = () => {
     const { user } = useAuthStore();
     const insets = useSafeAreaInsets();
-    const navigation = useNavigation<BottomTabNavigationProp<MainTabParamList>>();
+    const navigation = useNavigation<DashboardNavigationProp>();
 
     const getCurrentDate = () => {
         const options: Intl.DateTimeFormatOptions = {
@@ -94,7 +100,7 @@ export const DashboardScreen: React.FC = () => {
                 <Text style={styles.sectionHeading}>Hızlı İşlemler</Text>
                 <View style={styles.quickActionsGrid}>
                     {[
-                        { title: 'OBS', icon: 'school', color: '#4A90E2', tab: null },
+                        { title: 'OBS', icon: 'school', color: '#4A90E2', tab: 'OBS' },
                         { title: 'Yemek Menüsü', icon: 'restaurant', color: '#50E3C2', tab: 'Cafeteria' },
                         { title: 'Kampüs Kart', icon: 'card', color: '#F5A623', tab: 'Cafeteria' },
                         { title: 'Duyurular', icon: 'megaphone', color: '#D0021B', tab: 'Announcements' },
@@ -153,7 +159,10 @@ export const DashboardScreen: React.FC = () => {
                         <Text style={styles.courseName}>MAT101 Calculus</Text>
                         <Text style={styles.courseInfo}>HB202 nolu sınıf • Prof. Dr. A. Yılmaz</Text>
                     </View>
-                    <TouchableOpacity style={styles.cardFooter}>
+                    <TouchableOpacity
+                        style={styles.cardFooter}
+                        onPress={() => navigation.navigate('Schedule')}
+                    >
                         <Text style={styles.footerLink}>Ders programına git</Text>
                         <Icon name="chevron-forward" size={16} color={theme.colors.primary} />
                     </TouchableOpacity>
