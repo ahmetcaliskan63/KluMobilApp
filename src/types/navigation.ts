@@ -14,7 +14,7 @@ export type AuthStackParamList = {
 };
 
 export type MainTabParamList = {
-    Home: undefined;
+    HomeStack: undefined;
     Cafeteria: undefined;
     Announcements: undefined;
     Library: undefined;
@@ -23,6 +23,8 @@ export type MainTabParamList = {
 
 export type HomeStackParamList = {
     Dashboard: undefined;
+    Schedule: undefined;
     CourseDetail: { courseId: string };
     ExamDetail: { examId: string };
+    OBS: undefined;
 };
