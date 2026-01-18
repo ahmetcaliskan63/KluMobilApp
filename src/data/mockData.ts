@@ -61,6 +61,43 @@ export const MOCK_BORROWED_BOOKS: BorrowedBook[] = [
     { id: '2', title: 'Clean Code', author: 'Robert C. Martin', dueDate: '15 Mart 2026', status: 'Warning' },
 ];
 
+export interface Course {
+    id: string;
+    name: string;
+    room: string;
+    instructor: string;
+    startTime: string;
+    endTime: string;
+    day: string;
+    color: string;
+}
+
+export const MOCK_SCHEDULE: Course[] = [
+    { id: '1', name: 'MAT101 Calculus', room: 'HB202', instructor: 'Prof. Dr. A. Yılmaz', startTime: '15:00', endTime: '17:50', day: 'Çarşamba', color: '#4A90E2' },
+    { id: '2', name: 'FIZ101 Physics I', room: 'HB105', instructor: 'Doç. Dr. M. Kaya', startTime: '09:00', endTime: '11:50', day: 'Pazartesi', color: '#50E3C2' },
+    { id: '3', name: 'BIL101 Intro to Programming', room: 'Lab 1', instructor: 'Dr. Öğr. Üyesi S. Demir', startTime: '13:00', endTime: '15:50', day: 'Salı', color: '#F5A623' },
+    { id: '4', name: 'TUR101 Türk Dili I', room: 'HB301', instructor: 'Öğr. Gör. H. Arslan', startTime: '10:00', endTime: '11:50', day: 'Perşembe', color: '#D0021B' },
+    { id: '5', name: 'ING101 English I', room: 'HB202', instructor: 'Okutman E. Aksoy', startTime: '14:00', endTime: '15:50', day: 'Cuma', color: '#9013FE' },
+];
+
+export interface Grade {
+    id: string;
+    courseName: string;
+    midterm: number | null;
+    final: number | null;
+    letterGrade: string;
+    credits: number;
+    status: 'Passed' | 'Failed' | 'Pending';
+}
+
+export const MOCK_GRADES: Grade[] = [
+    { id: '1', courseName: 'MAT101 Calculus', midterm: 85, final: 75, letterGrade: 'BA', credits: 6, status: 'Passed' },
+    { id: '2', courseName: 'FIZ101 Physics I', midterm: 60, final: 70, letterGrade: 'CC', credits: 5, status: 'Passed' },
+    { id: '3', courseName: 'BIL101 Intro to Programming', midterm: 95, final: null, letterGrade: '-', credits: 6, status: 'Pending' },
+    { id: '4', courseName: 'TUR101 Türk Dili I', midterm: 80, final: 85, letterGrade: 'AA', credits: 2, status: 'Passed' },
+    { id: '5', courseName: 'ING101 English I', midterm: 70, final: 65, letterGrade: 'CB', credits: 2, status: 'Passed' },
+];
+
 export const MOCK_STATS = {
     balance: '₺42.50',
     mealCredits: '1',
