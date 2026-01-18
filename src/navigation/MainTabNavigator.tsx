@@ -9,7 +9,21 @@ import { ProfileScreen } from '../screens/profile/ProfileScreen';
 import { MainTabParamList } from '../types/navigation';
 import { theme } from '../config/theme';
 
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { ScheduleScreen } from '../screens/home/ScheduleScreen';
+import { OBSScreen } from '../screens/home/OBSScreen';
+import { HomeStackParamList } from '../types/navigation';
+
 const Tab = createBottomTabNavigator<MainTabParamList>();
+const HomeStack = createNativeStackNavigator<HomeStackParamList>();
+
+const HomeStackNavigator = () => (
+    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
+        <HomeStack.Screen name="Dashboard" component={DashboardScreen} />
+        <HomeStack.Screen name="Schedule" component={ScheduleScreen} />
+        <HomeStack.Screen name="OBS" component={OBSScreen} />
+    </HomeStack.Navigator>
+);
 
 export const MainTabNavigator: React.FC = () => {
     return (
@@ -19,7 +33,7 @@ export const MainTabNavigator: React.FC = () => {
                     let iconName = '';
 
                     switch (route.name) {
-                        case 'Home':
+                        case 'HomeStack':
                             iconName = focused ? 'home' : 'home-outline';
                             break;
                         case 'Cafeteria':
@@ -60,12 +74,11 @@ export const MainTabNavigator: React.FC = () => {
                 headerTitleStyle: {
                     fontWeight: 'bold',
                 },
-                // PDF'deki gibi sadece aktif olanın etiketini gösterme tercihi
                 tabBarShowLabel: true,
             })}>
             <Tab.Screen
-                name="Home"
-                component={DashboardScreen}
+                name="HomeStack"
+                component={HomeStackNavigator}
                 options={{ title: 'Ana Sayfa', headerShown: false }}
             />
             <Tab.Screen
