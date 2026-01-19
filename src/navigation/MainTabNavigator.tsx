@@ -1,4 +1,5 @@
 import React from 'react';
+import { View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { DashboardScreen } from '../screens/home/DashboardScreen';
@@ -50,21 +51,45 @@ export const MainTabNavigator: React.FC = () => {
                             break;
                     }
 
-                    return <Icon name={iconName} size={24} color={color} />;
+                    return (
+                        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                            <Icon name={iconName} size={24} color={color} />
+                            {focused && route.name !== 'HomeStack' && (
+                                <View style={{
+                                    width: 4,
+                                    height: 4,
+                                    borderRadius: 2,
+                                    backgroundColor: theme.colors.primary,
+                                    marginTop: 4,
+                                }} />
+                            )}
+                        </View>
+                    );
                 },
                 tabBarActiveTintColor: theme.colors.primary,
-                tabBarInactiveTintColor: theme.colors.textLight,
+                tabBarInactiveTintColor: 'rgba(24, 41, 88, 0.4)',
                 tabBarStyle: {
-                    height: 70,
-                    paddingBottom: 12,
-                    paddingTop: 8,
+                    position: 'absolute',
+                    bottom: 25,
+                    left: 20,
+                    right: 20,
+                    height: 65,
                     backgroundColor: '#FFFFFF',
-                    borderTopWidth: 1,
-                    borderTopColor: '#E0E0E0',
+                    borderRadius: 25,
+                    borderWidth: 1.5,
+                    borderColor: theme.colors.primary + '30', // Soft primary blue border
+                    paddingBottom: 0,
+                    paddingTop: 0,
+                    borderTopWidth: 0,
+                    ...theme.shadows.medium,
+                    shadowColor: theme.colors.primary,
+                    shadowOpacity: 0.1,
+                    shadowRadius: 10,
                 },
                 tabBarLabelStyle: {
-                    fontSize: 11,
-                    fontWeight: '500',
+                    fontSize: 10,
+                    fontWeight: '700',
+                    marginBottom: 10,
                 },
                 headerShown: true,
                 headerStyle: {
@@ -77,11 +102,6 @@ export const MainTabNavigator: React.FC = () => {
                 tabBarShowLabel: true,
             })}>
             <Tab.Screen
-                name="HomeStack"
-                component={HomeStackNavigator}
-                options={{ title: 'Ana Sayfa', headerShown: false }}
-            />
-            <Tab.Screen
                 name="Cafeteria"
                 component={CafeteriaScreen}
                 options={{ title: 'Yemekhane', headerShown: false }}
@@ -90,6 +110,31 @@ export const MainTabNavigator: React.FC = () => {
                 name="Announcements"
                 component={AnnouncementsScreen}
                 options={{ title: 'Duyurular', headerShown: false }}
+            />
+            <Tab.Screen
+                name="HomeStack"
+                component={HomeStackNavigator}
+                options={{
+                    title: 'Ana Sayfa',
+                    headerShown: false,
+                    tabBarIcon: ({ focused }) => (
+                        <View style={{
+                            width: 65,
+                            height: 65,
+                            backgroundColor: theme.colors.primary,
+                            borderRadius: 33,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            marginBottom: 25,
+                            borderWidth: 6,
+                            borderColor: '#FFFFFF',
+                            ...theme.shadows.medium,
+                        }}>
+                            <Icon name={focused ? 'home' : 'home-outline'} size={28} color="#FFFFFF" />
+                        </View>
+                    ),
+                    tabBarLabel: () => null,
+                }}
             />
             <Tab.Screen
                 name="Library"
