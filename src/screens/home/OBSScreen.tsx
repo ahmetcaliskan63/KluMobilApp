@@ -18,10 +18,25 @@ export const OBSScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
 
+    const getCourseIcon = (courseName: string) => {
+        const name = courseName.toLowerCase();
+        if (name.includes('calculus') || name.includes('matematik')) return 'calculator';
+        if (name.includes('physics') || name.includes('fizik')) return 'flash';
+        if (name.includes('programming') || name.includes('programlama')) return 'code-slash';
+        if (name.includes('türk dili')) return 'book';
+        if (name.includes('english') || name.includes('ingilizce')) return 'language';
+        return 'journal';
+    };
+
     const renderGradeRow = (grade: Grade) => (
         <Card key={grade.id} style={styles.gradeCard} elevation="small">
             <View style={styles.gradeHeader}>
-                <Text style={styles.courseName}>{grade.courseName}</Text>
+                <View style={styles.courseTitleContainer}>
+                    <View style={[styles.iconContainer, { backgroundColor: theme.colors.primary + '10' }]}>
+                        <Icon name={getCourseIcon(grade.courseName)} size={18} color={theme.colors.primary} />
+                    </View>
+                    <Text style={styles.courseName}>{grade.courseName}</Text>
+                </View>
                 <View style={[
                     styles.statusBadge,
                     { backgroundColor: grade.status === 'Passed' ? '#E8F5E9' : grade.status === 'Pending' ? '#FFF3E0' : '#FFEBEE' }
@@ -76,21 +91,37 @@ export const OBSScreen: React.FC = () => {
                 {/* Academic Summary */}
                 <View style={styles.summaryGrid}>
                     <View style={styles.summaryBox}>
+                        <View style={styles.gpaCircle}>
+                            <Text style={styles.summaryValue}>{MOCK_STATS.gpa}</Text>
+                            <Text style={styles.gpaMax}>/ 4.0</Text>
+                        </View>
                         <Text style={styles.summaryLabel}>GNO</Text>
-                        <Text style={styles.summaryValue}>{MOCK_STATS.gpa}</Text>
                     </View>
                     <View style={styles.summaryBox}>
-                        <Text style={styles.summaryLabel}>TAM. KREDİ</Text>
+                        <Icon name="ribbon-outline" size={24} color="#FFFFFF" style={{ marginBottom: 4 }} />
                         <Text style={styles.summaryValue}>{MOCK_STATS.totalCredits}</Text>
+                        <Text style={styles.summaryLabel}>TAM. KREDİ</Text>
                     </View>
                     <View style={styles.summaryBox}>
-                        <Text style={styles.summaryLabel}>DÖNEM</Text>
+                        <Icon name="calendar-outline" size={24} color="#FFFFFF" style={{ marginBottom: 4 }} />
                         <Text style={styles.summaryValue}>Güz 2025</Text>
+                        <Text style={styles.summaryLabel}>DÖNEM</Text>
                     </View>
                 </View>
             </View>
 
             <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+                {/* Academic Progress */}
+                <Card style={styles.progressCard}>
+                    <Text style={styles.progressTitle}>Mezuniyet İlerlemesi</Text>
+                    <View style={styles.progressBarBg}>
+                        <View style={[styles.progressBarFill, { width: '75%' }]} />
+                    </View>
+                    <View style={styles.progressDetails}>
+                        <Text style={styles.progressText}>Tamamlanan: {MOCK_STATS.totalCredits} AKTS</Text>
+                        <Text style={styles.progressText}>Hedef: 240 AKTS</Text>
+                    </View>
+                </Card>
                 <View style={styles.sectionHeader}>
                     <Text style={styles.sectionTitle}>Dönem Notları</Text>
                     <TouchableOpacity>
@@ -146,30 +177,75 @@ const styles = StyleSheet.create({
     summaryBox: {
         flex: 1,
         backgroundColor: 'rgba(255, 255, 255, 0.12)',
-        borderRadius: 15,
+        borderRadius: 20,
         padding: 12,
         alignItems: 'center',
+        justifyContent: 'center',
+    },
+    gpaCircle: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 4,
+    },
+    gpaMax: {
+        fontSize: 10,
+        color: 'rgba(255, 255, 255, 0.6)',
+        marginTop: -2,
     },
     summaryLabel: {
         fontSize: 10,
         color: 'rgba(255, 255, 255, 0.7)',
-        fontWeight: '600',
-        marginBottom: 4,
+        fontWeight: 'bold',
         textTransform: 'uppercase',
     },
     summaryValue: {
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: 'bold',
         color: '#FFFFFF',
     },
     scrollContent: {
-        padding: 20,
+        padding: 16,
+    },
+    progressCard: {
+        marginBottom: 20,
+        padding: 16,
+        borderRadius: 20,
+        backgroundColor: '#FFFFFF',
+        ...theme.shadows.small,
+    },
+    progressTitle: {
+        fontSize: 15,
+        fontWeight: '700',
+        color: theme.colors.text,
+        marginBottom: 12,
+    },
+    progressBarBg: {
+        height: 8,
+        backgroundColor: '#F0F2F5',
+        borderRadius: 4,
+        marginBottom: 8,
+        overflow: 'hidden',
+    },
+    progressBarFill: {
+        height: '100%',
+        backgroundColor: theme.colors.primary,
+        borderRadius: 4,
+    },
+    progressDetails: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    progressText: {
+        fontSize: 12,
+        color: theme.colors.textSecondary,
+        fontWeight: '500',
     },
     sectionHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 16,
+        paddingHorizontal: 4,
     },
     sectionTitle: {
         fontSize: 18,
@@ -182,27 +258,42 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     gradeCard: {
-        marginBottom: 16,
+        marginBottom: 14,
         padding: 16,
-        borderRadius: 16,
+        borderRadius: 20,
+        borderWidth: 1,
+        borderColor: '#F0F2F5',
     },
     gradeHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'flex-start',
+        alignItems: 'center',
         marginBottom: 16,
     },
-    courseName: {
-        fontSize: 15,
-        fontWeight: 'bold',
-        color: theme.colors.text,
+    courseTitleContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
         flex: 1,
         marginRight: 10,
     },
+    iconContainer: {
+        width: 36,
+        height: 36,
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 12,
+    },
+    courseName: {
+        fontSize: 15,
+        fontWeight: '700',
+        color: theme.colors.text,
+        flex: 1,
+    },
     statusBadge: {
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        borderRadius: 8,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        borderRadius: 10,
     },
     statusText: {
         fontSize: 11,
@@ -212,7 +303,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: '#F8F9FA',
-        borderRadius: 12,
+        borderRadius: 15,
         padding: 12,
     },
     gradeItem: {
@@ -224,20 +315,21 @@ const styles = StyleSheet.create({
         color: theme.colors.textLight,
         marginBottom: 4,
         textTransform: 'uppercase',
+        fontWeight: '600',
     },
     gradeValue: {
         fontSize: 14,
-        fontWeight: '600',
+        fontWeight: '700',
         color: theme.colors.text,
     },
     gradeLetter: {
-        fontSize: 14,
-        fontWeight: 'bold',
+        fontSize: 15,
+        fontWeight: '800',
         color: theme.colors.primary,
     },
     gradeDivider: {
         width: 1,
         height: 20,
-        backgroundColor: '#E0E0E0',
+        backgroundColor: '#EAECEF',
     },
 });
