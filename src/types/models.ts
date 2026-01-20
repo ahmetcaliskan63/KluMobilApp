@@ -13,6 +13,16 @@ export interface User {
     profileImage?: string;
 }
 
+export interface LoginCredentials {
+    studentId: string;
+    password: string;
+}
+
+export interface AuthResponse {
+    user: User;
+    token: string;
+}
+
 export interface Course {
     id: string;
     code: string;
