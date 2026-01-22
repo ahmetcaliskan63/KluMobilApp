@@ -8,31 +8,65 @@ export const colors = {
   primary: '#182958',      // KLU Ana Mavi
   primaryLight: '#2A3F7A', // Açık Mavi
   primaryDark: '#0F1B3C',  // Koyu Mavi
-  
+
   secondary: '#4B6C9A',    // İkincil Mavi
   accent: '#E1E9F2',       // Vurgu Rengi
-  
+
   // Temel Renkler
   background: '#FFFFFF',   // Beyaz Arka Plan
   surface: '#F8F9FA',      // Yüzey Rengi
   card: '#FFFFFF',         // Kart Arka Planı
-  
+
   // Metin Renkleri
   text: '#1C1C1C',         // Ana Metin
   textSecondary: '#666666', // İkincil Metin
   textLight: '#999999',    // Açık Metin
   textOnPrimary: '#FFFFFF', // Primary üzerinde metin
-  
+
   // Durum Renkleri
   success: '#4CAF50',      // Başarı
   warning: '#FF9800',      // Uyarı
   error: '#F44336',        // Hata
   info: '#2196F3',         // Bilgi
-  
+
   // Kenarlık ve Ayırıcılar
   border: '#E0E0E0',       // Kenarlık
   divider: '#EEEEEE',      // Ayırıcı
-  
+
+  // Gölge
+  shadow: '#000000',
+};
+
+export const darkColors = {
+  // Kurumsal Renkler (Karanlık Modda da korunur ancak bazıları yumuşatılabilir)
+  primary: '#182958',      // KLU Ana Mavi
+  primaryLight: '#2A3F7A',
+  primaryDark: '#0F1B3C',
+
+  secondary: '#6C8DBE',    // Daha açık mavi toner
+  accent: '#1E293B',       // Koyu Vurgu
+
+  // Temel Renkler
+  background: '#0F172A',   // Koyu Lacivert Arka Plan
+  surface: '#1E293B',      // Panel Rengi
+  card: '#1E293B',         // Kart Rengi
+
+  // Metin Renkleri
+  text: '#F8FAFC',         // Açık Metin
+  textSecondary: '#94A3B8', // İkincil Metin
+  textLight: '#64748B',    // Daha sönük metin
+  textOnPrimary: '#FFFFFF',
+
+  // Durum Renkleri
+  success: '#10B981',
+  warning: '#F59E0B',
+  error: '#EF4444',
+  info: '#3B82F6',
+
+  // Kenarlık ve Ayırıcılar
+  border: '#334155',
+  divider: '#1E293B',
+
   // Gölge
   shadow: '#000000',
 };
