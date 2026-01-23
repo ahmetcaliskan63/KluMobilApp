@@ -4,7 +4,8 @@
 
 import React from 'react';
 import { View, StyleSheet, ViewStyle, StyleProp } from 'react-native';
-import { theme } from '../../config/theme';
+import { theme as defaultTheme, Theme } from '../../config/theme';
+import { useAppTheme } from '../../hooks/useAppTheme';
 
 interface CardProps {
     children: React.ReactNode;
@@ -17,14 +18,17 @@ export const Card: React.FC<CardProps> = ({
     style,
     elevation = 'small',
 }) => {
+    const { theme } = useAppTheme();
+    const s = styles(theme);
+
     return (
-        <View style={[styles.card, theme.shadows[elevation], style]}>
+        <View style={[s.card, theme.shadows[elevation], style]}>
             {children}
         </View>
     );
 };
 
-const styles = StyleSheet.create({
+const styles = (theme: Theme) => StyleSheet.create({
     card: {
         backgroundColor: theme.colors.card,
         borderRadius: theme.borderRadius.lg,

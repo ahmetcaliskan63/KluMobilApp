@@ -12,7 +12,8 @@ import {
     ViewStyle,
     Dimensions,
 } from 'react-native';
-import { theme } from '../../config/theme';
+import { theme as defaultTheme, Theme } from '../../config/theme';
+import { useAppTheme } from '../../hooks/useAppTheme';
 
 const { width, height } = Dimensions.get('window');
 const guidelineBaseWidth = 375;
@@ -35,27 +36,29 @@ export const Input: React.FC<InputProps> = ({
     ...props
 }) => {
     const [isFocused, setIsFocused] = useState(false);
+    const { theme } = useAppTheme();
+    const s = styles(theme);
 
     return (
-        <View style={[styles.container, containerStyle]}>
-            {label && <Text style={styles.label}>{label}</Text>}
+        <View style={[s.container, containerStyle]}>
+            {label && <Text style={s.label}>{label}</Text>}
             <TextInput
                 style={[
-                    styles.input,
-                    isFocused && styles.inputFocused,
-                    error && styles.inputError,
+                    s.input,
+                    isFocused && s.inputFocused,
+                    error && s.inputError,
                 ]}
                 placeholderTextColor={theme.colors.textLight}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
                 {...props}
             />
-            {error && <Text style={styles.errorText}>{error}</Text>}
+            {error && <Text style={s.errorText}>{error}</Text>}
         </View>
     );
 };
 
-const styles = StyleSheet.create({
+const styles = (theme: Theme) => StyleSheet.create({
     container: {
         marginBottom: verticalScale(10),
     },

@@ -11,7 +11,8 @@ import {
     ViewStyle,
     TextStyle,
 } from 'react-native';
-import { theme } from '../../config/theme';
+import { theme as defaultTheme, Theme } from '../../config/theme';
+import { useAppTheme } from '../../hooks/useAppTheme';
 
 interface ButtonProps {
     title: string;
@@ -34,18 +35,21 @@ export const Button: React.FC<ButtonProps> = ({
     style,
     textStyle,
 }) => {
+    const { theme } = useAppTheme();
+    const s = styles(theme);
+
     const buttonStyle = [
-        styles.button,
-        styles[variant],
-        styles[size],
-        disabled && styles.disabled,
+        s.button,
+        s[variant],
+        s[size],
+        disabled && s.disabled,
         style,
     ];
 
     const textStyles = [
-        styles.text,
-        styles[`${variant}Text`],
-        styles[`${size}Text`],
+        s.text,
+        s[`${variant}Text` as keyof typeof s],
+        s[`${size}Text` as keyof typeof s],
         textStyle,
     ];
 
@@ -66,7 +70,7 @@ export const Button: React.FC<ButtonProps> = ({
     );
 };
 
-const styles = StyleSheet.create({
+const styles = (theme: Theme) => StyleSheet.create({
     button: {
         borderRadius: theme.borderRadius.md,
         alignItems: 'center',
