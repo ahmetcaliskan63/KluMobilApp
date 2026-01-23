@@ -9,14 +9,17 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { theme } from '../../config/theme';
+import { theme as defaultTheme, Theme } from '../../config/theme';
 import { MOCK_GRADES, MOCK_STATS, Grade } from '../../data/mockData';
 import { Card } from '../../components/common';
 import { useNavigation } from '@react-navigation/native';
+import { useAppTheme } from '../../hooks/useAppTheme';
 
 export const OBSScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
+    const { theme, isDarkMode } = useAppTheme();
+    const s = styles(theme);
 
     const getCourseIcon = (courseName: string) => {
         const name = courseName.toLowerCase();
@@ -29,103 +32,109 @@ export const OBSScreen: React.FC = () => {
     };
 
     const renderGradeRow = (grade: Grade) => (
-        <Card key={grade.id} style={styles.gradeCard} elevation="small">
-            <View style={styles.gradeHeader}>
-                <View style={styles.courseTitleContainer}>
-                    <View style={[styles.iconContainer, { backgroundColor: theme.colors.primary + '10' }]}>
-                        <Icon name={getCourseIcon(grade.courseName)} size={18} color={theme.colors.primary} />
+        <TouchableOpacity
+            key={grade.id}
+            activeOpacity={0.7}
+            onPress={() => (navigation as any).navigate('ExamDetail', { examId: grade.id })}
+        >
+            <Card style={s.gradeCard} elevation="small">
+                <View style={s.gradeHeader}>
+                    <View style={s.courseTitleContainer}>
+                        <View style={[s.iconContainer, { backgroundColor: theme.colors.primary + '15' }]}>
+                            <Icon name={getCourseIcon(grade.courseName)} size={18} color={theme.colors.primary} />
+                        </View>
+                        <Text style={s.courseName}>{grade.courseName}</Text>
                     </View>
-                    <Text style={styles.courseName}>{grade.courseName}</Text>
-                </View>
-                <View style={[
-                    styles.statusBadge,
-                    { backgroundColor: grade.status === 'Passed' ? '#E8F5E9' : grade.status === 'Pending' ? '#FFF3E0' : '#FFEBEE' }
-                ]}>
-                    <Text style={[
-                        styles.statusText,
-                        { color: grade.status === 'Passed' ? '#2E7D32' : grade.status === 'Pending' ? '#EF6C00' : '#C62828' }
+                    <View style={[
+                        s.statusBadge,
+                        { backgroundColor: grade.status === 'Passed' ? (isDarkMode ? '#064E3B' : '#E8F5E9') : grade.status === 'Pending' ? (isDarkMode ? '#451A03' : '#FFF3E0') : (isDarkMode ? '#7F1D1D' : '#FFEBEE') }
                     ]}>
-                        {grade.status === 'Passed' ? 'Geçti' : grade.status === 'Pending' ? 'Açıklanmadı' : 'Kaldı'}
-                    </Text>
+                        <Text style={[
+                            s.statusText,
+                            { color: grade.status === 'Passed' ? (isDarkMode ? '#34D399' : '#2E7D32') : grade.status === 'Pending' ? (isDarkMode ? '#FBBF24' : '#EF6C00') : (isDarkMode ? '#F87171' : '#C62828') }
+                        ]}>
+                            {grade.status === 'Passed' ? 'Geçti' : grade.status === 'Pending' ? 'Açıklanmadı' : 'Kaldı'}
+                        </Text>
+                    </View>
                 </View>
-            </View>
 
-            <View style={styles.gradeGrid}>
-                <View style={styles.gradeItem}>
-                    <Text style={styles.gradeLabel}>Vize</Text>
-                    <Text style={styles.gradeValue}>{grade.midterm ?? '-'}</Text>
+                <View style={s.gradeGrid}>
+                    <View style={s.gradeItem}>
+                        <Text style={s.gradeLabel}>Vize</Text>
+                        <Text style={s.gradeValue}>{grade.midterm ?? '-'}</Text>
+                    </View>
+                    <View style={s.gradeDivider} />
+                    <View style={s.gradeItem}>
+                        <Text style={s.gradeLabel}>Final</Text>
+                        <Text style={s.gradeValue}>{grade.final ?? '-'}</Text>
+                    </View>
+                    <View style={s.gradeDivider} />
+                    <View style={s.gradeItem}>
+                        <Text style={s.gradeLabel}>Harf</Text>
+                        <Text style={s.gradeLetter}>{grade.letterGrade}</Text>
+                    </View>
+                    <View style={s.gradeDivider} />
+                    <View style={s.gradeItem}>
+                        <Text style={s.gradeLabel}>Kredi</Text>
+                        <Text style={s.gradeValue}>{grade.credits}</Text>
+                    </View>
                 </View>
-                <View style={styles.gradeDivider} />
-                <View style={styles.gradeItem}>
-                    <Text style={styles.gradeLabel}>Final</Text>
-                    <Text style={styles.gradeValue}>{grade.final ?? '-'}</Text>
-                </View>
-                <View style={styles.gradeDivider} />
-                <View style={styles.gradeItem}>
-                    <Text style={styles.gradeLabel}>Harf</Text>
-                    <Text style={styles.gradeLetter}>{grade.letterGrade}</Text>
-                </View>
-                <View style={styles.gradeDivider} />
-                <View style={styles.gradeItem}>
-                    <Text style={styles.gradeLabel}>Kredi</Text>
-                    <Text style={styles.gradeValue}>{grade.credits}</Text>
-                </View>
-            </View>
-        </Card>
+            </Card>
+        </TouchableOpacity>
     );
 
     return (
-        <View style={styles.container}>
+        <View style={s.container}>
             <StatusBar barStyle="light-content" backgroundColor={theme.colors.primary} />
 
             {/* Header */}
-            <View style={[styles.header, { paddingTop: Math.max(insets.top, 20) }]}>
-                <View style={styles.headerTop}>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <View style={[s.header, { paddingTop: Math.max(insets.top, 20) }]}>
+                <View style={s.headerTop}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={s.backButton}>
                         <Icon name="arrow-back" size={24} color="#FFFFFF" />
                     </TouchableOpacity>
-                    <Text style={styles.headerTitle}>Öğrenci Bilgi Sistemi</Text>
+                    <Text style={s.headerTitle}>Öğrenci Bilgi Sistemi</Text>
                     <View style={{ width: 40 }} />
                 </View>
 
                 {/* Academic Summary */}
-                <View style={styles.summaryGrid}>
-                    <View style={styles.summaryBox}>
-                        <View style={styles.gpaCircle}>
-                            <Text style={styles.summaryValue}>{MOCK_STATS.gpa}</Text>
-                            <Text style={styles.gpaMax}>/ 4.0</Text>
+                <View style={s.summaryGrid}>
+                    <View style={s.summaryBox}>
+                        <View style={s.gpaCircle}>
+                            <Text style={s.summaryValue}>{MOCK_STATS.gpa}</Text>
+                            <Text style={s.gpaMax}>/ 4.0</Text>
                         </View>
-                        <Text style={styles.summaryLabel}>GNO</Text>
+                        <Text style={s.summaryLabel}>GNO</Text>
                     </View>
-                    <View style={styles.summaryBox}>
+                    <View style={s.summaryBox}>
                         <Icon name="ribbon-outline" size={24} color="#FFFFFF" style={{ marginBottom: 4 }} />
-                        <Text style={styles.summaryValue}>{MOCK_STATS.totalCredits}</Text>
-                        <Text style={styles.summaryLabel}>TAM. KREDİ</Text>
+                        <Text style={s.summaryValue}>{MOCK_STATS.totalCredits}</Text>
+                        <Text style={s.summaryLabel}>TAM. KREDİ</Text>
                     </View>
-                    <View style={styles.summaryBox}>
+                    <View style={s.summaryBox}>
                         <Icon name="calendar-outline" size={24} color="#FFFFFF" style={{ marginBottom: 4 }} />
-                        <Text style={styles.summaryValue}>Güz 2025</Text>
-                        <Text style={styles.summaryLabel}>DÖNEM</Text>
+                        <Text style={s.summaryValue}>Güz 2025</Text>
+                        <Text style={s.summaryLabel}>DÖNEM</Text>
                     </View>
                 </View>
             </View>
 
-            <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+            <ScrollView contentContainerStyle={s.scrollContent} showsVerticalScrollIndicator={false}>
                 {/* Academic Progress */}
-                <Card style={styles.progressCard}>
-                    <Text style={styles.progressTitle}>Mezuniyet İlerlemesi</Text>
-                    <View style={styles.progressBarBg}>
-                        <View style={[styles.progressBarFill, { width: '75%' }]} />
+                <Card style={s.progressCard}>
+                    <Text style={s.progressTitle}>Mezuniyet İlerlemesi</Text>
+                    <View style={s.progressBarBg}>
+                        <View style={[s.progressBarFill, { width: '75%' }]} />
                     </View>
-                    <View style={styles.progressDetails}>
-                        <Text style={styles.progressText}>Tamamlanan: {MOCK_STATS.totalCredits} AKTS</Text>
-                        <Text style={styles.progressText}>Hedef: 240 AKTS</Text>
+                    <View style={s.progressDetails}>
+                        <Text style={s.progressText}>Tamamlanan: {MOCK_STATS.totalCredits} AKTS</Text>
+                        <Text style={s.progressText}>Hedef: 240 AKTS</Text>
                     </View>
                 </Card>
-                <View style={styles.sectionHeader}>
-                    <Text style={styles.sectionTitle}>Dönem Notları</Text>
+                <View style={s.sectionHeader}>
+                    <Text style={s.sectionTitle}>Dönem Notları</Text>
                     <TouchableOpacity>
-                        <Text style={styles.filterText}>Tüm Dönemler</Text>
+                        <Text style={s.filterText}>Tüm Dönemler</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -137,10 +146,10 @@ export const OBSScreen: React.FC = () => {
     );
 };
 
-const styles = StyleSheet.create({
+const styles = (theme: Theme) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F8F9FA',
+        backgroundColor: theme.colors.surface,
     },
     header: {
         backgroundColor: theme.colors.primary,
@@ -210,8 +219,10 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         padding: 16,
         borderRadius: 20,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
         ...theme.shadows.small,
+        borderWidth: 1,
+        borderColor: theme.colors.border,
     },
     progressTitle: {
         fontSize: 15,
@@ -221,7 +232,7 @@ const styles = StyleSheet.create({
     },
     progressBarBg: {
         height: 8,
-        backgroundColor: '#F0F2F5',
+        backgroundColor: theme.colors.surface,
         borderRadius: 4,
         marginBottom: 8,
         overflow: 'hidden',
@@ -262,7 +273,8 @@ const styles = StyleSheet.create({
         padding: 16,
         borderRadius: 20,
         borderWidth: 1,
-        borderColor: '#F0F2F5',
+        borderColor: theme.colors.border,
+        backgroundColor: theme.colors.card,
     },
     gradeHeader: {
         flexDirection: 'row',
@@ -302,7 +314,7 @@ const styles = StyleSheet.create({
     gradeGrid: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#F8F9FA',
+        backgroundColor: theme.colors.surface,
         borderRadius: 15,
         padding: 12,
     },
@@ -330,6 +342,6 @@ const styles = StyleSheet.create({
     gradeDivider: {
         width: 1,
         height: 20,
-        backgroundColor: '#EAECEF',
+        backgroundColor: theme.colors.border,
     },
 });

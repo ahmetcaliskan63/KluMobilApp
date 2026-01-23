@@ -9,31 +9,34 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { theme } from '../../config/theme';
+import { theme as defaultTheme, Theme } from '../../config/theme';
 import { MOCK_SCHEDULE, Course } from '../../data/mockData';
 import { Card } from '../../components/common';
 import { useNavigation } from '@react-navigation/native';
+import { useAppTheme } from '../../hooks/useAppTheme';
 
 const DAYS = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma'];
 
 export const ScheduleScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
+    const { theme, isDarkMode } = useAppTheme();
+    const s = styles(theme);
     const [selectedDay, setSelectedDay] = useState('Pazartesi');
 
     const filteredSchedule = MOCK_SCHEDULE.filter(course => course.day === selectedDay);
 
     return (
-        <View style={styles.container}>
+        <View style={s.container}>
             <StatusBar barStyle="light-content" backgroundColor={theme.colors.primary} />
 
             {/* Header */}
-            <View style={[styles.header, { paddingTop: Math.max(insets.top, 20) }]}>
-                <View style={styles.headerTop}>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <View style={[s.header, { paddingTop: Math.max(insets.top, 20) }]}>
+                <View style={s.headerTop}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={s.backButton}>
                         <Icon name="arrow-back" size={24} color="#FFFFFF" />
                     </TouchableOpacity>
-                    <Text style={styles.headerTitle}>Ders Programı</Text>
+                    <Text style={s.headerTitle}>Ders Programı</Text>
                     <View style={{ width: 40 }} /> {/* Spacer */}
                 </View>
 
@@ -41,20 +44,20 @@ export const ScheduleScreen: React.FC = () => {
                 <ScrollView
                     horizontal
                     showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.dayPicker}
+                    contentContainerStyle={s.dayPicker}
                 >
                     {DAYS.map((day) => (
                         <TouchableOpacity
                             key={day}
                             onPress={() => setSelectedDay(day)}
                             style={[
-                                styles.dayItem,
-                                selectedDay === day && styles.activeDayItem
+                                s.dayItem,
+                                selectedDay === day && s.activeDayItem
                             ]}
                         >
                             <Text style={[
-                                styles.dayText,
-                                selectedDay === day && styles.activeDayText
+                                s.dayText,
+                                selectedDay === day && s.activeDayText
                             ]}>
                                 {day}
                             </Text>
@@ -63,38 +66,44 @@ export const ScheduleScreen: React.FC = () => {
                 </ScrollView>
             </View>
 
-            <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+            <ScrollView contentContainerStyle={s.scrollContent} showsVerticalScrollIndicator={false}>
                 {filteredSchedule.length > 0 ? (
                     filteredSchedule.map((course) => (
-                        <View key={course.id} style={styles.timelineRow}>
-                            <View style={styles.timeColumn}>
-                                <Text style={styles.startTime}>{course.startTime}</Text>
-                                <Text style={styles.endTime}>{course.endTime}</Text>
+                        <View key={course.id} style={s.timelineRow}>
+                            <View style={s.timeColumn}>
+                                <Text style={s.startTime}>{course.startTime}</Text>
+                                <Text style={s.endTime}>{course.endTime}</Text>
                             </View>
-                            <View style={styles.timelineLine}>
-                                <View style={[styles.timelineDot, { backgroundColor: course.color }]} />
-                                <View style={styles.line} />
+                            <View style={s.timelineLine}>
+                                <View style={[s.timelineDot, { backgroundColor: course.color }]} />
+                                <View style={s.line} />
                             </View>
-                            <Card style={styles.courseCard} elevation="small">
-                                <View style={[styles.colorBar, { backgroundColor: course.color }]} />
-                                <View style={styles.courseInfo}>
-                                    <Text style={styles.courseName}>{course.name}</Text>
-                                    <View style={styles.detailRow}>
-                                        <Icon name="location-outline" size={14} color={theme.colors.textLight} />
-                                        <Text style={styles.detailText}>{course.room}</Text>
+                            <TouchableOpacity
+                                style={{ flex: 1 }}
+                                activeOpacity={0.7}
+                                onPress={() => (navigation as any).navigate('CourseDetail', { courseId: course.id })}
+                            >
+                                <Card style={s.courseCard} elevation="small">
+                                    <View style={[s.colorBar, { backgroundColor: course.color }]} />
+                                    <View style={s.courseInfo}>
+                                        <Text style={s.courseName}>{course.name}</Text>
+                                        <View style={s.detailRow}>
+                                            <Icon name="location-outline" size={14} color={theme.colors.textLight} />
+                                            <Text style={s.detailText}>{course.room}</Text>
+                                        </View>
+                                        <View style={s.detailRow}>
+                                            <Icon name="person-outline" size={14} color={theme.colors.textLight} />
+                                            <Text style={s.detailText}>{course.instructor}</Text>
+                                        </View>
                                     </View>
-                                    <View style={styles.detailRow}>
-                                        <Icon name="person-outline" size={14} color={theme.colors.textLight} />
-                                        <Text style={styles.detailText}>{course.instructor}</Text>
-                                    </View>
-                                </View>
-                            </Card>
+                                </Card>
+                            </TouchableOpacity>
                         </View>
                     ))
                 ) : (
-                    <View style={styles.emptyState}>
+                    <View style={s.emptyState}>
                         <Icon name="calendar-outline" size={64} color={theme.colors.border} />
-                        <Text style={styles.emptyText}>Bu gün için kayıtlı ders bulunamadı.</Text>
+                        <Text style={s.emptyText}>Bu gün için kayıtlı ders bulunamadı.</Text>
                     </View>
                 )}
             </ScrollView>
@@ -102,10 +111,10 @@ export const ScheduleScreen: React.FC = () => {
     );
 };
 
-const styles = StyleSheet.create({
+const styles = (theme: Theme) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F8F9FA',
+        backgroundColor: theme.colors.surface,
     },
     header: {
         backgroundColor: theme.colors.primary,
@@ -200,6 +209,9 @@ const styles = StyleSheet.create({
         padding: 0,
         overflow: 'hidden',
         borderRadius: 12,
+        backgroundColor: theme.colors.card,
+        borderWidth: 1,
+        borderColor: theme.colors.border,
     },
     colorBar: {
         width: 6,
