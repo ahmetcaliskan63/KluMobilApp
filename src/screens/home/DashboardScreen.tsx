@@ -10,8 +10,9 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Card } from '../../components/common';
-import { theme } from '../../config/theme';
+import { theme as defaultTheme, Theme } from '../../config/theme';
 import { useAuthStore } from '../../store/authStore';
+import { useAppTheme } from '../../hooks/useAppTheme';
 
 const { width } = Dimensions.get('window');
 const horizontalScale = (size: number) => (width / 375) * size;
@@ -36,6 +37,8 @@ export const DashboardScreen: React.FC = () => {
     const { user } = useAuthStore();
     const insets = useSafeAreaInsets();
     const navigation = useNavigation<DashboardNavigationProp>();
+    const { theme, isDarkMode } = useAppTheme();
+    const s = styles(theme);
 
     const getCurrentDate = () => {
         const options: Intl.DateTimeFormatOptions = {
@@ -52,53 +55,53 @@ export const DashboardScreen: React.FC = () => {
     const latestAnnouncement = MOCK_ANNOUNCEMENTS[0];
 
     return (
-        <View style={styles.container}>
+        <View style={s.container}>
             {/* Custom Header with Safe Area */}
-            <View style={[styles.header, { paddingTop: Math.max(insets.top, 20) }]}>
-                <View style={styles.headerTop}>
+            <View style={[s.header, { paddingTop: Math.max(insets.top, 20) }]}>
+                <View style={s.headerTop}>
                     <View>
-                        <Text style={styles.greeting}>
+                        <Text style={s.greeting}>
                             Merhaba, {user?.firstName || 'Öğrenci'} 👋
                         </Text>
-                        <Text style={styles.date}>{getCurrentDate()}</Text>
+                        <Text style={s.date}>{getCurrentDate()}</Text>
                     </View>
                     <TouchableOpacity
-                        style={styles.profileButton}
+                        style={s.profileButton}
                         onPress={() => navigation.navigate('Profile')}
                     >
-                        <View style={styles.profilePlaceholder}>
+                        <View style={s.profilePlaceholder}>
                             <Icon name="person" size={24} color={theme.colors.primary} />
                         </View>
                     </TouchableOpacity>
                 </View>
 
                 {/* Balance & Status Summary Card */}
-                <View style={styles.summaryContainer}>
-                    <View style={styles.summaryItem}>
-                        <Text style={styles.summaryLabel}>Kampüs Kart</Text>
-                        <Text style={styles.summaryValue}>{MOCK_STATS.balance}</Text>
+                <View style={s.summaryContainer}>
+                    <View style={s.summaryItem}>
+                        <Text style={s.summaryLabel}>Kampüs Kart</Text>
+                        <Text style={s.summaryValue}>{MOCK_STATS.balance}</Text>
                     </View>
-                    <View style={styles.summaryDivider} />
-                    <View style={styles.summaryItem}>
-                        <Text style={styles.summaryLabel}>Yemek Hakkı</Text>
-                        <Text style={styles.summaryValue}>{MOCK_STATS.mealCredits}</Text>
+                    <View style={s.summaryDivider} />
+                    <View style={s.summaryItem}>
+                        <Text style={s.summaryLabel}>Yemek Hakkı</Text>
+                        <Text style={s.summaryValue}>{MOCK_STATS.mealCredits}</Text>
                     </View>
-                    <View style={styles.summaryDivider} />
-                    <View style={styles.summaryItem}>
-                        <Text style={styles.summaryLabel}>Kütüphane</Text>
-                        <Text style={styles.summaryValue}>{MOCK_STATS.libraryBooks}</Text>
+                    <View style={s.summaryDivider} />
+                    <View style={s.summaryItem}>
+                        <Text style={s.summaryLabel}>Kütüphane</Text>
+                        <Text style={s.summaryValue}>{MOCK_STATS.libraryBooks}</Text>
                     </View>
                 </View>
             </View>
 
             <ScrollView
-                style={styles.scrollView}
-                contentContainerStyle={styles.scrollContent}
+                style={s.scrollView}
+                contentContainerStyle={s.scrollContent}
                 showsVerticalScrollIndicator={false}
             >
                 {/* 0. Hızlı İşlemler Section */}
-                <Text style={styles.sectionHeading}>Hızlı İşlemler</Text>
-                <View style={styles.quickActionsGrid}>
+                <Text style={s.sectionHeading}>Hızlı İşlemler</Text>
+                <View style={s.quickActionsGrid}>
                     {[
                         { title: 'OBS', icon: 'school', color: '#4A90E2', tab: 'OBS' },
                         { title: 'Yemek Menüsü', icon: 'restaurant', color: '#50E3C2', tab: 'Cafeteria' },
@@ -107,100 +110,110 @@ export const DashboardScreen: React.FC = () => {
                     ].map((action, index) => (
                         <TouchableOpacity
                             key={index}
-                            style={styles.actionItem}
+                            style={s.actionItem}
                             onPress={() => action.tab && navigation.navigate(action.tab as any)}
                         >
-                            <View style={[styles.actionIcon, { backgroundColor: action.color + '15' }]}>
+                            <View style={[s.actionIcon, { backgroundColor: action.color + '15' }]}>
                                 <Icon name={action.icon} size={24} color={action.color} />
                             </View>
-                            <Text style={styles.actionText}>{action.title}</Text>
+                            <Text style={s.actionText}>{action.title}</Text>
                         </TouchableOpacity>
                     ))}
                 </View>
 
                 {/* 1. Bugünün Yemeği */}
-                <Card style={styles.mainCard} elevation="small">
-                    <View style={styles.cardHeader}>
-                        <View style={styles.cardTitleContainer}>
+                <Card style={s.mainCard} elevation="small">
+                    <View style={s.cardHeader}>
+                        <View style={s.cardTitleContainer}>
                             <Icon name="restaurant" size={20} color={theme.colors.primary} />
-                            <Text style={styles.cardTitle}>Bugün Yemekhanede</Text>
+                            <Text style={s.cardTitle}>Bugün Yemekhanede</Text>
                         </View>
-                        <View style={styles.badge}>
-                            <Text style={styles.badgeText}>Öğle Yemeği</Text>
+                        <View style={s.badge}>
+                            <Text style={s.badgeText}>Öğle Yemeği</Text>
                         </View>
                     </View>
-                    <View style={styles.mealList}>
+                    <View style={s.mealList}>
                         {todayMeal.items.map((item, index) => (
-                            <View key={index} style={styles.mealRow}>
-                                <Icon name="ellipse" size={8} color={theme.colors.primary} style={styles.bullet} />
-                                <Text style={styles.mealItem}>{item}</Text>
+                            <View key={index} style={s.mealRow}>
+                                <Icon name="ellipse" size={8} color={theme.colors.primary} style={s.bullet} />
+                                <Text style={s.mealItem}>{item}</Text>
                             </View>
                         ))}
                     </View>
                     <TouchableOpacity
-                        style={styles.cardFooter}
+                        style={s.cardFooter}
                         onPress={() => navigation.navigate('Cafeteria')}
                     >
-                        <Text style={styles.footerLink}>Tüm haftalık menü...</Text>
+                        <Text style={s.footerLink}>Tüm haftalık menü...</Text>
                         <Icon name="chevron-forward" size={16} color={theme.colors.primary} />
                     </TouchableOpacity>
                 </Card>
 
                 {/* 2. Yaklaşan Ders/Sınav */}
-                <Card style={styles.mainCard} elevation="small">
-                    <View style={styles.cardHeader}>
-                        <View style={styles.cardTitleContainer}>
-                            <Icon name="time" size={20} color={theme.colors.warning} />
-                            <Text style={styles.cardTitle}>Yaklaşan Ders</Text>
-                        </View>
-                    </View>
-                    <View style={styles.courseContainer}>
-                        <Text style={styles.courseTime}>15:00 - 17:50</Text>
-                        <Text style={styles.courseName}>MAT101 Calculus</Text>
-                        <Text style={styles.courseInfo}>HB202 nolu sınıf • Prof. Dr. A. Yılmaz</Text>
-                    </View>
+                <Card style={s.mainCard} elevation="small">
                     <TouchableOpacity
-                        style={styles.cardFooter}
+                        activeOpacity={0.7}
+                        onPress={() => navigation.navigate('CourseDetail', { courseId: '1' })}
+                    >
+                        <View style={s.cardHeader}>
+                            <View style={s.cardTitleContainer}>
+                                <Icon name="time" size={20} color={theme.colors.warning} />
+                                <Text style={s.cardTitle}>Yaklaşan Ders</Text>
+                            </View>
+                        </View>
+                        <View style={s.courseContainer}>
+                            <Text style={s.courseTime}>15:00 - 17:50</Text>
+                            <Text style={s.courseName}>MAT101 Calculus</Text>
+                            <Text style={s.courseInfo}>HB202 nolu sınıf • Prof. Dr. A. Yılmaz</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={s.cardFooter}
                         onPress={() => navigation.navigate('Schedule')}
                     >
-                        <Text style={styles.footerLink}>Ders programına git</Text>
+                        <Text style={s.footerLink}>Ders programına git</Text>
                         <Icon name="chevron-forward" size={16} color={theme.colors.primary} />
                     </TouchableOpacity>
                 </Card>
 
                 {/* 3. En Yeni Duyuru */}
-                <Card style={styles.mainCard} elevation="small">
-                    <View style={styles.cardHeader}>
-                        <View style={styles.cardTitleContainer}>
-                            <Icon name="notifications" size={20} color={theme.colors.info} />
-                            <Text style={styles.cardTitle}>En Yeni Duyuru</Text>
-                        </View>
-                    </View>
-                    <View style={styles.announcementContent}>
-                        <Text style={styles.announcementTitle} numberOfLines={2}>
-                            {latestAnnouncement.title}
-                        </Text>
-                        <Text style={styles.announcementDate}>{latestAnnouncement.date}</Text>
-                    </View>
+                <Card style={s.mainCard} elevation="small">
                     <TouchableOpacity
-                        style={styles.cardFooter}
+                        activeOpacity={0.7}
+                        onPress={() => (navigation as any).navigate('AnnouncementDetail', { announcementId: latestAnnouncement.id })}
+                    >
+                        <View style={s.cardHeader}>
+                            <View style={s.cardTitleContainer}>
+                                <Icon name="notifications" size={20} color={theme.colors.info} />
+                                <Text style={s.cardTitle}>En Yeni Duyuru</Text>
+                            </View>
+                        </View>
+                        <View style={s.announcementContent}>
+                            <Text style={s.announcementTitle} numberOfLines={2}>
+                                {latestAnnouncement.title}
+                            </Text>
+                            <Text style={s.announcementDate}>{latestAnnouncement.date}</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={s.cardFooter}
                         onPress={() => navigation.navigate('Announcements')}
                     >
-                        <Text style={styles.footerLink}>Devamı...</Text>
+                        <Text style={s.footerLink}>Devamı...</Text>
                         <Icon name="chevron-forward" size={16} color={theme.colors.primary} />
                     </TouchableOpacity>
                 </Card>
 
                 <View style={{ height: 20 }} />
             </ScrollView>
-        </View>
+        </View >
     );
 };
 
-const styles = StyleSheet.create({
+const styles = (theme: Theme) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F0F2F5',
+        backgroundColor: theme.colors.surface,
     },
     header: {
         backgroundColor: theme.colors.primary,
@@ -298,7 +311,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 8,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
         ...theme.shadows.small,
     },
     actionText: {
@@ -311,10 +324,10 @@ const styles = StyleSheet.create({
         marginBottom: theme.spacing.md,
         padding: theme.spacing.md,
         borderRadius: 20,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
         ...theme.shadows.small,
         borderWidth: 1,
-        borderColor: 'rgba(0,0,0,0.02)',
+        borderColor: theme.colors.border,
     },
     cardHeader: {
         flexDirection: 'row',
@@ -363,7 +376,7 @@ const styles = StyleSheet.create({
     },
     courseContainer: {
         marginBottom: theme.spacing.md,
-        backgroundColor: '#F8F9FA',
+        backgroundColor: theme.colors.surface,
         padding: theme.spacing.md,
         borderRadius: 12,
         borderLeftWidth: 4,
@@ -405,7 +418,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         paddingTop: theme.spacing.sm,
         borderTopWidth: 1,
-        borderTopColor: '#F5F5F5',
+        borderTopColor: theme.colors.divider,
     },
     footerLink: {
         fontSize: moderateScale(13),

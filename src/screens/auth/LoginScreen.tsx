@@ -17,9 +17,11 @@ import {
     Animated,
     Dimensions,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { Button, Input } from '../../components/common';
-import { theme } from '../../config/theme';
 import { useAuthStore } from '../../store/authStore';
+import { useAppTheme } from '../../hooks/useAppTheme';
+import { Theme } from '../../config/theme';
 
 const { width, height } = Dimensions.get('window');
 
@@ -32,6 +34,7 @@ const verticalScale = (size: number) => (height / guidelineBaseHeight) * size;
 const moderateScale = (size: number, factor = 0.5) => size + (horizontalScale(size) - size) * factor;
 
 export const LoginScreen: React.FC = () => {
+    const navigation = useNavigation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [emailError, setEmailError] = useState('');
@@ -40,6 +43,8 @@ export const LoginScreen: React.FC = () => {
     const [showPassword, setShowPassword] = useState(false);
 
     const { login, isLoading } = useAuthStore();
+    const { theme, isDarkMode } = useAppTheme();
+    const s = styles(theme);
 
     React.useEffect(() => {
         Animated.timing(fadeAnim, {
@@ -82,7 +87,7 @@ export const LoginScreen: React.FC = () => {
 
         if (isEmailValid && isPasswordValid) {
             try {
-                await login(email, password);
+                await login({ studentId: email, password });
             } catch (error) {
                 Alert.alert('Hata', 'Giriş yapılırken bir hata oluştu');
             }
@@ -91,44 +96,44 @@ export const LoginScreen: React.FC = () => {
 
     return (
         <View
-            style={styles.container}>
+            style={s.container}>
 
             {/* Background */}
-            <View style={styles.backgroundOverlay} />
+            <View style={s.backgroundOverlay} />
 
             <ScrollView
-                contentContainerStyle={styles.scrollContent}
+                contentContainerStyle={s.scrollContent}
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}>
 
-                <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
-                    <View style={styles.mainContent}>
+                <Animated.View style={[s.content, { opacity: fadeAnim }]}>
+                    <View style={s.mainContent}>
                         {/* Logo Section */}
-                        <View style={styles.logoContainer}>
-                            <View style={styles.logoWrapper}>
+                        <View style={s.logoContainer}>
+                            <View style={s.logoWrapper}>
                                 <Image
                                     source={require('../../assets/logo.png')}
-                                    style={styles.logo}
+                                    style={s.logo}
                                     resizeMode="contain"
                                 />
                             </View>
-                            <Text style={styles.universityName}>
+                            <Text style={s.universityName}>
                                 Kırklareli Üniversitesi
                             </Text>
-                            <Text style={styles.appName}>Mobil Uygulama</Text>
+                            <Text style={s.appName}>Mobil Uygulama</Text>
                         </View>
 
                         {/* Form Card */}
-                        <View style={styles.formCard}>
-                            <Text style={styles.welcomeText}>Hoş Geldiniz</Text>
-                            <Text style={styles.subtitle}>
+                        <View style={s.formCard}>
+                            <Text style={s.welcomeText}>Hoş Geldiniz</Text>
+                            <Text style={s.subtitle}>
                                 KLU Öğrenci Portalı
                             </Text>
 
-                            <View style={styles.inputContainer}>
+                            <View style={s.inputContainer}>
                                 <Input
-                                    label="E-posta"
-                                    placeholder="ornek@klu.edu.tr"
+                                    label="Öğrenci Numarası / E-posta"
+                                    placeholder="20210001 veya ornek@klu.edu.tr"
                                     value={email}
                                     onChangeText={(text) => {
                                         setEmail(text);
@@ -142,9 +147,9 @@ export const LoginScreen: React.FC = () => {
                                 />
                             </View>
 
-                            <View style={styles.inputContainer}>
-                                <View style={styles.passwordContainer}>
-                                    <View style={styles.passwordInputWrapper}>
+                            <View style={s.inputContainer}>
+                                <View style={s.passwordContainer}>
+                                    <View style={s.passwordInputWrapper}>
                                         <Input
                                             label="Şifre"
                                             placeholder="••••••••"
@@ -160,28 +165,31 @@ export const LoginScreen: React.FC = () => {
                                         />
                                     </View>
                                     <TouchableOpacity
-                                        style={styles.eyeButton}
+                                        style={s.eyeButton}
                                         onPress={() => setShowPassword(!showPassword)}
                                         activeOpacity={0.7}>
-                                        <Text style={styles.eyeIcon}>
+                                        <Text style={s.eyeIcon}>
                                             {showPassword ? '👁️' : '🙈'}
                                         </Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>
 
-                            <TouchableOpacity style={styles.forgotPasswordContainer}>
-                                <Text style={styles.forgotPassword}>
+                            <TouchableOpacity
+                                style={s.forgotPasswordContainer}
+                                onPress={() => (navigation as any).navigate('ForgotPassword')}
+                            >
+                                <Text style={s.forgotPassword}>
                                     Şifremi Unuttum
                                 </Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity
-                                style={[styles.loginButton, isLoading && styles.loginButtonDisabled]}
+                                style={[s.loginButton, isLoading && s.loginButtonDisabled]}
                                 onPress={handleLogin}
                                 disabled={isLoading}
                                 activeOpacity={0.8}>
-                                <Text style={styles.loginButtonText}>
+                                <Text style={s.loginButtonText}>
                                     {isLoading ? 'Giriş Yapılıyor...' : 'Giriş Yap'}
                                 </Text>
                             </TouchableOpacity>
@@ -189,8 +197,8 @@ export const LoginScreen: React.FC = () => {
                     </View>
 
                     {/* Footer - Pushed to bottom */}
-                    <View style={styles.footerContainer}>
-                        <Text style={styles.footer}>
+                    <View style={s.footerContainer}>
+                        <Text style={s.footer}>
                             © 2026 - Bilgi İşlem Daire Başkanlığı
                         </Text>
                     </View>
@@ -200,7 +208,7 @@ export const LoginScreen: React.FC = () => {
     );
 };
 
-const styles = StyleSheet.create({
+const styles = (theme: Theme) => StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: theme.colors.primary,
@@ -258,14 +266,14 @@ const styles = StyleSheet.create({
         fontWeight: '400',
     },
     formCard: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
         borderRadius: moderateScale(20),
         padding: moderateScale(20),
         ...theme.shadows.large,
         marginBottom: verticalScale(20),
         borderWidth: 1,
         borderColor: 'rgba(255, 255, 255, 0.3)',
-        shadowColor: '#000000',
+        shadowColor: theme.colors.shadow,
         shadowOffset: {
             width: 0,
             height: verticalScale(10),

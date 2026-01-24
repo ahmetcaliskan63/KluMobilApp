@@ -9,13 +9,18 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { theme } from '../../config/theme';
+import { theme as defaultTheme, Theme } from '../../config/theme';
 import { useAuthStore } from '../../store/authStore';
+import { useThemeStore } from '../../store/themeStore';
+import { useAppTheme } from '../../hooks/useAppTheme';
 import { MOCK_STATS } from '../../data/mockData';
 
 export const ProfileScreen: React.FC = () => {
     const { user, logout } = useAuthStore();
+    const { isDarkMode, toggleDarkMode } = useThemeStore();
     const insets = useSafeAreaInsets();
+    const { theme } = useAppTheme();
+    const s = styles(theme);
 
     const handleLogout = () => {
         Alert.alert(
@@ -28,79 +33,91 @@ export const ProfileScreen: React.FC = () => {
         );
     };
 
-    const renderSettingItem = (icon: string, title: string, color: string = theme.colors.text, onPress?: () => void) => (
-        <TouchableOpacity style={styles.settingItem} onPress={onPress}>
-            <View style={styles.settingLeft}>
-                <View style={[styles.iconBg, { backgroundColor: color + '15' }]}>
+    const renderSettingItem = (icon: string, title: string, color: string = theme.colors.text, onPress?: () => void, rightElement?: React.ReactNode) => (
+        <TouchableOpacity style={s.settingItem} onPress={onPress}>
+            <View style={s.settingLeft}>
+                <View style={[s.iconBg, { backgroundColor: color + '15' }]}>
                     <Icon name={icon} size={22} color={color} />
                 </View>
-                <Text style={[styles.settingTitle, { color }]}>{title}</Text>
+                <Text style={[s.settingTitle, { color }]}>{title}</Text>
             </View>
-            <Icon name="chevron-forward" size={20} color={theme.colors.textLight} />
+            {rightElement || <Icon name="chevron-forward" size={20} color={theme.colors.textLight} />}
         </TouchableOpacity>
     );
 
     return (
-        <View style={styles.container}>
+        <View style={s.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 {/* Profile Header */}
-                <View style={[styles.header, { paddingTop: Math.max(insets.top, 20) }]}>
-                    <View style={styles.profileInfo}>
-                        <View style={styles.avatarContainer}>
-                            <View style={styles.avatar}>
-                                <Text style={styles.avatarText}>
+                <View style={[s.header, { paddingTop: Math.max(insets.top, 20) }]}>
+                    <View style={s.profileInfo}>
+                        <View style={s.avatarContainer}>
+                            <View style={s.avatar}>
+                                <Text style={s.avatarText}>
                                     {user?.firstName?.charAt(0)}{user?.lastName?.charAt(0)}
                                 </Text>
                             </View>
-                            <TouchableOpacity style={styles.editButton}>
+                            <TouchableOpacity style={s.editButton}>
                                 <Icon name="camera" size={16} color="#FFFFFF" />
                             </TouchableOpacity>
                         </View>
-                        <Text style={styles.userName}>{user?.firstName} {user?.lastName}</Text>
-                        <Text style={styles.studentNumber}>{user?.studentNumber}</Text>
-                        <View style={styles.departmentBadge}>
-                            <Text style={styles.departmentText}>{user?.department}</Text>
+                        <Text style={s.userName}>{user?.firstName} {user?.lastName}</Text>
+                        <Text style={s.studentNumber}>{user?.studentNumber}</Text>
+                        <View style={s.departmentBadge}>
+                            <Text style={s.departmentText}>{user?.department}</Text>
                         </View>
                     </View>
                 </View>
 
                 {/* Stats Section */}
-                <View style={styles.statsContainer}>
-                    <View style={styles.statItem}>
-                        <Text style={styles.statLabel}>Sınıf</Text>
-                        <Text style={styles.statValue}>{user?.grade}. Sınıf</Text>
+                <View style={s.statsContainer}>
+                    <View style={s.statItem}>
+                        <Text style={s.statLabel}>Sınıf</Text>
+                        <Text style={s.statValue}>{user?.grade}. Sınıf</Text>
                     </View>
-                    <View style={styles.statDivider} />
-                    <View style={styles.statItem}>
-                        <Text style={styles.statLabel}>Genel Ortalama</Text>
-                        <Text style={styles.statValue}>{MOCK_STATS.gpa}</Text>
+                    <View style={s.statDivider} />
+                    <View style={s.statItem}>
+                        <Text style={s.statLabel}>Genel Ortalama</Text>
+                        <Text style={s.statValue}>{MOCK_STATS.gpa}</Text>
                     </View>
-                    <View style={styles.statDivider} />
-                    <View style={styles.statItem}>
-                        <Text style={styles.statLabel}>Kredi</Text>
-                        <Text style={styles.statValue}>{MOCK_STATS.totalCredits}</Text>
+                    <View style={s.statDivider} />
+                    <View style={s.statItem}>
+                        <Text style={s.statLabel}>Kredi</Text>
+                        <Text style={s.statValue}>{MOCK_STATS.totalCredits}</Text>
                     </View>
                 </View>
 
                 {/* Settings Section */}
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Akademik Bilgiler</Text>
+                <View style={s.section}>
+                    <Text style={s.sectionTitle}>Akademik Bilgiler</Text>
                     {renderSettingItem('school-outline', 'Ders Programım', theme.colors.primary)}
                     {renderSettingItem('document-text-outline', 'Transkript Belleği', theme.colors.primary)}
                     {renderSettingItem('calendar-outline', 'Akademik Takvim', theme.colors.primary)}
                 </View>
 
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Uygulama Ayarları</Text>
-                    {renderSettingItem('notifications-outline', 'Bildirim Ayarları')}
-                    {renderSettingItem('color-palette-outline', 'Tema Tercihi')}
-                    {renderSettingItem('shield-checkmark-outline', 'Güvenlik ve Gizlilik')}
+                <View style={s.section}>
+                    <Text style={s.sectionTitle}>Uygulama Ayarları</Text>
+                    {renderSettingItem('notifications-outline', 'Bildirim Ayarları', theme.colors.text)}
+                    {renderSettingItem(
+                        isDarkMode ? 'moon' : 'sunny-outline',
+                        'Karanlık Mod',
+                        theme.colors.text,
+                        toggleDarkMode,
+                        <View style={{ pointerEvents: 'none' }}>
+                            <Icon
+                                name={isDarkMode ? 'checkbox' : 'square-outline'}
+                                size={22}
+                                color={theme.colors.primary}
+                            />
+                        </View>
+                    )}
+                    {renderSettingItem('shield-checkmark-outline', 'Güvenlik ve Gizlilik', theme.colors.text)}
                 </View>
 
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Destek</Text>
-                    {renderSettingItem('help-circle-outline', 'Yardım Merkezi')}
-                    {renderSettingItem('information-circle-outline', 'Hakkımızda')}
+                <View style={s.section}>
+                    <Text style={s.sectionTitle}>Destek</Text>
+                    {renderSettingItem('help-circle-outline', 'Yardım Merkezi', theme.colors.text)}
+                    {renderSettingItem('information-circle-outline', 'Hakkımızda', theme.colors.text)}
                     {renderSettingItem('log-out-outline', 'Çıkış Yap', theme.colors.error, handleLogout)}
                 </View>
 
@@ -110,10 +127,10 @@ export const ProfileScreen: React.FC = () => {
     );
 };
 
-const styles = StyleSheet.create({
+const styles = (theme: Theme) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F0F2F5',
+        backgroundColor: theme.colors.surface,
     },
     header: {
         backgroundColor: theme.colors.primary,
@@ -182,7 +199,7 @@ const styles = StyleSheet.create({
     },
     statsContainer: {
         flexDirection: 'row',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
         marginHorizontal: theme.spacing.lg,
         marginTop: -30,
         borderRadius: 20,
@@ -209,7 +226,7 @@ const styles = StyleSheet.create({
     statDivider: {
         width: 1,
         height: 30,
-        backgroundColor: '#EEEEEE',
+        backgroundColor: theme.colors.border,
     },
     section: {
         marginTop: 24,
@@ -227,7 +244,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
         padding: 12,
         borderRadius: 15,
         marginBottom: 10,
