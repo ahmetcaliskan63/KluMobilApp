@@ -10,7 +10,10 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Card } from '../../components/common';
-import { theme } from '../../config/theme';
+import { theme as defaultTheme, Theme } from '../../config/theme';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from '../../types/navigation';
+import { useAppTheme } from '../../hooks/useAppTheme';
 
 import { MOCK_ANNOUNCEMENTS, Announcement } from '../../data/mockData';
 
@@ -18,6 +21,9 @@ const CATEGORIES = ['Tümü', 'Genel', 'Akademik', 'Etkinlik'];
 
 export const AnnouncementsScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+    const { theme, isDarkMode } = useAppTheme();
+    const s = styles(theme);
     const [activeCategory, setActiveCategory] = useState('Tümü');
 
     const filteredAnnouncements = activeCategory === 'Tümü'
@@ -25,21 +31,21 @@ export const AnnouncementsScreen: React.FC = () => {
         : MOCK_ANNOUNCEMENTS.filter(a => a.category === activeCategory);
 
     const renderHeader = () => (
-        <View style={[styles.header, { paddingTop: Math.max(insets.top, 20) }]}>
-            <Text style={styles.headerTitle}>Duyurular</Text>
-            <View style={styles.categoryContainer}>
+        <View style={[s.header, { paddingTop: Math.max(insets.top, 20) }]}>
+            <Text style={s.headerTitle}>Duyurular</Text>
+            <View style={s.categoryContainer}>
                 {CATEGORIES.map((cat) => (
                     <TouchableOpacity
                         key={cat}
                         style={[
-                            styles.categoryChip,
-                            activeCategory === cat && styles.categoryChipActive
+                            s.categoryChip,
+                            activeCategory === cat && s.categoryChipActive
                         ]}
                         onPress={() => setActiveCategory(cat)}
                     >
                         <Text style={[
-                            styles.categoryText,
-                            activeCategory === cat && styles.categoryTextActive
+                            s.categoryText,
+                            activeCategory === cat && s.categoryTextActive
                         ]}>
                             {cat}
                         </Text>
@@ -50,25 +56,30 @@ export const AnnouncementsScreen: React.FC = () => {
     );
 
     const renderItem = ({ item }: { item: Announcement }) => (
-        <Card style={styles.announcementCard} elevation="small">
-            <View style={styles.cardTop}>
-                <View style={[
-                    styles.categoryBadge,
-                    { backgroundColor: getCategoryColor(item.category) + '15' }
-                ]}>
-                    <Text style={[styles.categoryBadgeText, { color: getCategoryColor(item.category) }]}>
-                        {item.category}
-                    </Text>
+        <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => navigation.navigate('AnnouncementDetail', { announcementId: item.id })}
+        >
+            <Card style={s.announcementCard} elevation="small">
+                <View style={s.cardTop}>
+                    <View style={[
+                        s.categoryBadge,
+                        { backgroundColor: getCategoryColor(item.category) + (isDarkMode ? '30' : '15') }
+                    ]}>
+                        <Text style={[s.categoryBadgeText, { color: getCategoryColor(item.category) }]}>
+                            {item.category}
+                        </Text>
+                    </View>
+                    <Text style={s.dateText}>{item.date}</Text>
                 </View>
-                <Text style={styles.dateText}>{item.date}</Text>
-            </View>
-            <Text style={styles.titleText}>{item.title}</Text>
-            <Text style={styles.snippetText} numberOfLines={2}>{item.snippet}</Text>
-            <TouchableOpacity style={styles.readMore}>
-                <Text style={styles.readMoreText}>Devamını Oku</Text>
-                <Icon name="arrow-forward" size={16} color={theme.colors.primary} />
-            </TouchableOpacity>
-        </Card>
+                <Text style={s.titleText}>{item.title}</Text>
+                <Text style={s.snippetText} numberOfLines={2}>{item.snippet}</Text>
+                <View style={s.readMore}>
+                    <Text style={s.readMoreText}>Devamını Oku</Text>
+                    <Icon name="arrow-forward" size={16} color={theme.colors.primary} />
+                </View>
+            </Card>
+        </TouchableOpacity>
     );
 
     const getCategoryColor = (category: string) => {
@@ -80,19 +91,19 @@ export const AnnouncementsScreen: React.FC = () => {
     };
 
     return (
-        <View style={styles.container}>
+        <View style={s.container}>
             <StatusBar barStyle="light-content" backgroundColor={theme.colors.primary} />
             {renderHeader()}
             <FlatList
                 data={filteredAnnouncements}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
-                contentContainerStyle={styles.listContent}
+                contentContainerStyle={s.listContent}
                 showsVerticalScrollIndicator={false}
                 ListEmptyComponent={
-                    <View style={styles.emptyContainer}>
+                    <View style={s.emptyContainer}>
                         <Icon name="notifications-off-outline" size={64} color={theme.colors.textLight} />
-                        <Text style={styles.emptyText}>Bu kategoride duyuru bulunamadı.</Text>
+                        <Text style={s.emptyText}>Bu kategoride duyuru bulunamadı.</Text>
                     </View>
                 }
             />
@@ -100,10 +111,10 @@ export const AnnouncementsScreen: React.FC = () => {
     );
 };
 
-const styles = StyleSheet.create({
+const styles = (theme: Theme) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F0F2F5',
+        backgroundColor: theme.colors.surface,
     },
     header: {
         backgroundColor: theme.colors.primary,
@@ -148,7 +159,9 @@ const styles = StyleSheet.create({
         marginBottom: theme.spacing.md,
         padding: theme.spacing.md,
         borderRadius: 20,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
+        borderWidth: 1,
+        borderColor: theme.colors.border,
         ...theme.shadows.small,
     },
     cardTop: {

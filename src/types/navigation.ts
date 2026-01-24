@@ -6,6 +6,7 @@ export type RootStackParamList = {
     Splash: undefined;
     Auth: undefined;
     Main: undefined;
+    AnnouncementDetail: { announcementId: string };
 };
 
 export type AuthStackParamList = {

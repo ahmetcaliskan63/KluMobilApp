@@ -8,11 +8,14 @@ import { AnnouncementsScreen } from '../screens/announcements/AnnouncementsScree
 import { LibraryScreen } from '../screens/library/LibraryScreen';
 import { ProfileScreen } from '../screens/profile/ProfileScreen';
 import { MainTabParamList } from '../types/navigation';
-import { theme } from '../config/theme';
+import { theme as defaultTheme } from '../config/theme';
+import { useAppTheme } from '../hooks/useAppTheme';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ScheduleScreen } from '../screens/home/ScheduleScreen';
 import { OBSScreen } from '../screens/home/OBSScreen';
+import { CourseDetailScreen } from '../screens/home/CourseDetailScreen';
+import { ExamDetailScreen } from '../screens/home/ExamDetailScreen';
 import { HomeStackParamList } from '../types/navigation';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -23,10 +26,14 @@ const HomeStackNavigator = () => (
         <HomeStack.Screen name="Dashboard" component={DashboardScreen} />
         <HomeStack.Screen name="Schedule" component={ScheduleScreen} />
         <HomeStack.Screen name="OBS" component={OBSScreen} />
+        <HomeStack.Screen name="CourseDetail" component={CourseDetailScreen} />
+        <HomeStack.Screen name="ExamDetail" component={ExamDetailScreen} />
     </HomeStack.Navigator>
 );
 
 export const MainTabNavigator: React.FC = () => {
+    const { theme, isDarkMode } = useAppTheme();
+
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
@@ -67,23 +74,23 @@ export const MainTabNavigator: React.FC = () => {
                     );
                 },
                 tabBarActiveTintColor: theme.colors.primary,
-                tabBarInactiveTintColor: 'rgba(24, 41, 88, 0.4)',
+                tabBarInactiveTintColor: isDarkMode ? theme.colors.textLight : 'rgba(24, 41, 88, 0.4)',
                 tabBarStyle: {
                     position: 'absolute',
                     bottom: 25,
                     left: 20,
                     right: 20,
                     height: 65,
-                    backgroundColor: '#FFFFFF',
+                    backgroundColor: theme.colors.card,
                     borderRadius: 25,
                     borderWidth: 1.5,
-                    borderColor: theme.colors.primary + '30', // Soft primary blue border
+                    borderColor: theme.colors.border,
                     paddingBottom: 0,
                     paddingTop: 0,
                     borderTopWidth: 0,
                     ...theme.shadows.medium,
                     shadowColor: theme.colors.primary,
-                    shadowOpacity: 0.1,
+                    shadowOpacity: isDarkMode ? 0.3 : 0.1,
                     shadowRadius: 10,
                 },
                 tabBarLabelStyle: {
@@ -127,7 +134,7 @@ export const MainTabNavigator: React.FC = () => {
                             alignItems: 'center',
                             marginBottom: 25,
                             borderWidth: 6,
-                            borderColor: '#FFFFFF',
+                            borderColor: theme.colors.background,
                             ...theme.shadows.medium,
                         }}>
                             <Icon name={focused ? 'home' : 'home-outline'} size={28} color="#FFFFFF" />

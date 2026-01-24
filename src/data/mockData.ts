@@ -8,6 +8,7 @@ export interface Announcement {
     date: string;
     category: 'Genel' | 'Akademik' | 'Etkinlik';
     snippet: string;
+    content: string;
 }
 
 export interface MenuItem {
@@ -31,6 +32,7 @@ export const MOCK_ANNOUNCEMENTS: Announcement[] = [
         date: '12 Mart 2026',
         category: 'Akademik',
         snippet: 'Bahar yarıyılı kayıt yenileme ve derse yazılma işlemleri 15-20 Mart tarihleri arasında OBS üzerinden yapılacaktır.',
+        content: 'Değerli öğrencilerimiz,\n\n2025-2026 Eğitim-Öğretim Yılı Bahar Yarıyılı kayıt yenileme ve derse yazılma işlemleri 15 Mart 2026 tarihinde başlayacak ve 20 Mart 2026 saat 23:59\'da sona erecektir.\n\nKayıt işlemleri Öğrenci Bilgi Sistemi (OBS) üzerinden gerçekleştirilecektir. Harç ödemesi gereken öğrencilerimizin, ders seçimi öncesinde ilgili banka şubelerinden veya ATM\'lerinden öğrenci numaraları ile ödemelerini yapmaları gerekmektedir.\n\nHerhangi bir sorun yaşamanız durumunda bağlı bulunduğunuz fakültenin öğrenci işleri bürosu ile iletişime geçebilirsiniz.\n\nTüm öğrencilerimize başarılı bir dönem dileriz.',
     },
     {
         id: '2',
@@ -38,6 +40,7 @@ export const MOCK_ANNOUNCEMENTS: Announcement[] = [
         date: '10 Mart 2026',
         category: 'Etkinlik',
         snippet: 'Üniversitemiz bünyesinde düzenlenecek olan Kariyer Günleri, 25 Mart tarihinde Merkezi Konferans Salonu\'nda gerçekleşecektir.',
+        content: 'Geleceğinizi planlamaya hazır mısınız?\n\nÜniversitemiz Kariyer Merkezi tarafından düzenlenen geleneksel Kariyer Günleri etkinliği, bu yıl 25 Mart 2026 tarihinde Merkezi Konferans Salonu\'nda kapılarını açıyor.\n\nEtkinlik kapsamında:\n- Sektör lideri firmaların sunumları,\n- CV hazırlama ve mülakat teknikleri atölyeleri,\n- Kariyer danışmanlığı seansları,\n- Network imkanları\n\nsizleri bekliyor olacak. Katılım tüm öğrencilerimize açık ve ücretsizdir.\n\nDetaylı program önümüzdeki günlerde web sitemiz üzerinden ilan edilecektir.',
     },
     {
         id: '3',
@@ -45,6 +48,7 @@ export const MOCK_ANNOUNCEMENTS: Announcement[] = [
         date: '08 Mart 2026',
         category: 'Genel',
         snippet: 'Sınav dönemi nedeniyle kütüphanemiz 24 saat açık kalacaktır. Tüm öğrencilerimize başarılar dileriz.',
+        content: 'Duyuru: Kütüphane Çalışma Saatleri\n\nDeğerli öğrencilerimiz,\n\nÖnümüzdeki vize ve final sınavı dönemleri boyunca sizlerin daha rahat ve verimli ders çalışabilmesi amacıyla kütüphane çalışma saatlerimiz güncellenmiştir.\n\n08 Mart 2026 tarihinden itibaren sınav dönemi bitimine kadar Merkezi Kütüphanemiz hafta içi ve hafta sonu ayırmaksızın 24 saat boyunca hizmet verecektir.\n\nAyrıca, kütüphane içerisinde belirlenen saatlerde çay ve çorba ikramımız da devam edecektir.\n\nHepinize sınavlarınızda başarılar dileriz.',
     },
 ];
 
@@ -70,12 +74,14 @@ export interface Course {
     endTime: string;
     day: string;
     color: string;
+    syllabus?: string[];
+    attendance?: number;
 }
 
 export const MOCK_SCHEDULE: Course[] = [
-    { id: '1', name: 'MAT101 Calculus', room: 'HB202', instructor: 'Prof. Dr. A. Yılmaz', startTime: '15:00', endTime: '17:50', day: 'Çarşamba', color: '#4A90E2' },
-    { id: '2', name: 'FIZ101 Physics I', room: 'HB105', instructor: 'Doç. Dr. M. Kaya', startTime: '09:00', endTime: '11:50', day: 'Pazartesi', color: '#50E3C2' },
-    { id: '3', name: 'BIL101 Intro to Programming', room: 'Lab 1', instructor: 'Dr. Öğr. Üyesi S. Demir', startTime: '13:00', endTime: '15:50', day: 'Salı', color: '#F5A623' },
+    { id: '1', name: 'MAT101 Calculus', room: 'HB202', instructor: 'Prof. Dr. A. Yılmaz', startTime: '15:00', endTime: '17:50', day: 'Çarşamba', color: '#4A90E2', syllabus: ['Limit ve Süreklilik', 'Türev Kuralları', 'Türevin Uygulamaları', 'İntegral'], attendance: 85 },
+    { id: '2', name: 'FIZ101 Physics I', room: 'HB105', instructor: 'Doç. Dr. M. Kaya', startTime: '09:00', endTime: '11:50', day: 'Pazartesi', color: '#50E3C2', syllabus: ['Vektörler', 'Tek Boyutta Hareket', 'Newton Kanunları', 'İş ve Enerji'], attendance: 92 },
+    { id: '3', name: 'BIL101 Intro to Programming', room: 'Lab 1', instructor: 'Dr. Öğr. Üyesi S. Demir', startTime: '13:00', endTime: '15:50', day: 'Salı', color: '#F5A623', syllabus: ['Algoritma Kavramı', 'Değişkenler ve Veri Tipleri', 'Koşullu İfadeler', 'Diziler'], attendance: 100 },
     { id: '4', name: 'TUR101 Türk Dili I', room: 'HB301', instructor: 'Öğr. Gör. H. Arslan', startTime: '10:00', endTime: '11:50', day: 'Perşembe', color: '#D0021B' },
     { id: '5', name: 'ING101 English I', room: 'HB202', instructor: 'Okutman E. Aksoy', startTime: '14:00', endTime: '15:50', day: 'Cuma', color: '#9013FE' },
 ];
@@ -88,11 +94,16 @@ export interface Grade {
     letterGrade: string;
     credits: number;
     status: 'Passed' | 'Failed' | 'Pending';
+    stats?: {
+        average: number;
+        high: number;
+        low: number;
+    };
 }
 
 export const MOCK_GRADES: Grade[] = [
-    { id: '1', courseName: 'MAT101 Calculus', midterm: 85, final: 75, letterGrade: 'BA', credits: 6, status: 'Passed' },
-    { id: '2', courseName: 'FIZ101 Physics I', midterm: 60, final: 70, letterGrade: 'CC', credits: 5, status: 'Passed' },
+    { id: '1', courseName: 'MAT101 Calculus', midterm: 85, final: 75, letterGrade: 'BA', credits: 6, status: 'Passed', stats: { average: 58, high: 95, low: 12 } },
+    { id: '2', courseName: 'FIZ101 Physics I', midterm: 60, final: 70, letterGrade: 'CC', credits: 5, status: 'Passed', stats: { average: 45, high: 88, low: 0 } },
     { id: '3', courseName: 'BIL101 Intro to Programming', midterm: 95, final: null, letterGrade: '-', credits: 6, status: 'Pending' },
     { id: '4', courseName: 'TUR101 Türk Dili I', midterm: 80, final: 85, letterGrade: 'AA', credits: 2, status: 'Passed' },
     { id: '5', courseName: 'ING101 English I', midterm: 70, final: 65, letterGrade: 'CB', credits: 2, status: 'Passed' },

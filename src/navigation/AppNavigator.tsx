@@ -6,9 +6,10 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { LoginScreen } from '../screens/auth/LoginScreen';
 import { SplashScreen } from '../screens/common/SplashScreen';
 import { MainTabNavigator } from './MainTabNavigator';
+import { AuthNavigator } from './AuthNavigator';
+import { AnnouncementDetailScreen } from '../screens/announcements/AnnouncementDetailScreen';
 import { useAuthStore } from '../store/authStore';
 import { RootStackParamList } from '../types/navigation';
 
@@ -24,8 +25,9 @@ export const AppNavigator: React.FC = () => {
                     animation: 'fade',
                 }}>
                 <Stack.Screen name="Splash" component={SplashScreen} />
-                <Stack.Screen name="Auth" component={LoginScreen} />
+                <Stack.Screen name="Auth" component={AuthNavigator} />
                 <Stack.Screen name="Main" component={MainTabNavigator} />
+                <Stack.Screen name="AnnouncementDetail" component={AnnouncementDetailScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );
