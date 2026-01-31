@@ -18,6 +18,7 @@ import {
     Dimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { Button, Input } from '../../components/common';
 import { useAuthStore } from '../../store/authStore';
 import { useAppTheme } from '../../hooks/useAppTheme';
@@ -168,9 +169,12 @@ export const LoginScreen: React.FC = () => {
                                         style={s.eyeButton}
                                         onPress={() => setShowPassword(!showPassword)}
                                         activeOpacity={0.7}>
-                                        <Text style={s.eyeIcon}>
-                                            {showPassword ? '👁️' : '🙈'}
-                                        </Text>
+                                        <Icon
+                                            name={showPassword ? 'eye-outline' : 'eye-off-outline'}
+                                            size={moderateScale(22)}
+                                            color={theme.colors.textSecondary}
+                                            style={s.eyeIcon}
+                                        />
                                     </TouchableOpacity>
                                 </View>
                             </View>
@@ -316,8 +320,8 @@ const styles = (theme: Theme) => StyleSheet.create({
         zIndex: 10,
     },
     eyeIcon: {
-        fontSize: moderateScale(18),
-        marginTop: verticalScale(14),
+        marginTop: verticalScale(20),
+        opacity: 0.8,
     },
     forgotPasswordContainer: {
         alignSelf: 'flex-end',
