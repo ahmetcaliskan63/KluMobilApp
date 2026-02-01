@@ -7,90 +7,93 @@ import {
     TouchableOpacity,
     TextInput,
     StatusBar,
+    Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Card } from '../../components/common';
-import { theme } from '../../config/theme';
+import { theme as defaultTheme, Theme } from '../../config/theme';
+import { useAppTheme } from '../../hooks/useAppTheme';
 import { MOCK_BORROWED_BOOKS } from '../../data/mockData';
 
 export const LibraryScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
+    const { theme, isDarkMode } = useAppTheme();
+    const s = styles(theme);
 
     return (
-        <View style={styles.container}>
-            <StatusBar barStyle="light-content" backgroundColor={theme.colors.primary} />
+        <View style={s.container}>
+            <StatusBar barStyle="light-content" backgroundColor="#101D42" />
 
-            {/* Header */}
-            <View style={[styles.header, { paddingTop: Math.max(insets.top, 20) }]}>
-                <Text style={styles.headerTitle}>Kütüphane</Text>
-                <View style={styles.searchContainer}>
+            {/* Search integrated into content */}
+            <View style={s.searchWrapper}>
+                <View style={s.searchContainer}>
                     <Icon name="search" size={20} color={theme.colors.textLight} />
                     <TextInput
                         placeholder="Kitap, yazar veya konu ara..."
                         placeholderTextColor={theme.colors.textLight}
-                        style={styles.searchInput}
+                        style={s.searchInput}
                     />
                 </View>
             </View>
 
-            <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+            <ScrollView contentContainerStyle={s.scrollContent} showsVerticalScrollIndicator={false}>
                 {/* Stats */}
-                <View style={styles.statsGrid}>
-                    <TouchableOpacity style={styles.statBox}>
+                <View style={s.statsGrid}>
+                    <TouchableOpacity style={s.statBox}>
                         <Icon name="book" size={24} color={theme.colors.primary} />
-                        <Text style={styles.statCount}>2</Text>
-                        <Text style={styles.statLabel}>Ödünç</Text>
+                        <Text style={s.statCount}>2</Text>
+                        <Text style={s.statLabel}>Ödünç</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.statBox}>
+                    <TouchableOpacity style={s.statBox}>
                         <Icon name="time" size={24} color={theme.colors.warning} />
-                        <Text style={styles.statCount}>0</Text>
-                        <Text style={styles.statLabel}>Geciken</Text>
+                        <Text style={s.statCount}>0</Text>
+                        <Text style={s.statLabel}>Geciken</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.statBox}>
+                    <TouchableOpacity style={s.statBox}>
                         <Icon name="bookmark" size={24} color={theme.colors.info} />
-                        <Text style={styles.statCount}>5</Text>
-                        <Text style={styles.statLabel}>Kaydedilen</Text>
+                        <Text style={s.statCount}>5</Text>
+                        <Text style={s.statLabel}>Kaydedilen</Text>
                     </TouchableOpacity>
                 </View>
 
                 {/* Borrowed Books */}
-                <Text style={styles.sectionTitle}>Üzerimdeki Kitaplar</Text>
+                <Text style={s.sectionTitle}>Üzerimdeki Kitaplar</Text>
                 {MOCK_BORROWED_BOOKS.map((book) => (
-                    <Card key={book.id} style={styles.bookCard} elevation="small">
-                        <View style={styles.bookInfo}>
-                            <View style={styles.bookIcon}>
+                    <Card key={book.id} style={s.bookCard} elevation="small">
+                        <View style={s.bookInfo}>
+                            <View style={s.bookIcon}>
                                 <Icon name="journal" size={24} color={theme.colors.primary} />
                             </View>
-                            <View style={styles.bookDetails}>
-                                <Text style={styles.bookTitle}>{book.title}</Text>
-                                <Text style={styles.bookAuthor}>{book.author}</Text>
-                                <View style={styles.dueDateRow}>
+                            <View style={s.bookDetails}>
+                                <Text style={s.bookTitle}>{book.title}</Text>
+                                <Text style={s.bookAuthor}>{book.author}</Text>
+                                <View style={s.dueDateRow}>
                                     <Icon name="calendar-outline" size={14} color={theme.colors.textLight} />
-                                    <Text style={styles.dueDateText}>İade: {book.dueDate}</Text>
+                                    <Text style={s.dueDateText}>İade: {book.dueDate}</Text>
                                 </View>
                             </View>
                         </View>
-                        <TouchableOpacity style={styles.extendButton}>
-                            <Text style={styles.extendText}>Süre Uzat</Text>
+                        <TouchableOpacity style={s.extendButton}>
+                            <Text style={s.extendText}>Süre Uzat</Text>
                         </TouchableOpacity>
                     </Card>
                 ))}
 
                 {/* Quick Actions */}
-                <Text style={styles.sectionTitle}>Hızlı İşlemler</Text>
-                <View style={styles.actionsGrid}>
-                    <TouchableOpacity style={styles.actionCard}>
-                        <View style={[styles.actionIcon, { backgroundColor: '#E3F2FD' }]}>
+                <Text style={s.sectionTitle}>Hızlı İşlemler</Text>
+                <View style={s.actionsGrid}>
+                    <TouchableOpacity style={s.actionCard}>
+                        <View style={[s.actionIcon, { backgroundColor: isDarkMode ? 'rgba(25, 118, 210, 0.1)' : '#E3F2FD' }]}>
                             <Icon name="calendar-outline" size={24} color="#1976D2" />
                         </View>
-                        <Text style={styles.actionLabel}>Çalışma Odası Rezervasyonu</Text>
+                        <Text style={s.actionLabel}>Çalışma Odası Rezervasyonu</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.actionCard}>
-                        <View style={[styles.actionIcon, { backgroundColor: '#F3E5F5' }]}>
+                    <TouchableOpacity style={s.actionCard}>
+                        <View style={[s.actionIcon, { backgroundColor: isDarkMode ? 'rgba(123, 31, 162, 0.1)' : '#F3E5F5' }]}>
                             <Icon name="print-outline" size={24} color="#7B1FA2" />
                         </View>
-                        <Text style={styles.actionLabel}>E-Yayın Talebi</Text>
+                        <Text style={s.actionLabel}>E-Yayın Talebi</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>
@@ -98,32 +101,24 @@ export const LibraryScreen: React.FC = () => {
     );
 };
 
-const styles = StyleSheet.create({
+const styles = (theme: Theme) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F0F2F5',
+        backgroundColor: theme.colors.surface,
     },
-    header: {
-        backgroundColor: theme.colors.primary,
-        paddingHorizontal: theme.spacing.lg,
-        paddingBottom: theme.spacing.xl,
-        borderBottomLeftRadius: 30,
-        borderBottomRightRadius: 30,
-        ...theme.shadows.medium,
-    },
-    headerTitle: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: '#FFFFFF',
-        marginBottom: 20,
+    searchWrapper: {
+        padding: theme.spacing.md,
+        backgroundColor: theme.colors.surface,
     },
     searchContainer: {
         flexDirection: 'row',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
         borderRadius: 15,
         paddingHorizontal: 16,
         alignItems: 'center',
         height: 50,
+        borderWidth: 1,
+        borderColor: theme.colors.border,
         ...theme.shadows.small,
     },
     searchInput: {
@@ -143,10 +138,12 @@ const styles = StyleSheet.create({
     },
     statBox: {
         flex: 1,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
         borderRadius: 20,
         padding: 16,
         alignItems: 'center',
+        borderWidth: 1,
+        borderColor: theme.colors.border,
         ...theme.shadows.small,
     },
     statCount: {
@@ -172,7 +169,9 @@ const styles = StyleSheet.create({
         marginBottom: 16,
         padding: 16,
         borderRadius: 20,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
+        borderWidth: 1,
+        borderColor: theme.colors.border,
     },
     bookInfo: {
         flexDirection: 'row',
@@ -183,7 +182,7 @@ const styles = StyleSheet.create({
         width: 50,
         height: 50,
         borderRadius: 12,
-        backgroundColor: theme.colors.primary + '10',
+        backgroundColor: theme.colors.primary + '15',
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -212,7 +211,7 @@ const styles = StyleSheet.create({
     },
     extendButton: {
         borderTopWidth: 1,
-        borderTopColor: '#F0F2F5',
+        borderTopColor: theme.colors.border,
         paddingTop: 12,
         alignItems: 'center',
     },
@@ -227,9 +226,11 @@ const styles = StyleSheet.create({
     },
     actionCard: {
         flex: 1,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
         borderRadius: 20,
         padding: 16,
+        borderWidth: 1,
+        borderColor: theme.colors.border,
         ...theme.shadows.small,
     },
     actionIcon: {

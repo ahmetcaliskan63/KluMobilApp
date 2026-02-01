@@ -10,55 +10,58 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Card } from '../../components/common';
-import { theme } from '../../config/theme';
+import { theme as defaultTheme, Theme } from '../../config/theme';
+import { useAppTheme } from '../../hooks/useAppTheme';
+import { Platform } from 'react-native';
 import { MOCK_WEEKLY_MENU, MOCK_STATS } from '../../data/mockData';
 
 export const CafeteriaScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
+    const { theme, isDarkMode } = useAppTheme();
+    const s = styles(theme);
 
     return (
-        <View style={styles.container}>
-            <StatusBar barStyle="light-content" backgroundColor={theme.colors.primary} />
+        <View style={s.container}>
+            <StatusBar barStyle="light-content" backgroundColor="#101D42" />
 
-            {/* Header */}
-            <View style={[styles.header, { paddingTop: Math.max(insets.top, 20) }]}>
-                <Text style={styles.headerTitle}>Yemekhane</Text>
-                <View style={styles.infoCard}>
-                    <View style={styles.infoItem}>
+            {/* Balance Card integrated into content */}
+            <View style={s.balanceWrapper}>
+                <View style={s.infoCard}>
+                    <View style={s.infoItem}>
                         <Icon name="card-outline" size={24} color="#FFFFFF" />
                         <View>
-                            <Text style={styles.infoLabel}>Bakiyeniz</Text>
-                            <Text style={styles.infoValue}>₺{MOCK_STATS.balance}</Text>
+                            <Text style={s.infoLabel}>Bakiyeniz</Text>
+                            <Text style={s.infoValue}>₺{MOCK_STATS.balance}</Text>
                         </View>
                     </View>
-                    <TouchableOpacity style={styles.topUpButton}>
-                        <Text style={styles.topUpText}>Yükle</Text>
+                    <TouchableOpacity style={s.topUpButton}>
+                        <Text style={s.topUpText}>Yükle</Text>
                     </TouchableOpacity>
                 </View>
             </View>
 
-            <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-                <Text style={styles.sectionTitle}>Haftalık Menü</Text>
+            <ScrollView contentContainerStyle={s.scrollContent} showsVerticalScrollIndicator={false}>
+                <Text style={s.sectionTitle}>Haftalık Menü</Text>
 
                 {MOCK_WEEKLY_MENU.map((menu, index) => (
-                    <Card key={index} style={styles.menuCard} elevation="small">
-                        <View style={styles.cardHeader}>
+                    <Card key={index} style={s.menuCard} elevation="small">
+                        <View style={s.cardHeader}>
                             <View>
-                                <Text style={styles.dayText}>{menu.day}</Text>
-                                <Text style={styles.dateText}>{menu.date}</Text>
+                                <Text style={s.dayText}>{menu.day}</Text>
+                                <Text style={s.dateText}>{menu.date}</Text>
                             </View>
-                            <View style={[styles.statusBadge, index === 3 && styles.activeBadge]}>
-                                <Text style={[styles.statusText, index === 3 && styles.activeStatusText]}>
+                            <View style={[s.statusBadge, index === 3 && s.activeBadge]}>
+                                <Text style={[s.statusText, index === 3 && s.activeStatusText]}>
                                     {index === 3 ? 'Bugün' : 'Gelecek'}
                                 </Text>
                             </View>
                         </View>
 
-                        <View style={styles.itemList}>
+                        <View style={s.itemList}>
                             {menu.items.map((item, i) => (
-                                <View key={i} style={styles.itemRow}>
-                                    <Icon name="ellipse" size={6} color={theme.colors.primary} style={styles.bullet} />
-                                    <Text style={styles.itemText}>{item}</Text>
+                                <View key={i} style={s.itemRow}>
+                                    <Icon name="ellipse" size={6} color={theme.colors.primary} style={s.bullet} />
+                                    <Text style={s.itemText}>{item}</Text>
                                 </View>
                             ))}
                         </View>
@@ -69,32 +72,23 @@ export const CafeteriaScreen: React.FC = () => {
     );
 };
 
-const styles = StyleSheet.create({
+const styles = (theme: Theme) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F0F2F5',
+        backgroundColor: theme.colors.surface,
     },
-    header: {
-        backgroundColor: theme.colors.primary,
-        paddingHorizontal: theme.spacing.lg,
-        paddingBottom: theme.spacing.xl,
-        borderBottomLeftRadius: 30,
-        borderBottomRightRadius: 30,
-        ...theme.shadows.medium,
-    },
-    headerTitle: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: '#FFFFFF',
-        marginBottom: 20,
+    balanceWrapper: {
+        padding: theme.spacing.md,
+        backgroundColor: theme.colors.surface,
     },
     infoCard: {
         flexDirection: 'row',
-        backgroundColor: 'rgba(255, 255, 255, 0.15)',
+        backgroundColor: '#101D42',
         borderRadius: 20,
-        padding: 16,
+        padding: 20,
         alignItems: 'center',
         justifyContent: 'space-between',
+        ...theme.shadows.medium,
     },
     infoItem: {
         flexDirection: 'row',
@@ -107,7 +101,7 @@ const styles = StyleSheet.create({
     },
     infoValue: {
         color: '#FFFFFF',
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: 'bold',
     },
     topUpButton: {
@@ -117,7 +111,7 @@ const styles = StyleSheet.create({
         borderRadius: 12,
     },
     topUpText: {
-        color: theme.colors.primary,
+        color: '#101D42',
         fontWeight: 'bold',
         fontSize: 14,
     },
@@ -135,7 +129,9 @@ const styles = StyleSheet.create({
         marginBottom: 16,
         padding: 16,
         borderRadius: 20,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
+        borderWidth: 1,
+        borderColor: theme.colors.border,
     },
     cardHeader: {
         flexDirection: 'row',
@@ -143,7 +139,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         marginBottom: 16,
         borderBottomWidth: 1,
-        borderBottomColor: '#F0F2F5',
+        borderBottomColor: theme.colors.border,
         paddingBottom: 12,
     },
     dayText: {
@@ -160,7 +156,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 4,
         borderRadius: 8,
-        backgroundColor: '#F0F2F5',
+        backgroundColor: theme.colors.border + '50',
     },
     activeBadge: {
         backgroundColor: theme.colors.primary + '15',

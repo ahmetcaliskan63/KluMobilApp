@@ -6,6 +6,7 @@ import {
     ScrollView,
     TouchableOpacity,
     Alert,
+    StatusBar,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -47,25 +48,24 @@ export const ProfileScreen: React.FC = () => {
 
     return (
         <View style={s.container}>
+            <StatusBar barStyle="light-content" backgroundColor="#101D42" />
             <ScrollView showsVerticalScrollIndicator={false}>
-                {/* Profile Header */}
-                <View style={[s.header, { paddingTop: Math.max(insets.top, 20) }]}>
-                    <View style={s.profileInfo}>
-                        <View style={s.avatarContainer}>
-                            <View style={s.avatar}>
-                                <Text style={s.avatarText}>
-                                    {user?.firstName?.charAt(0)}{user?.lastName?.charAt(0)}
-                                </Text>
-                            </View>
-                            <TouchableOpacity style={s.editButton}>
-                                <Icon name="camera" size={16} color="#FFFFFF" />
-                            </TouchableOpacity>
+                {/* Profile Avatar Section */}
+                <View style={s.avatarSection}>
+                    <View style={s.avatarContainer}>
+                        <View style={s.avatar}>
+                            <Text style={s.avatarText}>
+                                {user?.firstName?.charAt(0)}{user?.lastName?.charAt(0)}
+                            </Text>
                         </View>
-                        <Text style={s.userName}>{user?.firstName} {user?.lastName}</Text>
-                        <Text style={s.studentNumber}>{user?.studentNumber}</Text>
-                        <View style={s.departmentBadge}>
-                            <Text style={s.departmentText}>{user?.department}</Text>
-                        </View>
+                        <TouchableOpacity style={s.editButton}>
+                            <Icon name="camera" size={16} color="#FFFFFF" />
+                        </TouchableOpacity>
+                    </View>
+                    <Text style={s.userName}>{user?.firstName} {user?.lastName}</Text>
+                    <Text style={s.studentNumber}>{user?.studentNumber}</Text>
+                    <View style={s.departmentBadge}>
+                        <Text style={s.departmentText}>{user?.department}</Text>
                     </View>
                 </View>
 
@@ -132,16 +132,14 @@ const styles = (theme: Theme) => StyleSheet.create({
         flex: 1,
         backgroundColor: theme.colors.surface,
     },
-    header: {
+    avatarSection: {
         backgroundColor: theme.colors.primary,
         paddingBottom: 40,
+        paddingTop: 20,
         borderBottomLeftRadius: 40,
         borderBottomRightRadius: 40,
-        ...theme.shadows.medium,
-    },
-    profileInfo: {
         alignItems: 'center',
-        marginTop: 10,
+        ...theme.shadows.medium,
     },
     avatarContainer: {
         position: 'relative',

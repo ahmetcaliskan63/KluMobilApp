@@ -6,6 +6,8 @@ import {
     ScrollView,
     TouchableOpacity,
     Dimensions,
+    Platform,
+    StatusBar,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -56,8 +58,8 @@ export const DashboardScreen: React.FC = () => {
 
     return (
         <View style={s.container}>
-            {/* Custom Header with Safe Area */}
-            <View style={[s.header, { paddingTop: Math.max(insets.top, 20) }]}>
+            <StatusBar barStyle="light-content" backgroundColor="#101D42" />
+            <View style={s.headerContent}>
                 <View style={s.headerTop}>
                     <View>
                         <Text style={s.greeting}>
@@ -215,7 +217,7 @@ const styles = (theme: Theme) => StyleSheet.create({
         flex: 1,
         backgroundColor: theme.colors.surface,
     },
-    header: {
+    headerContent: {
         backgroundColor: theme.colors.primary,
         paddingHorizontal: theme.spacing.lg,
         paddingBottom: theme.spacing.xl,

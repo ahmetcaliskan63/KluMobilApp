@@ -6,6 +6,8 @@ import {
     FlatList,
     TouchableOpacity,
     StatusBar,
+    Platform,
+    ScrollView,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -23,37 +25,14 @@ export const AnnouncementsScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const { theme, isDarkMode } = useAppTheme();
-    const s = styles(theme);
+    const s = styles(theme, isDarkMode);
     const [activeCategory, setActiveCategory] = useState('Tümü');
 
     const filteredAnnouncements = activeCategory === 'Tümü'
         ? MOCK_ANNOUNCEMENTS
         : MOCK_ANNOUNCEMENTS.filter(a => a.category === activeCategory);
 
-    const renderHeader = () => (
-        <View style={[s.header, { paddingTop: Math.max(insets.top, 20) }]}>
-            <Text style={s.headerTitle}>Duyurular</Text>
-            <View style={s.categoryContainer}>
-                {CATEGORIES.map((cat) => (
-                    <TouchableOpacity
-                        key={cat}
-                        style={[
-                            s.categoryChip,
-                            activeCategory === cat && s.categoryChipActive
-                        ]}
-                        onPress={() => setActiveCategory(cat)}
-                    >
-                        <Text style={[
-                            s.categoryText,
-                            activeCategory === cat && s.categoryTextActive
-                        ]}>
-                            {cat}
-                        </Text>
-                    </TouchableOpacity>
-                ))}
-            </View>
-        </View>
-    );
+    // Manual header removed to use global glassmorphic header
 
     const renderItem = ({ item }: { item: Announcement }) => (
         <TouchableOpacity
@@ -92,8 +71,31 @@ export const AnnouncementsScreen: React.FC = () => {
 
     return (
         <View style={s.container}>
-            <StatusBar barStyle="light-content" backgroundColor={theme.colors.primary} />
-            {renderHeader()}
+            <StatusBar barStyle="light-content" backgroundColor="#101D42" />
+
+            {/* Category Filter */}
+            <View style={s.categoryFilterWrapper}>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.categoryContainer}>
+                    {CATEGORIES.map((cat) => (
+                        <TouchableOpacity
+                            key={cat}
+                            style={[
+                                s.categoryChip,
+                                activeCategory === cat && s.categoryChipActive
+                            ]}
+                            onPress={() => setActiveCategory(cat)}
+                        >
+                            <Text style={[
+                                s.categoryText,
+                                activeCategory === cat && s.categoryTextActive
+                            ]}>
+                                {cat}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
+                </ScrollView>
+            </View>
+
             <FlatList
                 data={filteredAnnouncements}
                 renderItem={renderItem}
@@ -111,37 +113,31 @@ export const AnnouncementsScreen: React.FC = () => {
     );
 };
 
-const styles = (theme: Theme) => StyleSheet.create({
+const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: theme.colors.surface,
     },
-    header: {
-        backgroundColor: theme.colors.primary,
-        paddingHorizontal: theme.spacing.lg,
-        paddingBottom: theme.spacing.lg,
-        borderBottomLeftRadius: 30,
-        borderBottomRightRadius: 30,
-        ...theme.shadows.medium,
-    },
-    headerTitle: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: '#FFFFFF',
-        marginBottom: theme.spacing.md,
+    categoryFilterWrapper: {
+        paddingVertical: 12,
+        backgroundColor: theme.colors.surface,
     },
     categoryContainer: {
+        paddingHorizontal: theme.spacing.md,
         flexDirection: 'row',
-        gap: 10,
+        gap: 8,
     },
     categoryChip: {
         paddingHorizontal: 16,
         paddingVertical: 8,
         borderRadius: 20,
-        backgroundColor: 'rgba(255, 255, 255, 0.15)',
+        backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(24, 41, 88, 0.05)',
+        borderWidth: 1,
+        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(24, 41, 88, 0.1)',
     },
     categoryChipActive: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#101D42',
+        borderColor: '#101D42',
     },
     categoryText: {
         color: '#FFFFFF',
