@@ -6,9 +6,31 @@ export interface Announcement {
     id: string;
     title: string;
     date: string;
-    category: 'Genel' | 'Akademik' | 'Etkinlik';
+    category: string;
     snippet: string;
     content: string;
+    views?: string;
+}
+
+export interface News {
+    id: string;
+    title: string;
+    date: string;
+    image: string;
+    location: string;
+    views: string;
+    content: string;
+}
+
+export interface Event {
+    id: string;
+    title: string;
+    date: string;
+    time: string;
+    location: string;
+    organizer: string;
+    image: string;
+    type: 'Kulüp' | 'Üniversite' | 'Konferans';
 }
 
 export interface MenuItem {
@@ -25,31 +47,97 @@ export interface BorrowedBook {
     status: 'On Time' | 'Warning' | 'Overdue';
 }
 
-export const MOCK_ANNOUNCEMENTS: Announcement[] = [
+export const MOCK_NEWS: News[] = [
     {
         id: '1',
-        title: '2025-2026 Bahar Yarıyılı Kayıt Yenileme İşlemleri',
-        date: '12 Mart 2026',
-        category: 'Akademik',
-        snippet: 'Bahar yarıyılı kayıt yenileme ve derse yazılma işlemleri 15-20 Mart tarihleri arasında OBS üzerinden yapılacaktır.',
-        content: 'Değerli öğrencilerimiz,\n\n2025-2026 Eğitim-Öğretim Yılı Bahar Yarıyılı kayıt yenileme ve derse yazılma işlemleri 15 Mart 2026 tarihinde başlayacak ve 20 Mart 2026 saat 23:59\'da sona erecektir.\n\nKayıt işlemleri Öğrenci Bilgi Sistemi (OBS) üzerinden gerçekleştirilecektir. Harç ödemesi gereken öğrencilerimizin, ders seçimi öncesinde ilgili banka şubelerinden veya ATM\'lerinden öğrenci numaraları ile ödemelerini yapmaları gerekmektedir.\n\nHerhangi bir sorun yaşamanız durumunda bağlı bulunduğunuz fakültenin öğrenci işleri bürosu ile iletişime geçebilirsiniz.\n\nTüm öğrencilerimize başarılı bir dönem dileriz.',
+        title: 'Meslek Yüksekokulları Koordinatörlüğü (Meyok) 2026/01 Nolu Toplantısı Gerçekleştirildi',
+        date: '22/01/2026',
+        location: 'Meslek Yüksekokulları Koordinatörlüğü',
+        views: '193',
+        image: 'https://images.unsplash.com/photo-1544531585-9847b68c8c86?q=80&w=2070&auto=format&fit=crop',
+        content: 'Üniversitemiz bünyesindeki Meslek Yüksekokullarının koordinasyonunu sağlamak amacıyla 2026 yılının ilk toplantısı gerçekleştirildi.'
     },
     {
         id: '2',
-        title: 'Kariyer Günleri Etkinliği Yaklaşıyor',
-        date: '10 Mart 2026',
-        category: 'Etkinlik',
-        snippet: 'Üniversitemiz bünyesinde düzenlenecek olan Kariyer Günleri, 25 Mart tarihinde Merkezi Konferans Salonu\'nda gerçekleşecektir.',
-        content: 'Geleceğinizi planlamaya hazır mısınız?\n\nÜniversitemiz Kariyer Merkezi tarafından düzenlenen geleneksel Kariyer Günleri etkinliği, bu yıl 25 Mart 2026 tarihinde Merkezi Konferans Salonu\'nda kapılarını açıyor.\n\nEtkinlik kapsamında:\n- Sektör lideri firmaların sunumları,\n- CV hazırlama ve mülakat teknikleri atölyeleri,\n- Kariyer danışmanlığı seansları,\n- Network imkanları\n\nsizleri bekliyor olacak. Katılım tüm öğrencilerimize açık ve ücretsizdir.\n\nDetaylı program önümüzdeki günlerde web sitemiz üzerinden ilan edilecektir.',
+        title: 'Rektörümüze Ziyaret',
+        date: '21/01/2026',
+        location: 'Kurumsal İletişim Koordinatörlüğü',
+        views: '535',
+        image: 'https://images.unsplash.com/photo-1577412647305-991150c7d163?q=80&w=2070&auto=format&fit=crop',
+        content: 'Çeşitli kurum temsilcileri Rektörümüzü makamında ziyaret ederek projeler hakkında görüş alışverişinde bulundu.'
     },
     {
         id: '3',
-        title: 'Kütüphane Çalışma Saatleri Güncellemesi',
-        date: '08 Mart 2026',
-        category: 'Genel',
-        snippet: 'Sınav dönemi nedeniyle kütüphanemiz 24 saat açık kalacaktır. Tüm öğrencilerimize başarılar dileriz.',
-        content: 'Duyuru: Kütüphane Çalışma Saatleri\n\nDeğerli öğrencilerimiz,\n\nÖnümüzdeki vize ve final sınavı dönemleri boyunca sizlerin daha rahat ve verimli ders çalışabilmesi amacıyla kütüphane çalışma saatlerimiz güncellenmiştir.\n\n08 Mart 2026 tarihinden itibaren sınav dönemi bitimine kadar Merkezi Kütüphanemiz hafta içi ve hafta sonu ayırmaksızın 24 saat boyunca hizmet verecektir.\n\nAyrıca, kütüphane içerisinde belirlenen saatlerde çay ve çorba ikramımız da devam edecektir.\n\nHepinize sınavlarınızda başarılar dileriz.',
+        title: 'Turizm Fakültemizden Akreditasyon Başarısı: Teşekkür Belgesi Takdim Töreni Düzenlendi',
+        date: '20/01/2026',
+        location: 'Kurumsal İletişim Koordinatörlüğü',
+        views: '412',
+        image: 'https://images.unsplash.com/photo-1523050335456-c7e462590163?q=80&w=2070&auto=format&fit=crop',
+        content: 'Turizm Fakültemizin elde ettiği akreditasyon başarısı düzenlenen törenle kutlandı.'
+    }
+];
+
+export const MOCK_EVENTS: Event[] = [
+    {
+        id: '1',
+        title: 'Yazılım Kulübü: React Native Atölyesi',
+        date: '25 Mart 2026',
+        time: '14:00',
+        location: 'Mühendislik Fakültesi Konferans Salonu',
+        organizer: 'Yazılım ve Bilişim Kulübü',
+        image: 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=2070&auto=format&fit=crop',
+        type: 'Kulüp'
     },
+    {
+        id: '2',
+        title: 'Bahar Şenliği Konserleri',
+        date: '15 Mayıs 2026',
+        time: '20:00',
+        location: 'Merkez Kampüs Festival Alanı',
+        organizer: 'Sağlık Kültür ve Spor Daire Başkanlığı',
+        image: 'https://images.unsplash.com/photo-1459749411177-042180ce673c?q=80&w=2070&auto=format&fit=crop',
+        type: 'Üniversite'
+    },
+    {
+        id: '3',
+        title: 'Yapay Zeka Konferansı',
+        date: '10 Nisan 2026',
+        time: '10:00',
+        location: 'Merkezi Konferans Salonu',
+        organizer: 'Bilgisayar Mühendisliği Bölümü',
+        image: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=2070&auto=format&fit=crop',
+        type: 'Konferans'
+    }
+];
+
+export const MOCK_ANNOUNCEMENTS: Announcement[] = [
+    {
+        id: '1',
+        title: '31.12.2025 Tarihli ve 33124 Sayılı Resmi Gazete\'de Yayımlanan Öğretim Üyesi Dışındaki Öğretim Elemanı İlanı Giriş Sınavı Sonuçları',
+        date: '30/01/2026',
+        category: 'Akademik',
+        views: '1082',
+        snippet: 'Öğretim elemanı alımı sınav sonuçları açıklanmıştır.',
+        content: 'İlgili ilana başvuran adayların sınav sonuçlarını personel daire başkanlığı sayfasından öğrenebilirler.'
+    },
+    {
+        id: '2',
+        title: 'Üniversitemizde Döner Sermaye Süreçlerine İlişkin Bilgilendirme Toplantısı Düzenlenecektir',
+        date: '30/01/2026',
+        category: 'Kurumsal',
+        views: '211',
+        snippet: 'Döner sermaye süreçleri hakkında bilgilendirme.',
+        content: 'Tüm birim yöneticilerinin katılımıyla döner sermaye süreçleri ele alınacaktır.'
+    },
+    {
+        id: '3',
+        title: '2026 Tr-Yös/1 Sınavı Başvuru Tarihleri',
+        date: '29/01/2026',
+        category: 'Akademik',
+        views: '1117',
+        snippet: 'Yabancı uyruklu öğrenci sınavı başvuruları başlıyor.',
+        content: 'Tr-Yös/1 sınavı için başvuru tarihleri ve detayları uluslararası öğrenci ofisi sayfasında yayınlanmıştır.'
+    }
 ];
 
 export const MOCK_WEEKLY_MENU: MenuItem[] = [

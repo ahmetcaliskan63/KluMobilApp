@@ -8,6 +8,8 @@ import {
     Dimensions,
     Platform,
     StatusBar,
+    Animated,
+    Pressable,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -26,9 +28,12 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainTabParamList, HomeStackParamList } from '../../types/navigation';
 import {
     MOCK_ANNOUNCEMENTS,
+    MOCK_NEWS,
+    MOCK_EVENTS,
+    MOCK_STATS,
     MOCK_WEEKLY_MENU,
-    MOCK_STATS
 } from '../../data/mockData';
+import { Image } from 'react-native';
 
 type DashboardNavigationProp = CompositeNavigationProp<
     NativeStackNavigationProp<HomeStackParamList, 'Dashboard'>,
@@ -42,57 +47,183 @@ export const DashboardScreen: React.FC = () => {
     const { theme, isDarkMode } = useAppTheme();
     const s = styles(theme);
 
-    const getCurrentDate = () => {
-        const options: Intl.DateTimeFormatOptions = {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-        };
-        return new Date().toLocaleDateString('tr-TR', options);
+    const [activeTab, setActiveTab] = React.useState<'Haberler' | 'Duyurular' | 'Etkinlikler'>('Haberler');
+    const translateX = React.useRef(new Animated.Value(0)).current;
+
+    const handleTabPress = (tab: 'Haberler' | 'Duyurular' | 'Etkinlikler', index: number) => {
+        setActiveTab(tab);
+        Animated.spring(translateX, {
+            toValue: index * ((width - 48) / 3), // 48 = padding 20*2 + control padding 4*2
+            useNativeDriver: true,
+            bounciness: 4,
+            speed: 12,
+        }).start();
     };
 
-    // Bugünün yemeği (Çarşamba - mock verideki 3. item gibi düşünelim veya dinamik bulalım)
-    const todayMeal = MOCK_WEEKLY_MENU[3];
-    const latestAnnouncement = MOCK_ANNOUNCEMENTS[0];
+    const renderNewsCard = (item: any) => {
+        const scale = React.useRef(new Animated.Value(1)).current;
+        const handlePressIn = () => Animated.spring(scale, { toValue: 0.98, useNativeDriver: true, tension: 100, friction: 10 }).start();
+        const handlePressOut = () => Animated.spring(scale, { toValue: 1, useNativeDriver: true, tension: 100, friction: 10 }).start();
+
+        return (
+            <Animated.View key={item.id} style={{ transform: [{ scale }] }}>
+                <Pressable
+                    onPressIn={handlePressIn}
+                    onPressOut={handlePressOut}
+                    onPress={() => { }}
+                    style={s.premiumNewsCard}
+                >
+                    <Image source={{ uri: item.image }} style={s.premiumNewsImage} resizeMode="cover" />
+                    <View style={s.premiumNewsOverlay}>
+                        <View style={s.newsTagWrapper}>
+                            <Text style={s.newsTagText}>{item.location}</Text>
+                        </View>
+                        <View style={s.newsContentBottom}>
+                            <Text style={s.premiumNewsTitle} numberOfLines={2}>{item.title}</Text>
+                            <View style={s.newsMetaRow}>
+                                <View style={s.newsMetaItem}>
+                                    <Icon name="eye-outline" size={14} color="rgba(255,255,255,0.8)" />
+                                    <Text style={s.newsMetaText}>{item.views}</Text>
+                                </View>
+                                <View style={s.newsDivider} />
+                                <View style={s.newsMetaItem}>
+                                    <Icon name="calendar-outline" size={14} color="rgba(255,255,255,0.8)" />
+                                    <Text style={s.newsMetaText}>{item.date}</Text>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                </Pressable>
+            </Animated.View>
+        );
+    };
+
+    const renderAnnouncementCard = (item: any) => {
+        const scale = React.useRef(new Animated.Value(1)).current;
+        const handlePressIn = () => Animated.spring(scale, { toValue: 0.98, useNativeDriver: true }).start();
+        const handlePressOut = () => Animated.spring(scale, { toValue: 1, useNativeDriver: true }).start();
+
+        const isAcademic = item.category === 'AKADEMİK';
+        const accentColor = isAcademic ? '#0A84FF' : '#101D42';
+
+        return (
+            <Animated.View key={item.id} style={{ transform: [{ scale }] }}>
+                <View style={s.announcementCard}>
+                    <Pressable
+                        onPressIn={handlePressIn}
+                        onPressOut={handlePressOut}
+                        onPress={() => { }}
+                        style={s.announcementInner}
+                    >
+                        <View style={[s.announcementIconWrapper, { backgroundColor: `${accentColor}10` }]}>
+                            <Icon name="megaphone" size={20} color={accentColor} />
+                        </View>
+                        <View style={s.announcementInfo}>
+                            <View style={s.announcementHeader}>
+                                <Text style={[s.announcementTag, { color: accentColor }]}>{item.category}</Text>
+                                <View style={s.dotSeparator} />
+                                <Text style={s.announcementDateText}>{item.date}</Text>
+                            </View>
+                            <Text style={s.announcementTitle} numberOfLines={2}>{item.title}</Text>
+                            <View style={s.announcementFooter}>
+                                <View style={s.metaItem}>
+                                    <Icon name="eye-outline" size={14} color="#8E8E93" />
+                                    <Text style={s.metaTextLight}>{item.views} Görüntülenme</Text>
+                                </View>
+                                <Icon name="chevron-forward" size={16} color="#C7C7CC" />
+                            </View>
+                        </View>
+                    </Pressable>
+                </View>
+            </Animated.View>
+        );
+    };
+
+    const renderEventCard = (item: any) => {
+        const scale = React.useRef(new Animated.Value(1)).current;
+        const handlePressIn = () => Animated.spring(scale, { toValue: 0.98, useNativeDriver: true }).start();
+        const handlePressOut = () => Animated.spring(scale, { toValue: 1, useNativeDriver: true }).start();
+
+        return (
+            <Animated.View key={item.id} style={{ transform: [{ scale }] }}>
+                <Card style={s.eventCard} elevation="small">
+                    <Pressable
+                        onPressIn={handlePressIn}
+                        onPressOut={handlePressOut}
+                        onPress={() => { }}
+                        style={s.eventInner}
+                    >
+                        <Image source={{ uri: item.image }} style={s.eventImage} resizeMode="cover" />
+                        <View style={s.eventOverlay}>
+                            <View style={s.eventTypeBadge}>
+                                <Text style={s.eventTypeText}>{item.type}</Text>
+                            </View>
+                        </View>
+                        <View style={s.eventContent}>
+                            <Text style={s.eventTitle} numberOfLines={2}>{item.title}</Text>
+                            <View style={s.eventDetails}>
+                                <View style={s.metaItem}>
+                                    <Icon name="calendar-outline" size={14} color={theme.colors.textSecondary} />
+                                    <Text style={s.eventDetailText}>{item.date}</Text>
+                                </View>
+                                <View style={s.metaItem}>
+                                    <Icon name="time-outline" size={14} color={theme.colors.textSecondary} />
+                                    <Text style={s.eventDetailText}>{item.time}</Text>
+                                </View>
+                            </View>
+                        </View>
+                    </Pressable>
+                </Card>
+            </Animated.View>
+        );
+    };
 
     return (
         <View style={s.container}>
-            <StatusBar barStyle="light-content" backgroundColor="#101D42" />
-            <View style={s.headerContent}>
-                <View style={s.headerTop}>
-                    <View>
-                        <Text style={s.greeting}>
-                            Merhaba, {user?.firstName || 'Öğrenci'} 👋
-                        </Text>
-                        <Text style={s.date}>{getCurrentDate()}</Text>
-                    </View>
-                    <TouchableOpacity
-                        style={s.profileButton}
-                        onPress={() => navigation.navigate('Profile')}
-                    >
-                        <View style={s.profilePlaceholder}>
-                            <Icon name="person" size={24} color={theme.colors.primary} />
-                        </View>
-                    </TouchableOpacity>
-                </View>
+            <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
 
-                {/* Balance & Status Summary Card */}
-                <View style={s.summaryContainer}>
-                    <View style={s.summaryItem}>
-                        <Text style={s.summaryLabel}>Kampüs Kart</Text>
-                        <Text style={s.summaryValue}>{MOCK_STATS.balance}</Text>
-                    </View>
-                    <View style={s.summaryDivider} />
-                    <View style={s.summaryItem}>
-                        <Text style={s.summaryLabel}>Yemek Hakkı</Text>
-                        <Text style={s.summaryValue}>{MOCK_STATS.mealCredits}</Text>
-                    </View>
-                    <View style={s.summaryDivider} />
-                    <View style={s.summaryItem}>
-                        <Text style={s.summaryLabel}>Kütüphane</Text>
-                        <Text style={s.summaryValue}>{MOCK_STATS.libraryBooks}</Text>
-                    </View>
+            {/* Fixed Premium Segmented Control (Sticky Header) */}
+            <View style={s.fixedTabContainer}>
+                <View style={s.segmentedControl}>
+                    {/* Sliding Indicator */}
+                    <Animated.View
+                        style={[
+                            s.slidingIndicator,
+                            { transform: [{ translateX }] }
+                        ]}
+                    />
+                    {(['Haberler', 'Duyurular', 'Etkinlikler'] as const).map((tab, index) => {
+                        const getIcon = () => {
+                            switch (tab) {
+                                case 'Haberler': return 'newspaper-outline';
+                                case 'Duyurular': return 'notifications-outline';
+                                case 'Etkinlikler': return 'calendar-outline';
+                            }
+                        };
+                        return (
+                            <TouchableOpacity
+                                key={tab}
+                                style={s.segmentButton}
+                                onPress={() => handleTabPress(tab, index)}
+                                activeOpacity={1}
+                            >
+                                <View style={s.tabContentWrapper}>
+                                    <Icon
+                                        name={getIcon()}
+                                        size={18}
+                                        color={activeTab === tab ? '#101D42' : '#8E8E93'}
+                                        style={s.tabIcon}
+                                    />
+                                    <Text style={[
+                                        s.segmentText,
+                                        activeTab === tab && s.segmentTextActive
+                                    ]}>
+                                        {tab}
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                        );
+                    })}
                 </View>
             </View>
 
@@ -101,112 +232,13 @@ export const DashboardScreen: React.FC = () => {
                 contentContainerStyle={s.scrollContent}
                 showsVerticalScrollIndicator={false}
             >
-                {/* 0. Hızlı İşlemler Section */}
-                <Text style={s.sectionHeading}>Hızlı İşlemler</Text>
-                <View style={s.quickActionsGrid}>
-                    {[
-                        { title: 'OBS', icon: 'school', color: '#4A90E2', tab: 'OBS' },
-                        { title: 'Yemek Menüsü', icon: 'restaurant', color: '#50E3C2', tab: 'Cafeteria' },
-                        { title: 'Kampüs Kart', icon: 'card', color: '#F5A623', tab: 'Cafeteria' },
-                        { title: 'Duyurular', icon: 'megaphone', color: '#D0021B', tab: 'Announcements' },
-                    ].map((action, index) => (
-                        <TouchableOpacity
-                            key={index}
-                            style={s.actionItem}
-                            onPress={() => action.tab && navigation.navigate(action.tab as any)}
-                        >
-                            <View style={[s.actionIcon, { backgroundColor: action.color + '15' }]}>
-                                <Icon name={action.icon} size={24} color={action.color} />
-                            </View>
-                            <Text style={s.actionText}>{action.title}</Text>
-                        </TouchableOpacity>
-                    ))}
+                <View style={s.contentList}>
+                    {activeTab === 'Haberler' && MOCK_NEWS.map(renderNewsCard)}
+                    {activeTab === 'Duyurular' && MOCK_ANNOUNCEMENTS.map(renderAnnouncementCard)}
+                    {activeTab === 'Etkinlikler' && MOCK_EVENTS.map(renderEventCard)}
                 </View>
 
-                {/* 1. Bugünün Yemeği */}
-                <Card style={s.mainCard} elevation="small">
-                    <View style={s.cardHeader}>
-                        <View style={s.cardTitleContainer}>
-                            <Icon name="restaurant" size={20} color={theme.colors.primary} />
-                            <Text style={s.cardTitle}>Bugün Yemekhanede</Text>
-                        </View>
-                        <View style={s.badge}>
-                            <Text style={s.badgeText}>Öğle Yemeği</Text>
-                        </View>
-                    </View>
-                    <View style={s.mealList}>
-                        {todayMeal.items.map((item, index) => (
-                            <View key={index} style={s.mealRow}>
-                                <Icon name="ellipse" size={8} color={theme.colors.primary} style={s.bullet} />
-                                <Text style={s.mealItem}>{item}</Text>
-                            </View>
-                        ))}
-                    </View>
-                    <TouchableOpacity
-                        style={s.cardFooter}
-                        onPress={() => navigation.navigate('Cafeteria')}
-                    >
-                        <Text style={s.footerLink}>Tüm haftalık menü...</Text>
-                        <Icon name="chevron-forward" size={16} color={theme.colors.primary} />
-                    </TouchableOpacity>
-                </Card>
-
-                {/* 2. Yaklaşan Ders/Sınav */}
-                <Card style={s.mainCard} elevation="small">
-                    <TouchableOpacity
-                        activeOpacity={0.7}
-                        onPress={() => navigation.navigate('CourseDetail', { courseId: '1' })}
-                    >
-                        <View style={s.cardHeader}>
-                            <View style={s.cardTitleContainer}>
-                                <Icon name="time" size={20} color={theme.colors.warning} />
-                                <Text style={s.cardTitle}>Yaklaşan Ders</Text>
-                            </View>
-                        </View>
-                        <View style={s.courseContainer}>
-                            <Text style={s.courseTime}>15:00 - 17:50</Text>
-                            <Text style={s.courseName}>MAT101 Calculus</Text>
-                            <Text style={s.courseInfo}>HB202 nolu sınıf • Prof. Dr. A. Yılmaz</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={s.cardFooter}
-                        onPress={() => navigation.navigate('Schedule')}
-                    >
-                        <Text style={s.footerLink}>Ders programına git</Text>
-                        <Icon name="chevron-forward" size={16} color={theme.colors.primary} />
-                    </TouchableOpacity>
-                </Card>
-
-                {/* 3. En Yeni Duyuru */}
-                <Card style={s.mainCard} elevation="small">
-                    <TouchableOpacity
-                        activeOpacity={0.7}
-                        onPress={() => (navigation as any).navigate('AnnouncementDetail', { announcementId: latestAnnouncement.id })}
-                    >
-                        <View style={s.cardHeader}>
-                            <View style={s.cardTitleContainer}>
-                                <Icon name="notifications" size={20} color={theme.colors.info} />
-                                <Text style={s.cardTitle}>En Yeni Duyuru</Text>
-                            </View>
-                        </View>
-                        <View style={s.announcementContent}>
-                            <Text style={s.announcementTitle} numberOfLines={2}>
-                                {latestAnnouncement.title}
-                            </Text>
-                            <Text style={s.announcementDate}>{latestAnnouncement.date}</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={s.cardFooter}
-                        onPress={() => navigation.navigate('Announcements')}
-                    >
-                        <Text style={s.footerLink}>Devamı...</Text>
-                        <Icon name="chevron-forward" size={16} color={theme.colors.primary} />
-                    </TouchableOpacity>
-                </Card>
-
-                <View style={{ height: 20 }} />
+                <View style={{ height: 40 }} />
             </ScrollView>
         </View >
     );
@@ -215,217 +247,298 @@ export const DashboardScreen: React.FC = () => {
 const styles = (theme: Theme) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: theme.colors.surface,
-    },
-    headerContent: {
-        backgroundColor: theme.colors.primary,
-        paddingHorizontal: theme.spacing.lg,
-        paddingBottom: theme.spacing.xl,
-        borderBottomLeftRadius: 30,
-        borderBottomRightRadius: 30,
-        ...theme.shadows.medium,
-    },
-    headerTop: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: theme.spacing.lg,
-    },
-    greeting: {
-        fontSize: moderateScale(22),
-        fontWeight: 'bold',
-        color: '#FFFFFF',
-        marginBottom: 2,
-    },
-    date: {
-        fontSize: moderateScale(13),
-        color: 'rgba(255, 255, 255, 0.7)',
-    },
-    profileButton: {
-        width: 44,
-        height: 44,
-        borderRadius: 22,
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-        justifyContent: 'center',
-        alignItems: 'center',
-        ...theme.shadows.small,
-    },
-    profilePlaceholder: {
-        width: '100%',
-        height: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    summaryContainer: {
-        flexDirection: 'row',
-        backgroundColor: 'rgba(255, 255, 255, 0.12)',
-        borderRadius: 15,
-        padding: theme.spacing.md,
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    },
-    summaryItem: {
-        alignItems: 'center',
-        flex: 1,
-    },
-    summaryLabel: {
-        color: 'rgba(255, 255, 255, 0.7)',
-        fontSize: moderateScale(11),
-        marginBottom: 4,
-        textTransform: 'uppercase',
-    },
-    summaryValue: {
-        color: '#FFFFFF',
-        fontSize: moderateScale(15),
-        fontWeight: 'bold',
-    },
-    summaryDivider: {
-        width: 1,
-        height: '70%',
-        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        backgroundColor: '#F2F2F7', // Apple System Gray 6
     },
     scrollView: {
         flex: 1,
     },
     scrollContent: {
-        padding: theme.spacing.md,
+        padding: 20,
+        paddingTop: 10,
     },
-    sectionHeading: {
-        fontSize: moderateScale(17),
-        fontWeight: 'bold',
-        color: theme.colors.text,
-        marginBottom: theme.spacing.sm,
-        marginTop: theme.spacing.xs,
+    fixedTabContainer: {
+        backgroundColor: '#FFFFFF',
+        paddingHorizontal: 20,
+        paddingTop: 10,
+        paddingBottom: 15,
+        zIndex: 100,
+        ...Platform.select({
+            ios: {
+                shadowColor: '#000000',
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.05,
+                shadowRadius: 10,
+            },
+            android: {
+                elevation: 4,
+            },
+        }),
     },
-    quickActionsGrid: {
+    segmentedControl: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginBottom: theme.spacing.lg,
+        backgroundColor: '#F2F2F7',
+        borderRadius: 16,
+        padding: 4,
+        position: 'relative',
+        height: 52, // Fixed height for perfect centering
     },
-    actionItem: {
-        width: '23%',
+    slidingIndicator: {
+        position: 'absolute',
+        width: (width - 48) / 3,
+        height: '84%',
+        backgroundColor: '#FFFFFF', // White background
+        borderRadius: 12,
+        top: '8%',
+        left: 4,
+        borderWidth: 2,
+        borderColor: '#101D42', // Blue border
+        ...Platform.select({
+            ios: {
+                shadowColor: '#000000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.05,
+                shadowRadius: 4,
+            },
+            android: {
+                elevation: 2,
+            },
+        }),
+    },
+    segmentButton: {
+        flex: 1,
+        height: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 1,
+    },
+    tabContentWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 8,
+        height: '100%',
+        width: '100%',
+    },
+    tabIcon: {
+        // Center alignment handled by wrapper
+    },
+    segmentText: {
+        fontSize: moderateScale(12),
+        fontWeight: '700',
+        color: '#8E8E93',
+        letterSpacing: -0.2,
+        marginTop: -2, // Fine-tuned for vertical centering
+        includeFontPadding: false, // Prevents Android font padding issues
+    },
+    segmentTextActive: {
+        color: '#101D42', // Blue text for outlined style
+        fontWeight: '800',
+    },
+    contentList: {
+        paddingTop: 10,
+    },
+    premiumNewsCard: {
+        marginBottom: 25,
+        height: 280,
+        borderRadius: 30,
+        backgroundColor: '#FFFFFF',
+        overflow: 'hidden',
+        ...theme.shadows.medium,
+    },
+    premiumNewsImage: {
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
+    },
+    premiumNewsOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.3)',
+        justifyContent: 'space-between',
+        padding: 20,
+    },
+    newsTagWrapper: {
+        alignSelf: 'flex-start',
+        backgroundColor: 'rgba(255,255,255,0.2)',
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: 'rgba(255,255,255,0.3)',
+    },
+    newsTagText: {
+        color: '#FFFFFF',
+        fontSize: moderateScale(11),
+        fontWeight: '700',
+        textTransform: 'uppercase',
+    },
+    newsContentBottom: {
+        gap: 12,
+    },
+    premiumNewsTitle: {
+        fontSize: moderateScale(18),
+        color: '#FFFFFF',
+        fontWeight: '800',
+        lineHeight: 26,
+        textShadowColor: 'rgba(0,0,0,0.5)',
+        textShadowOffset: { width: 0, height: 1 },
+        textShadowRadius: 4,
+    },
+    newsMetaRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12,
+    },
+    newsMetaItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+    },
+    newsMetaText: {
+        color: 'rgba(255,255,255,0.9)',
+        fontSize: moderateScale(12),
+        fontWeight: '600',
+    },
+    newsDivider: {
+        width: 1,
+        height: 12,
+        backgroundColor: 'rgba(255,255,255,0.3)',
+    },
+    announcementCard: {
+        marginBottom: 16,
+        borderRadius: 24,
+        backgroundColor: '#FFFFFF',
+        ...Platform.select({
+            ios: {
+                shadowColor: '#000000',
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.05,
+                shadowRadius: 12,
+            },
+            android: {
+                elevation: 3,
+            },
+        }),
+    },
+    announcementInner: {
+        flexDirection: 'row',
+        padding: 16,
         alignItems: 'center',
     },
-    actionIcon: {
-        width: horizontalScale(56),
-        height: horizontalScale(56),
-        borderRadius: 18,
+    announcementIconWrapper: {
+        width: 52,
+        height: 52,
+        borderRadius: 16,
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 8,
-        backgroundColor: theme.colors.card,
-        ...theme.shadows.small,
+        marginRight: 16,
     },
-    actionText: {
-        fontSize: moderateScale(11),
-        fontWeight: '600',
-        color: theme.colors.textSecondary,
-        textAlign: 'center',
-    },
-    mainCard: {
-        marginBottom: theme.spacing.md,
-        padding: theme.spacing.md,
-        borderRadius: 20,
-        backgroundColor: theme.colors.card,
-        ...theme.shadows.small,
-        borderWidth: 1,
-        borderColor: theme.colors.border,
-    },
-    cardHeader: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginBottom: theme.spacing.md,
-    },
-    cardTitleContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 10,
-    },
-    cardTitle: {
-        fontSize: moderateScale(16),
-        fontWeight: '700',
-        color: theme.colors.text,
-    },
-    badge: {
-        backgroundColor: theme.colors.primary + '10',
-        paddingHorizontal: 10,
-        paddingVertical: 4,
-        borderRadius: 10,
-    },
-    badgeText: {
-        fontSize: moderateScale(11),
-        color: theme.colors.primary,
-        fontWeight: '600',
-    },
-    mealList: {
-        marginBottom: theme.spacing.md,
-    },
-    mealRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 8,
-    },
-    bullet: {
-        marginRight: 10,
-        opacity: 0.8,
-    },
-    mealItem: {
-        fontSize: moderateScale(14),
-        color: theme.colors.textSecondary,
+    announcementInfo: {
         flex: 1,
-        lineHeight: 20,
     },
-    courseContainer: {
-        marginBottom: theme.spacing.md,
-        backgroundColor: theme.colors.surface,
-        padding: theme.spacing.md,
-        borderRadius: 12,
-        borderLeftWidth: 4,
-        borderLeftColor: theme.colors.warning,
-    },
-    courseTime: {
-        fontSize: moderateScale(14),
-        fontWeight: 'bold',
-        color: theme.colors.warning,
-        marginBottom: 4,
-    },
-    courseName: {
-        fontSize: moderateScale(16),
-        fontWeight: 'bold',
-        color: theme.colors.text,
-        marginBottom: 4,
-    },
-    courseInfo: {
-        fontSize: moderateScale(13),
-        color: theme.colors.textSecondary,
-    },
-    announcementContent: {
-        marginBottom: theme.spacing.md,
-    },
-    announcementTitle: {
-        fontSize: moderateScale(15),
-        fontWeight: '600',
-        color: theme.colors.text,
-        lineHeight: 22,
+    announcementHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
         marginBottom: 6,
     },
-    announcementDate: {
-        fontSize: moderateScale(12),
-        color: theme.colors.textLight,
+    announcementTag: {
+        fontSize: moderateScale(10),
+        fontWeight: '900',
+        textTransform: 'uppercase',
+        letterSpacing: 0.8,
     },
-    cardFooter: {
+    dotSeparator: {
+        width: 3,
+        height: 3,
+        borderRadius: 1.5,
+        backgroundColor: '#C7C7CC',
+        marginHorizontal: 8,
+    },
+    announcementDateText: {
+        fontSize: moderateScale(11),
+        color: '#8E8E93',
+        fontWeight: '600',
+    },
+    announcementTitle: {
+        fontSize: moderateScale(14),
+        fontWeight: '700',
+        color: '#1C1C1E',
+        lineHeight: 20,
+        marginBottom: 10,
+        letterSpacing: -0.2,
+    },
+    announcementFooter: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        borderTopWidth: 1,
+        borderTopColor: '#F2F2F7',
+        paddingTop: 10,
+    },
+    metaTextLight: {
+        fontSize: moderateScale(11),
+        color: '#8E8E93',
+        fontWeight: '600',
+        marginLeft: 4,
+    },
+    eventCard: {
+        marginBottom: 20,
+        borderRadius: 24,
+        backgroundColor: '#FFFFFF',
+        overflow: 'hidden',
+        ...theme.shadows.medium,
+    },
+    eventInner: {
+        height: 120,
+        flexDirection: 'row',
+    },
+    eventImage: {
+        width: 100,
+        height: '100%',
+    },
+    eventOverlay: {
+        position: 'absolute',
+        top: 10,
+        left: 10,
+        zIndex: 1,
+    },
+    eventTypeBadge: {
+        backgroundColor: '#101D42',
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        borderRadius: 8,
+    },
+    eventTypeText: {
+        color: '#FFFFFF',
+        fontSize: moderateScale(10),
+        fontWeight: '900',
+        textTransform: 'uppercase',
+    },
+    eventContent: {
+        flex: 1,
+        padding: 16,
+        justifyContent: 'center',
+    },
+    eventTitle: {
+        fontSize: moderateScale(16),
+        fontWeight: '800',
+        color: '#1C1C1E',
+        marginBottom: 8,
+    },
+    eventDetails: {
+        gap: 6,
+    },
+    eventDetailText: {
+        fontSize: moderateScale(12),
+        color: '#8E8E93',
+        fontWeight: '600',
+    },
+    metaItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'flex-end',
-        paddingTop: theme.spacing.sm,
-        borderTopWidth: 1,
-        borderTopColor: theme.colors.divider,
+        gap: 6,
     },
-    footerLink: {
-        fontSize: moderateScale(13),
-        color: theme.colors.primary,
-        fontWeight: '600',
-        marginRight: 4,
+    metaText: {
+        fontSize: moderateScale(12),
+        color: '#8E8E93',
     },
 });
