@@ -7,6 +7,7 @@ export type RootStackParamList = {
     Auth: undefined;
     Main: undefined;
     AnnouncementDetail: { announcementId: string };
+    Profile: undefined; // Profil global bir ekran oldu
 };
 
 export type AuthStackParamList = {
@@ -19,7 +20,7 @@ export type MainTabParamList = {
     Cafeteria: undefined;
     Announcements: undefined;
     Library: undefined;
-    Profile: undefined;
+    Settings: undefined; // Ayarlar yeni sekme olarak eklendi
 };
 
 export type HomeStackParamList = {

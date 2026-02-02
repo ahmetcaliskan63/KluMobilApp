@@ -6,10 +6,11 @@ import { DashboardScreen } from '../screens/home/DashboardScreen';
 import { CafeteriaScreen } from '../screens/cafeteria/CafeteriaScreen';
 import { AnnouncementsScreen } from '../screens/announcements/AnnouncementsScreen';
 import { LibraryScreen } from '../screens/library/LibraryScreen';
-import { ProfileScreen } from '../screens/profile/ProfileScreen';
-import { MainTabParamList } from '../types/navigation';
+import { SettingsScreen } from '../screens/settings/SettingsScreen';
+import { MainTabParamList, RootStackParamList } from '../types/navigation';
 import { theme as defaultTheme } from '../config/theme';
 import { useAppTheme } from '../hooks/useAppTheme';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ScheduleScreen } from '../screens/home/ScheduleScreen';
@@ -33,6 +34,7 @@ const HomeStackNavigator = () => (
 
 export const MainTabNavigator: React.FC = () => {
     const { theme, isDarkMode } = useAppTheme();
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
     return (
         <Tab.Navigator
@@ -41,138 +43,122 @@ export const MainTabNavigator: React.FC = () => {
                     let iconName = '';
 
                     switch (route.name) {
-                        case 'HomeStack':
-                            iconName = focused ? 'home' : 'home-outline';
-                            break;
-                        case 'Cafeteria':
-                            iconName = focused ? 'restaurant' : 'restaurant-outline';
-                            break;
-                        case 'Announcements':
-                            iconName = focused ? 'notifications' : 'notifications-outline';
-                            break;
-                        case 'Library':
-                            iconName = focused ? 'book' : 'book-outline';
-                            break;
-                        case 'Profile':
-                            iconName = focused ? 'person' : 'person-outline';
-                            break;
+                        case 'HomeStack': iconName = focused ? 'home' : 'home-outline'; break;
+                        case 'Cafeteria': iconName = focused ? 'restaurant' : 'restaurant-outline'; break;
+                        case 'Announcements': iconName = focused ? 'notifications' : 'notifications-outline'; break;
+                        case 'Library': iconName = focused ? 'book' : 'book-outline'; break;
+                        case 'Settings': iconName = focused ? 'settings' : 'settings-outline'; break;
                     }
 
                     if (route.name === 'HomeStack') return null;
 
                     return (
-                        <View style={{
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            height: 36,
-                            width: 48,
-                            borderRadius: 12,
-                            backgroundColor: focused ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
-                            borderWidth: focused ? 1 : 0,
-                            borderColor: 'rgba(255, 255, 255, 0.08)',
-                        }}>
+                        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                             <Icon
                                 name={iconName}
-                                size={focused ? 22 : 21}
-                                color={focused ? '#FFFFFF' : 'rgba(255, 255, 255, 0.75)'}
+                                size={24}
+                                color={focused ? '#FFFFFF' : 'rgba(255, 255, 255, 0.5)'}
                             />
+                            {focused && (
+                                <View style={{
+                                    width: 4,
+                                    height: 4,
+                                    borderRadius: 2,
+                                    backgroundColor: '#FFFFFF',
+                                    marginTop: 4,
+                                }} />
+                            )}
                         </View>
                     );
                 },
                 tabBarActiveTintColor: '#FFFFFF',
-                tabBarInactiveTintColor: 'rgba(255, 255, 255, 0.7)',
+                tabBarInactiveTintColor: 'rgba(255, 255, 255, 0.5)',
                 tabBarStyle: {
                     position: 'absolute',
                     bottom: 0,
                     left: 0,
                     right: 0,
-                    height: Platform.OS === 'ios' ? 95 : 85,
+                    height: Platform.OS === 'ios' ? 95 : 75,
                     backgroundColor: '#101D42',
-                    borderTopWidth: 0,
-                    paddingBottom: Platform.OS === 'ios' ? 35 : 18,
-                    paddingTop: 8,
-                    ...Platform.select({
-                        ios: {
-                            shadowColor: '#000',
-                            shadowOffset: { width: 0, height: -10 },
-                            shadowOpacity: 0.3,
-                            shadowRadius: 15,
-                        },
-                        android: {
-                            elevation: 35,
-                        },
-                    }),
+                    borderTopWidth: 1,
+                    borderTopColor: 'rgba(255, 255, 255, 0.05)',
+                    paddingBottom: Platform.OS === 'ios' ? 35 : 12,
+                    paddingTop: 12,
                 },
                 tabBarLabelStyle: {
                     fontSize: 10,
-                    fontWeight: '800',
-                    letterSpacing: 0.8,
-                    textTransform: 'uppercase',
-                    marginTop: 4,
+                    fontWeight: '700',
+                    letterSpacing: 0.5,
+                    marginTop: -5,
                 },
                 headerShown: true,
                 headerStyle: {
-                    backgroundColor: '#101D42', // Rich Executive Blue
-                    height: Platform.OS === 'ios' ? 120 : 110, // Increased by 10px
-                    elevation: 20, // Max elevation for Android shadow & layering
+                    backgroundColor: '#101D42',
+                    height: Platform.OS === 'ios' ? 120 : 110,
+                    elevation: 8,
                     shadowColor: '#000',
                     shadowOffset: { width: 0, height: 4 },
-                    shadowOpacity: 0.3,
-                    shadowRadius: 10,
+                    shadowOpacity: 0.15,
+                    shadowRadius: 12,
                     borderBottomWidth: 0,
-                    zIndex: 10000, // Extremely high z-index to stay on top
                 },
                 headerTitleStyle: {
                     fontWeight: '900',
-                    fontSize: 17,
+                    fontSize: 18,
                     color: '#FFFFFF',
-                    letterSpacing: 0.5,
                 },
                 headerTitleAlign: 'center',
                 headerLeft: () => (
-                    <View style={{
-                        marginLeft: 12,
-                        zIndex: 10001,
-                        elevation: 21,
-                        height: '100%',
-                        justifyContent: 'center', // Center vertically
-                    }}>
+                    <View style={{ marginLeft: 16 }}>
                         <View style={{
-                            width: 45, // Prominent size
-                            height: 45,
-                            borderRadius: 25,
+                            width: 42,
+                            height: 42,
+                            borderRadius: 21,
                             backgroundColor: '#FFFFFF',
                             justifyContent: 'center',
                             alignItems: 'center',
-                            borderWidth: 2,
-                            borderColor: 'rgba(255, 255, 255, 0.4)',
-                            shadowColor: '#000',
-                            shadowOffset: { width: 0, height: 2 },
-                            shadowOpacity: 0.25,
-                            shadowRadius: 4,
-                            elevation: 10,
+                            borderWidth: 1,
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
                         }}>
                             <Image
                                 source={require('../assets/logo.png')}
-                                style={{ width: 43, height: 43 }}
+                                style={{ width: 38, height: 38 }}
                                 resizeMode="contain"
                             />
                         </View>
                     </View>
                 ),
-                headerRight: () => <View style={{ width: 56 }} />,
+                headerRight: () => (
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate('Profile')}
+                        style={{ marginRight: 16 }}
+                    >
+                        <View style={{
+                            width: 38,
+                            height: 38,
+                            borderRadius: 19,
+                            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            borderWidth: 1,
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
+                        }}>
+                            <Icon name="person" size={20} color="#FFFFFF" />
+                        </View>
+                    </TouchableOpacity>
+                ),
                 tabBarShowLabel: true,
                 tabBarHideOnKeyboard: true,
             })}>
             <Tab.Screen
                 name="Cafeteria"
                 component={CafeteriaScreen}
-                options={{ title: 'Yemekhane' }}
+                options={{ title: 'Yemek' }}
             />
             <Tab.Screen
                 name="Announcements"
                 component={AnnouncementsScreen}
-                options={{ title: 'Duyurular' }}
+                options={{ title: 'Duyuru' }}
             />
             <Tab.Screen
                 name="HomeStack"
@@ -181,40 +167,31 @@ export const MainTabNavigator: React.FC = () => {
                     title: 'Ana Sayfa',
                     tabBarIcon: ({ focused }) => (
                         <View style={{
-                            width: 72,
-                            height: 72,
-                            borderRadius: 36,
-                            backgroundColor: '#101D42',
+                            width: 68,
+                            height: 68,
+                            borderRadius: 34,
+                            backgroundColor: '#FFFFFF',
                             justifyContent: 'center',
                             alignItems: 'center',
-                            marginBottom: Platform.OS === 'ios' ? 50 : 55,
-                            borderWidth: 1,
-                            borderColor: 'rgba(255, 255, 255, 0.15)',
-                            ...Platform.select({
-                                ios: {
-                                    shadowColor: '#000',
-                                    shadowOffset: { width: 0, height: 10 },
-                                    shadowOpacity: 0.4,
-                                    shadowRadius: 12,
-                                },
-                                android: {
-                                    elevation: 15,
-                                },
-                            }),
+                            marginBottom: Platform.OS === 'ios' ? 50 : 40,
+                            borderWidth: 1.5,
+                            borderColor: '#101D42', // En dıştaki ince mavi halka
                         }}>
                             <View style={{
-                                width: 58,
-                                height: 58,
-                                borderRadius: 29,
-                                backgroundColor: '#FFFFFF',
+                                width: 52,
+                                height: 52,
+                                borderRadius: 26,
+                                backgroundColor: focused ? '#101D42' : '#FFFFFF', // Tıklandığında Mavi Dolgu (Swap)
                                 justifyContent: 'center',
                                 alignItems: 'center',
-                                shadowColor: '#000',
-                                shadowOffset: { width: 0, height: 2 },
-                                shadowOpacity: 0.1,
-                                shadowRadius: 4,
+                                borderWidth: 1.5,
+                                borderColor: '#101D42',
                             }}>
-                                <Icon name={focused ? 'home' : 'home-outline'} size={28} color="#101D42" />
+                                <Icon
+                                    name="home" // Her zaman dolu ikon (Daha belirgin mavi)
+                                    size={28}
+                                    color={focused ? '#FFFFFF' : '#101D42'}
+                                />
                             </View>
                         </View>
                     ),
@@ -227,10 +204,10 @@ export const MainTabNavigator: React.FC = () => {
                 options={{ title: 'Kütüphane' }}
             />
             <Tab.Screen
-                name="Profile"
-                component={ProfileScreen}
-                options={{ title: 'Profil' }}
+                name="Settings"
+                component={SettingsScreen}
+                options={{ title: 'Ayarlar' }}
             />
-        </Tab.Navigator>
+        </Tab.Navigator >
     );
 };

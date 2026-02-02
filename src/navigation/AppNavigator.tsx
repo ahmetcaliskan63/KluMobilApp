@@ -13,6 +13,8 @@ import { AnnouncementDetailScreen } from '../screens/announcements/AnnouncementD
 import { useAuthStore } from '../store/authStore';
 import { RootStackParamList } from '../types/navigation';
 
+import { ProfileScreen } from '../screens/profile/ProfileScreen';
+
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const AppNavigator: React.FC = () => {
@@ -28,6 +30,7 @@ export const AppNavigator: React.FC = () => {
                 <Stack.Screen name="Auth" component={AuthNavigator} />
                 <Stack.Screen name="Main" component={MainTabNavigator} />
                 <Stack.Screen name="AnnouncementDetail" component={AnnouncementDetailScreen} />
+                <Stack.Screen name="Profile" component={ProfileScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );
