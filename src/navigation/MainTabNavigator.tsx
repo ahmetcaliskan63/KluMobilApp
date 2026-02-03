@@ -80,10 +80,13 @@ export const MainTabNavigator: React.FC = () => {
                     right: 0,
                     height: Platform.OS === 'ios' ? 95 : 75,
                     backgroundColor: '#101D42',
+                    borderTopLeftRadius: 30,
+                    borderTopRightRadius: 30,
                     borderTopWidth: 1,
                     borderTopColor: 'rgba(255, 255, 255, 0.05)',
                     paddingBottom: Platform.OS === 'ios' ? 35 : 12,
                     paddingTop: 12,
+                    overflow: 'hidden', // İçeriğin köşelerden taşmaması için
                 },
                 tabBarLabelStyle: {
                     fontSize: 10,
@@ -170,22 +173,22 @@ export const MainTabNavigator: React.FC = () => {
                             width: 68,
                             height: 68,
                             borderRadius: 34,
-                            backgroundColor: '#FFFFFF',
+                            backgroundColor: focused ? '#FFFFFF' : '#101D42', // Tıklandığında beyaza döner
                             justifyContent: 'center',
                             alignItems: 'center',
                             marginBottom: Platform.OS === 'ios' ? 50 : 40,
                             borderWidth: 1.5,
-                            borderColor: '#101D42', // En dıştaki ince mavi halka
+                            borderColor: focused ? '#101D42' : '#FFFFFF', // Tıklandığında maviye döner
                         }}>
                             <View style={{
                                 width: 52,
                                 height: 52,
                                 borderRadius: 26,
-                                backgroundColor: focused ? '#101D42' : '#FFFFFF', // Tıklandığında Mavi Dolgu (Swap)
+                                backgroundColor: focused ? '#101D42' : '#FFFFFF', // İç taraf tıklandığında mavi, değilse beyaz
                                 justifyContent: 'center',
                                 alignItems: 'center',
                                 borderWidth: 1.5,
-                                borderColor: '#101D42',
+                                borderColor: focused ? '#FFFFFF' : '#101D42',
                             }}>
                                 <Icon
                                     name="home" // Her zaman dolu ikon (Daha belirgin mavi)
