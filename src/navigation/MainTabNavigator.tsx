@@ -86,7 +86,6 @@ export const MainTabNavigator: React.FC = () => {
                     borderTopColor: 'rgba(255, 255, 255, 0.05)',
                     paddingBottom: Platform.OS === 'ios' ? 35 : 12,
                     paddingTop: 12,
-                    overflow: 'hidden', // İçeriğin köşelerden taşmaması için
                 },
                 tabBarLabelStyle: {
                     fontSize: 10,
