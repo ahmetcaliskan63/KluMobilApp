@@ -3,21 +3,22 @@ import { View, Platform, Text, TouchableOpacity, Dimensions, Image } from 'react
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { DashboardScreen } from '../screens/home/DashboardScreen';
-import { CafeteriaScreen } from '../screens/cafeteria/CafeteriaScreen';
-import { AnnouncementsScreen } from '../screens/announcements/AnnouncementsScreen';
-import { LibraryScreen } from '../screens/library/LibraryScreen';
-import { SettingsScreen } from '../screens/settings/SettingsScreen';
-import { MainTabParamList, RootStackParamList } from '../types/navigation';
-import { theme as defaultTheme } from '../config/theme';
-import { useAppTheme } from '../hooks/useAppTheme';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
-
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ScheduleScreen } from '../screens/home/ScheduleScreen';
 import { OBSScreen } from '../screens/home/OBSScreen';
 import { CourseDetailScreen } from '../screens/home/CourseDetailScreen';
 import { ExamDetailScreen } from '../screens/home/ExamDetailScreen';
-import { HomeStackParamList } from '../types/navigation';
+import { NewsDetailScreen } from '../screens/home/NewsDetailScreen';
+import { AnnouncementDetailScreen } from '../screens/home/AnnouncementDetailScreen';
+import { EventDetailScreen } from '../screens/home/EventDetailScreen';
+import { CafeteriaScreen } from '../screens/cafeteria/CafeteriaScreen';
+import { AnnouncementsScreen } from '../screens/announcements/AnnouncementsScreen';
+import { LibraryScreen } from '../screens/library/LibraryScreen';
+import { SettingsScreen } from '../screens/settings/SettingsScreen';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { useAppTheme } from '../hooks/useAppTheme';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { MainTabParamList, RootStackParamList, HomeStackParamList } from '../types/navigation';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 const HomeStack = createNativeStackNavigator<HomeStackParamList>();
@@ -29,6 +30,9 @@ const HomeStackNavigator = () => (
         <HomeStack.Screen name="OBS" component={OBSScreen} />
         <HomeStack.Screen name="CourseDetail" component={CourseDetailScreen} />
         <HomeStack.Screen name="ExamDetail" component={ExamDetailScreen} />
+        <HomeStack.Screen name="NewsDetail" component={NewsDetailScreen} />
+        <HomeStack.Screen name="AnnouncementDetail" component={AnnouncementDetailScreen} />
+        <HomeStack.Screen name="EventDetail" component={EventDetailScreen} />
     </HomeStack.Navigator>
 );
 
@@ -162,39 +166,45 @@ export const MainTabNavigator: React.FC = () => {
             <Tab.Screen
                 name="HomeStack"
                 component={HomeStackNavigator}
-                options={{
-                    title: 'Ana Sayfa',
-                    tabBarIcon: ({ focused }) => (
-                        <View style={{
-                            width: 68,
-                            height: 68,
-                            borderRadius: 34,
-                            backgroundColor: focused ? '#FFFFFF' : '#101D42', // Tıklandığında beyaza döner
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            marginBottom: Platform.OS === 'ios' ? 50 : 40,
-                            borderWidth: 1.5,
-                            borderColor: focused ? '#101D42' : '#FFFFFF', // Tıklandığında maviye döner
-                        }}>
+                options={({ route }) => {
+                    const routeName = getFocusedRouteNameFromRoute(route) ?? 'Dashboard';
+                    const hideHeader = ['NewsDetail', 'AnnouncementDetail', 'EventDetail', 'CourseDetail', 'ExamDetail', 'Schedule', 'OBS'].includes(routeName);
+
+                    return {
+                        title: 'Ana Sayfa',
+                        headerShown: !hideHeader,
+                        tabBarIcon: ({ focused }) => (
                             <View style={{
-                                width: 52,
-                                height: 52,
-                                borderRadius: 26,
-                                backgroundColor: focused ? '#101D42' : '#FFFFFF', // İç taraf tıklandığında mavi, değilse beyaz
+                                width: 68,
+                                height: 68,
+                                borderRadius: 34,
+                                backgroundColor: focused ? '#FFFFFF' : '#101D42',
                                 justifyContent: 'center',
                                 alignItems: 'center',
+                                marginBottom: Platform.OS === 'ios' ? 50 : 40,
                                 borderWidth: 1.5,
-                                borderColor: focused ? '#FFFFFF' : '#101D42',
+                                borderColor: focused ? '#101D42' : '#FFFFFF',
                             }}>
-                                <Icon
-                                    name="home" // Her zaman dolu ikon (Daha belirgin mavi)
-                                    size={28}
-                                    color={focused ? '#FFFFFF' : '#101D42'}
-                                />
+                                <View style={{
+                                    width: 52,
+                                    height: 52,
+                                    borderRadius: 26,
+                                    backgroundColor: focused ? '#101D42' : '#FFFFFF',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    borderWidth: 1.5,
+                                    borderColor: focused ? '#FFFFFF' : '#101D42',
+                                }}>
+                                    <Icon
+                                        name="home"
+                                        size={28}
+                                        color={focused ? '#FFFFFF' : '#101D42'}
+                                    />
+                                </View>
                             </View>
-                        </View>
-                    ),
-                    tabBarLabel: () => null,
+                        ),
+                        tabBarLabel: () => null,
+                    };
                 }}
             />
             <Tab.Screen
