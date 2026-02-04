@@ -6,8 +6,7 @@ export type RootStackParamList = {
     Splash: undefined;
     Auth: undefined;
     Main: undefined;
-    AnnouncementDetail: { announcementId: string };
-    Profile: undefined; // Profil global bir ekran oldu
+    Profile: undefined;
 };
 
 export type AuthStackParamList = {
@@ -29,4 +28,7 @@ export type HomeStackParamList = {
     CourseDetail: { courseId: string };
     ExamDetail: { examId: string };
     OBS: undefined;
+    NewsDetail: { newsId: string };
+    AnnouncementDetail: { announcementId: string };
+    EventDetail: { eventId: string };
 };
