@@ -70,7 +70,7 @@ export const DashboardScreen: React.FC = () => {
                 <Pressable
                     onPressIn={handlePressIn}
                     onPressOut={handlePressOut}
-                    onPress={() => { }}
+                    onPress={() => navigation.navigate('NewsDetail', { newsId: item.id })}
                     style={s.premiumNewsCard}
                 >
                     <Image source={{ uri: item.image }} style={s.premiumNewsImage} resizeMode="cover" />
@@ -109,7 +109,7 @@ export const DashboardScreen: React.FC = () => {
                     <Pressable
                         onPressIn={handlePressIn}
                         onPressOut={handlePressOut}
-                        onPress={() => { }}
+                        onPress={() => navigation.navigate('AnnouncementDetail', { announcementId: item.id })}
                         style={s.announcementInner}
                     >
                         <View style={[s.announcementIconWrapper, { backgroundColor: `${accentColor}10` }]}>
@@ -147,7 +147,7 @@ export const DashboardScreen: React.FC = () => {
                     <Pressable
                         onPressIn={handlePressIn}
                         onPressOut={handlePressOut}
-                        onPress={() => { }}
+                        onPress={() => navigation.navigate('EventDetail', { eventId: item.id })}
                         style={s.eventInner}
                     >
                         <Image source={{ uri: item.image }} style={s.eventImage} resizeMode="cover" />
