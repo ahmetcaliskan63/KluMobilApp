@@ -14,7 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Card } from '../../components/common';
 import { theme as defaultTheme, Theme } from '../../config/theme';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { RootStackParamList } from '../../types/navigation';
+import { HomeStackParamList } from '../../types/navigation';
 import { useAppTheme } from '../../hooks/useAppTheme';
 
 import { MOCK_ANNOUNCEMENTS, Announcement } from '../../data/mockData';
@@ -23,7 +23,7 @@ const CATEGORIES = ['Tümü', 'Genel', 'Akademik', 'Etkinlik'];
 
 export const AnnouncementsScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
-    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+    const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
     const { theme, isDarkMode } = useAppTheme();
     const s = styles(theme, isDarkMode);
     const [activeCategory, setActiveCategory] = useState('Tümü');
