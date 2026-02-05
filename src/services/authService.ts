@@ -16,7 +16,7 @@ export const authService = {
                         studentNumber: credentials.studentId,
                         firstName: 'Ahmet',
                         lastName: 'Çalışkan',
-                        email: 'ahmet@klu.edu.tr',
+                        email: credentials.studentId.includes('@') ? credentials.studentId : `${credentials.studentId}@ogr.klu.edu.tr`,
                         department: 'Yazılım Mühendisliği',
                         grade: 3,
                         profileImage: 'https://i.pravatar.cc/150?u=1',
