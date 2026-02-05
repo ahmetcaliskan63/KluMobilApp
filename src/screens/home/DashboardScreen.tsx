@@ -75,9 +75,6 @@ export const DashboardScreen: React.FC = () => {
                 >
                     <Image source={{ uri: item.image }} style={s.premiumNewsImage} resizeMode="cover" />
                     <View style={s.premiumNewsOverlay}>
-                        <View style={s.newsTagWrapper}>
-                            <Text style={s.newsTagText}>{item.location}</Text>
-                        </View>
                         <View style={s.newsContentBottom}>
                             <Text style={s.premiumNewsTitle} numberOfLines={2}>{item.title}</Text>
                             <View style={s.newsMetaRow}>
@@ -154,11 +151,6 @@ export const DashboardScreen: React.FC = () => {
                         style={s.eventInner}
                     >
                         <Image source={{ uri: item.image }} style={s.eventImage} resizeMode="cover" />
-                        <View style={s.eventOverlay}>
-                            <View style={s.eventTypeBadge}>
-                                <Text style={s.eventTypeText}>{item.type}</Text>
-                            </View>
-                        </View>
                         <View style={s.eventContent}>
                             <Text style={s.eventTitle} numberOfLines={2}>{item.title}</Text>
                             <View style={s.eventDetails}>
@@ -185,41 +177,32 @@ export const DashboardScreen: React.FC = () => {
             {/* Fixed Premium Segmented Control (Sticky Header) */}
             <View style={s.fixedTabContainer}>
                 <View style={s.segmentedControl}>
-                    {/* Sliding Indicator */}
-                    <Animated.View
-                        style={[
-                            s.slidingIndicator,
-                            { transform: [{ translateX }] }
-                        ]}
-                    />
                     {(['Haberler', 'Duyurular', 'Etkinlikler'] as const).map((tab, index) => {
-                        const getIcon = () => {
-                            switch (tab) {
-                                case 'Haberler': return 'newspaper-outline';
-                                case 'Duyurular': return 'notifications-outline';
-                                case 'Etkinlikler': return 'calendar-outline';
-                            }
-                        };
+                        const isActive = activeTab === tab;
                         return (
                             <TouchableOpacity
                                 key={tab}
                                 style={s.segmentButton}
                                 onPress={() => handleTabPress(tab, index)}
-                                activeOpacity={1}
+                                activeOpacity={0.7}
                             >
                                 <View style={s.tabContentWrapper}>
-                                    <Icon
-                                        name={getIcon()}
-                                        size={18}
-                                        color={activeTab === tab ? '#101D42' : '#8E8E93'}
-                                        style={s.tabIcon}
-                                    />
-                                    <Text style={[
-                                        s.segmentText,
-                                        activeTab === tab && s.segmentTextActive
-                                    ]}>
-                                        {tab}
-                                    </Text>
+                                    <View style={s.textIndicatorWrapper}>
+                                        <Text style={[
+                                            s.segmentText,
+                                            isActive && s.segmentTextActive
+                                        ]}>
+                                            {tab}
+                                        </Text>
+                                        {isActive && (
+                                            <Animated.View
+                                                style={[
+                                                    s.activeIndicatorLine,
+                                                    { width: index === 0 ? 30 : index === 1 ? 40 : 35 }
+                                                ]}
+                                            />
+                                        )}
+                                    </View>
                                 </View>
                             </TouchableOpacity>
                         );
@@ -254,55 +237,25 @@ const styles = (theme: Theme) => StyleSheet.create({
     },
     scrollContent: {
         padding: 20,
-        paddingTop: 10,
+        paddingTop: 5,
     },
     fixedTabContainer: {
         backgroundColor: '#FFFFFF',
         paddingHorizontal: 20,
-        paddingTop: 10,
-        paddingBottom: 15,
+        paddingTop: 0,
+        paddingBottom: 2, // Fine-tuned
         zIndex: 100,
-        ...Platform.select({
-            ios: {
-                shadowColor: '#000000',
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.05,
-                shadowRadius: 10,
-            },
-            android: {
-                elevation: 4,
-            },
-        }),
+        borderBottomWidth: 1,
+        borderBottomColor: 'rgba(0,0,0,0.03)', // Extremely subtle line
     },
     segmentedControl: {
         flexDirection: 'row',
-        backgroundColor: '#F2F2F7',
-        borderRadius: 16,
+        backgroundColor: 'transparent',
+        borderRadius: 18,
         padding: 4,
         position: 'relative',
-        height: 52, // Fixed height for perfect centering
-    },
-    slidingIndicator: {
-        position: 'absolute',
-        width: (width - 48) / 3,
-        height: '84%',
-        backgroundColor: '#FFFFFF', // White background
-        borderRadius: 12,
-        top: '8%',
-        left: 4,
-        borderWidth: 2,
-        borderColor: '#101D42', // Blue border
-        ...Platform.select({
-            ios: {
-                shadowColor: '#000000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.05,
-                shadowRadius: 4,
-            },
-            android: {
-                elevation: 2,
-            },
-        }),
+        height: 40, // Reduced from 50
+        alignItems: 'center',
     },
     segmentButton: {
         flex: 1,
@@ -317,59 +270,69 @@ const styles = (theme: Theme) => StyleSheet.create({
         justifyContent: 'center',
         gap: 8,
         height: '100%',
-        width: '100%',
-    },
-    tabIcon: {
-        // Center alignment handled by wrapper
     },
     segmentText: {
-        fontSize: moderateScale(12),
-        fontWeight: '700',
+        fontSize: moderateScale(14),
+        fontWeight: '500',
         color: '#8E8E93',
-        letterSpacing: -0.2,
-        marginTop: -2, // Fine-tuned for vertical centering
-        includeFontPadding: false, // Prevents Android font padding issues
+        letterSpacing: 0.3,
     },
     segmentTextActive: {
-        color: '#101D42', // Blue text for outlined style
-        fontWeight: '800',
+        color: theme.colors.primary,
+        fontWeight: '700',
+        fontSize: moderateScale(14.5),
+    },
+    textIndicatorWrapper: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100%',
+    },
+    activeIndicatorLine: {
+        height: 2.5,
+        backgroundColor: theme.colors.primary,
+        borderRadius: 2,
+        marginTop: 4,
+        position: 'absolute',
+        bottom: 2,
     },
     contentList: {
         paddingTop: 10,
     },
     premiumNewsCard: {
         marginBottom: 25,
-        height: 280,
-        borderRadius: 30,
-        backgroundColor: '#FFFFFF',
+        height: 300, // Slightly taller for more impact
+        borderRadius: 32, // More premium rounded corners
+        backgroundColor: '#000',
         overflow: 'hidden',
-        ...theme.shadows.medium,
+        ...theme.shadows.large, // Stronger shadow
     },
     premiumNewsImage: {
         width: '100%',
         height: '100%',
         position: 'absolute',
+        opacity: 0.95, // Let some black show through for depth
     },
     premiumNewsOverlay: {
         flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.3)',
-        justifyContent: 'space-between',
-        padding: 20,
+        backgroundColor: 'rgba(0,0,0,0.25)', // Smooth subtle dimming
+        justifyContent: 'flex-end', // Aligned to bottom
+        padding: 24,
     },
     newsTagWrapper: {
         alignSelf: 'flex-start',
-        backgroundColor: 'rgba(255,255,255,0.2)',
-        paddingHorizontal: 12,
-        paddingVertical: 6,
+        backgroundColor: 'rgba(255,255,255,0.12)', // Subtle glass effect
+        paddingHorizontal: 14,
+        paddingVertical: 8,
         borderRadius: 12,
         borderWidth: 1,
-        borderColor: 'rgba(255,255,255,0.3)',
+        borderColor: 'rgba(255,255,255,0.25)',
     },
     newsTagText: {
         color: '#FFFFFF',
-        fontSize: moderateScale(11),
-        fontWeight: '700',
+        fontSize: moderateScale(10.5),
+        fontWeight: '800',
         textTransform: 'uppercase',
+        letterSpacing: 0.8, // More professional spacing
     },
     newsContentBottom: {
         gap: 12,
@@ -405,19 +368,21 @@ const styles = (theme: Theme) => StyleSheet.create({
     },
     announcementCard: {
         marginBottom: 16,
-        borderRadius: 24,
+        borderRadius: 28, // Increased for a more modern, pill-like feel
         backgroundColor: '#FFFFFF',
         ...Platform.select({
             ios: {
                 shadowColor: '#000000',
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.05,
-                shadowRadius: 12,
+                shadowOffset: { width: 0, height: 6 },
+                shadowOpacity: 0.08,
+                shadowRadius: 16.5,
             },
             android: {
-                elevation: 3,
+                elevation: 4,
             },
         }),
+        borderWidth: 1,
+        borderColor: 'rgba(0,0,0,0.03)', // Subtle border for definition
     },
     announcementInner: {
         flexDirection: 'row',
@@ -425,12 +390,13 @@ const styles = (theme: Theme) => StyleSheet.create({
         alignItems: 'center',
     },
     announcementIconWrapper: {
-        width: 52,
-        height: 52,
-        borderRadius: 16,
+        width: 48, // Slightly smaller
+        height: 48,
+        borderRadius: 14,
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: 16,
+        borderWidth: 1.5, // Added subtle outline for icon
     },
     announcementInfo: {
         flex: 1,
@@ -459,12 +425,12 @@ const styles = (theme: Theme) => StyleSheet.create({
         fontWeight: '600',
     },
     announcementTitle: {
-        fontSize: moderateScale(14),
+        fontSize: moderateScale(15), // Slightly larger
         fontWeight: '700',
         color: '#1C1C1E',
-        lineHeight: 20,
-        marginBottom: 10,
-        letterSpacing: -0.2,
+        lineHeight: 22,
+        marginBottom: 12,
+        letterSpacing: -0.3,
     },
     announcementFooter: {
         flexDirection: 'row',
@@ -485,7 +451,19 @@ const styles = (theme: Theme) => StyleSheet.create({
         borderRadius: 24,
         backgroundColor: '#FFFFFF',
         overflow: 'hidden',
-        ...theme.shadows.medium,
+        borderWidth: 1,
+        borderColor: 'rgba(0,0,0,0.03)',
+        ...Platform.select({
+            ios: {
+                shadowColor: '#000000',
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.05,
+                shadowRadius: 12,
+            },
+            android: {
+                elevation: 3,
+            },
+        }),
     },
     eventInner: {
         height: 120,
@@ -519,16 +497,18 @@ const styles = (theme: Theme) => StyleSheet.create({
         justifyContent: 'center',
     },
     eventTitle: {
-        fontSize: moderateScale(16),
-        fontWeight: '800',
+        fontSize: moderateScale(15),
+        fontWeight: '700',
         color: '#1C1C1E',
         marginBottom: 8,
+        lineHeight: 20,
+        letterSpacing: -0.2,
     },
     eventDetails: {
         gap: 6,
     },
     eventDetailText: {
-        fontSize: moderateScale(12),
+        fontSize: moderateScale(11.5),
         color: '#8E8E93',
         fontWeight: '600',
     },
