@@ -38,6 +38,7 @@ export const MainTabNavigator: React.FC = () => {
 
     return (
         <Tab.Navigator
+            initialRouteName="HomeStack"
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName = '';
@@ -80,8 +81,6 @@ export const MainTabNavigator: React.FC = () => {
                     right: 0,
                     height: Platform.OS === 'ios' ? 95 : 75,
                     backgroundColor: '#101D42',
-                    borderTopLeftRadius: 30,
-                    borderTopRightRadius: 30,
                     borderTopWidth: 1,
                     borderTopColor: 'rgba(255, 255, 255, 0.05)',
                     paddingBottom: Platform.OS === 'ios' ? 35 : 12,
@@ -95,14 +94,12 @@ export const MainTabNavigator: React.FC = () => {
                 },
                 headerShown: true,
                 headerStyle: {
-                    backgroundColor: '#101D42',
-                    height: Platform.OS === 'ios' ? 120 : 110,
-                    elevation: 8,
-                    shadowColor: '#000',
-                    shadowOffset: { width: 0, height: 4 },
-                    shadowOpacity: 0.15,
-                    shadowRadius: 12,
-                    borderBottomWidth: 0,
+                    backgroundColor: '#182958', // Reverted to official primary color
+                    height: Platform.OS === 'ios' ? 115 : 100, // Slightly more compact
+                    elevation: 0, // Manual shadow via border or subtle effect
+                    shadowOpacity: 0,
+                    borderBottomWidth: 1,
+                    borderBottomColor: 'rgba(255, 255, 255, 0.08)', // Subtle separator
                 },
                 headerTitleStyle: {
                     fontWeight: '900',
