@@ -2,6 +2,28 @@
  * Data Model Type Definitions
  */
 
+export interface Attendance {
+    courseName: string;
+    courseCode: string;
+    attended: number;
+    total: number;
+    limit: number;
+    risk: 'low' | 'medium' | 'high';
+}
+
+export interface GraduationProgress {
+    completedCredits: number;
+    totalRequiredCredits: number;
+    completedCourses: number;
+    totalRequiredCourses: number;
+    gpaTarget: number;
+}
+
+export interface GPATrend {
+    semester: string;
+    gpa: number;
+}
+
 export interface User {
     id: string;
     email: string;
@@ -11,6 +33,9 @@ export interface User {
     department: string;
     grade: number;
     profileImage?: string;
+    attendance?: Attendance[];
+    graduationProgress?: GraduationProgress;
+    gpaHistory?: GPATrend[];
 }
 
 export interface LoginCredentials {
