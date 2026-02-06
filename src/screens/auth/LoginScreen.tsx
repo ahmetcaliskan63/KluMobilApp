@@ -1,21 +1,14 @@
-/**
- * Login Screen - Professional Redesign
- * Kırklareli Üniversitesi Mobil Uygulama Giriş Ekranı
- */
-
 import React, { useState } from 'react';
 import {
     View,
     Text,
     StyleSheet,
     Image,
-    KeyboardAvoidingView,
     Platform,
     ScrollView,
     Alert,
     TouchableOpacity,
     Animated,
-    Dimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -23,16 +16,8 @@ import { Button, Input } from '../../components/common';
 import { useAuthStore } from '../../store/authStore';
 import { useAppTheme } from '../../hooks/useAppTheme';
 import { Theme } from '../../config/theme';
+import { viewport, moderateScale, scale, verticalScale } from '../../utils/responsive';
 
-const { width, height } = Dimensions.get('window');
-
-// Standard Screen Dimensions (iPhone 11 as base: 375x812)
-const guidelineBaseWidth = 375;
-const guidelineBaseHeight = 812;
-
-const horizontalScale = (size: number) => (width / guidelineBaseWidth) * size;
-const verticalScale = (size: number) => (height / guidelineBaseHeight) * size;
-const moderateScale = (size: number, factor = 0.5) => size + (horizontalScale(size) - size) * factor;
 
 export const LoginScreen: React.FC = () => {
     const navigation = useNavigation();
@@ -227,7 +212,7 @@ const styles = (theme: Theme) => StyleSheet.create({
     },
     scrollContent: {
         flexGrow: 1,
-        paddingHorizontal: theme.spacing.lg,
+        paddingHorizontal: scale(20),
     },
     content: {
         flex: 1,
@@ -311,12 +296,12 @@ const styles = (theme: Theme) => StyleSheet.create({
     },
     eyeButton: {
         position: 'absolute',
-        right: horizontalScale(10),
+        right: scale(10),
         top: 0,
         bottom: 0,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingHorizontal: horizontalScale(10),
+        paddingHorizontal: scale(10),
         zIndex: 10,
     },
     eyeIcon: {
