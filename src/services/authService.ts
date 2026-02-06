@@ -20,6 +20,25 @@ export const authService = {
                         department: 'Yazılım Mühendisliği',
                         grade: 3,
                         profileImage: 'https://i.pravatar.cc/150?u=1',
+                        attendance: [
+                            { courseName: 'Calculus I', courseCode: 'MAT101', attended: 24, total: 28, limit: 8, risk: 'low' },
+                            { courseName: 'Physics I', courseCode: 'FIZ101', attended: 18, total: 28, limit: 8, risk: 'medium' },
+                            { courseName: 'Literature', courseCode: 'TUR101', attended: 24, total: 28, limit: 8, risk: 'high' },
+                        ],
+                        graduationProgress: {
+                            completedCredits: 180,
+                            totalRequiredCredits: 240,
+                            completedCourses: 32,
+                            totalRequiredCourses: 40,
+                            gpaTarget: 3.50,
+                        },
+                        gpaHistory: [
+                            { semester: '1. Güz', gpa: 3.20 },
+                            { semester: '1. Bahar', gpa: 3.35 },
+                            { semester: '2. Güz', gpa: 3.28 },
+                            { semester: '2. Bahar', gpa: 3.45 },
+                            { semester: '3. Güz', gpa: 3.42 },
+                        ]
                     },
                     token: 'mock-jwt-token-' + Date.now(),
                 });
