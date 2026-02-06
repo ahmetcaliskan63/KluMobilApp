@@ -2,41 +2,40 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform, Switch } from 'react-native';
 import { useAppTheme } from '../../hooks/useAppTheme';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { MenuItem } from '../../components/common/MenuItem';
+import { MenuSection } from '../../components/common/MenuSection';
+import { useThemeStore } from '../../store/themeStore';
 
 export const SettingsScreen: React.FC = () => {
-    const { theme, isDarkMode } = useAppTheme();
-
-    const renderSettingItem = (icon: string, title: string, subtitle: string, rightElement?: React.ReactNode) => (
-        <TouchableOpacity style={[styles.itemContainer, { borderBottomColor: theme.colors.border }]}>
-            <View style={[styles.iconContainer, { backgroundColor: theme.colors.card }]}>
-                <Icon name={icon} size={22} color={theme.colors.primary} />
-            </View>
-            <View style={styles.textContainer}>
-                <Text style={[styles.title, { color: theme.colors.text }]}>{title}</Text>
-                <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>{subtitle}</Text>
-            </View>
-            {rightElement || <Icon name="chevron-forward" size={20} color={theme.colors.textSecondary} />}
-        </TouchableOpacity>
-    );
+    const { theme } = useAppTheme();
+    const { isDarkMode, toggleDarkMode } = useThemeStore();
 
     return (
         <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
             <ScrollView showsVerticalScrollIndicator={false}>
-                <View style={styles.section}>
-                    <Text style={[styles.sectionTitle, { color: theme.colors.primary }]}>Uygulama Ayarları</Text>
-                    {renderSettingItem('moon-outline', 'Koyu Tema', 'Uygulama görünümünü değiştir',
-                        <Switch value={isDarkMode} onValueChange={() => { }} trackColor={{ true: theme.colors.primary }} />
-                    )}
-                    {renderSettingItem('notifications-outline', 'Bildirimler', 'Duyuru ve mesaj bildirimleri')}
-                    {renderSettingItem('language-outline', 'Dil', 'Türkçe (TR)')}
-                </View>
+                <MenuSection title="Uygulama Ayarları" theme={theme}>
+                    <MenuItem
+                        icon="moon-outline"
+                        title="Koyu Tema"
+                        subtitle="Uygulama görünümünü değiştir"
+                        theme={theme}
+                        rightElement={
+                            <Switch
+                                value={isDarkMode}
+                                onValueChange={toggleDarkMode}
+                                trackColor={{ true: theme.colors.primary }}
+                            />
+                        }
+                    />
+                    <MenuItem icon="notifications-outline" title="Bildirimler" subtitle="Duyuru ve mesaj bildirimleri" theme={theme} />
+                    <MenuItem icon="language-outline" title="Dil" subtitle="Türkçe (TR)" theme={theme} />
+                </MenuSection>
 
-                <View style={styles.section}>
-                    <Text style={[styles.sectionTitle, { color: theme.colors.primary }]}>Destek</Text>
-                    {renderSettingItem('help-circle-outline', 'Yardım Merkezi', 'Sıkça sorulan sorular')}
-                    {renderSettingItem('mail-outline', 'Geri Bildirim', 'Bize ulaşın')}
-                    {renderSettingItem('information-circle-outline', 'Hakkında', 'Sürüm 1.0.0')}
-                </View>
+                <MenuSection title="Destek" theme={theme}>
+                    <MenuItem icon="help-circle-outline" title="Yardım Merkezi" subtitle="Sıkça sorulan sorular" theme={theme} />
+                    <MenuItem icon="mail-outline" title="Geri Bildirim" subtitle="Bize ulaşın" theme={theme} />
+                    <MenuItem icon="information-circle-outline" title="Hakkında" subtitle="Sürüm 1.0.0" theme={theme} />
+                </MenuSection>
 
                 <TouchableOpacity style={styles.logoutButton}>
                     <Icon name="log-out-outline" size={20} color="#FF3B30" />
