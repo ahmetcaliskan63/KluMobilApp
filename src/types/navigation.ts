@@ -7,6 +7,8 @@ export type RootStackParamList = {
     Auth: undefined;
     Main: undefined;
     Profile: undefined;
+    Announcements: undefined;
+    DigitalID: undefined;
 };
 
 export type AuthStackParamList = {
@@ -15,15 +17,15 @@ export type AuthStackParamList = {
 };
 
 export type MainTabParamList = {
-    HomeStack: undefined;
+    HomeStack: { screen?: keyof HomeStackParamList; params?: any } | undefined;
     Cafeteria: undefined;
-    Announcements: undefined;
     Library: undefined;
-    Settings: undefined; // Ayarlar yeni sekme olarak eklendi
+    Settings: undefined;
+    Profile: undefined;
 };
 
 export type HomeStackParamList = {
-    Dashboard: undefined;
+    Dashboard: { resetToNews?: number } | undefined;
     Schedule: undefined;
     CourseDetail: { courseId: string };
     ExamDetail: { examId: string };
