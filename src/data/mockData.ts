@@ -204,3 +204,26 @@ export const MOCK_STATS = {
     gpa: '3.42',
     totalCredits: '180',
 };
+
+export const MOCK_ATTENDANCE = [
+    { courseName: 'Calculus I', courseCode: 'MAT101', attended: 24, total: 28, limit: 8, risk: 'low' },
+    { courseName: 'Physics I', courseCode: 'FIZ101', attended: 18, total: 28, limit: 8, risk: 'medium' },
+    { courseName: 'Algorithms', courseCode: 'BIL201', attended: 26, total: 28, limit: 8, risk: 'low' },
+    { courseName: 'Literature', courseCode: 'TUR101', attended: 20, total: 28, limit: 8, risk: 'high' },
+];
+
+export const MOCK_GRADUATION_PROGRESS = {
+    completedCredits: 180,
+    totalRequiredCredits: 240,
+    completedCourses: 32,
+    totalRequiredCourses: 40,
+    gpaTarget: 3.50,
+};
+
+export const MOCK_GPA_HISTORY = [
+    { semester: '1. Güz', gpa: 3.20 },
+    { semester: '1. Bahar', gpa: 3.35 },
+    { semester: '2. Güz', gpa: 3.28 },
+    { semester: '2. Bahar', gpa: 3.45 },
+    { semester: '3. Güz', gpa: 3.42 },
+];
