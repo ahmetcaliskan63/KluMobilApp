@@ -8,17 +8,26 @@ import {
     Alert,
     StatusBar,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import { theme as defaultTheme, Theme } from '../../config/theme';
+import LinearGradient from 'react-native-linear-gradient';
 import { useAuthStore } from '../../store/authStore';
 import { useThemeStore } from '../../store/themeStore';
 import { useAppTheme } from '../../hooks/useAppTheme';
-import { MOCK_STATS } from '../../data/mockData';
+import { MOCK_STATS, MOCK_GRADUATION_PROGRESS, MOCK_ATTENDANCE } from '../../data/mockData';
+import { viewport, moderateScale, scale, verticalScale } from '../../utils/responsive';
+import { MenuItem } from '../../components/common/MenuItem';
+import { MenuSection } from '../../components/common/MenuSection';
+import { DigitalPassportCard } from '../../components/profile/DigitalPassportCard';
+import { GraduationStatusBar } from '../../components/profile/GraduationStatusBar';
+import { AttendanceRiskCard } from '../../components/profile/AttendanceRiskCard';
 
 export const ProfileScreen: React.FC = () => {
     const { user, logout } = useAuthStore();
     const { isDarkMode, toggleDarkMode } = useThemeStore();
+    const navigation = useNavigation();
     const insets = useSafeAreaInsets();
     const { theme } = useAppTheme();
     const s = styles(theme);
@@ -34,94 +43,180 @@ export const ProfileScreen: React.FC = () => {
         );
     };
 
-    const renderSettingItem = (icon: string, title: string, color: string = theme.colors.text, onPress?: () => void, rightElement?: React.ReactNode) => (
-        <TouchableOpacity style={s.settingItem} onPress={onPress}>
-            <View style={s.settingLeft}>
-                <View style={[s.iconBg, { backgroundColor: color + '15' }]}>
-                    <Icon name={icon} size={22} color={color} />
-                </View>
-                <Text style={[s.settingTitle, { color }]}>{title}</Text>
-            </View>
-            {rightElement || <Icon name="chevron-forward" size={20} color={theme.colors.textLight} />}
-        </TouchableOpacity>
-    );
+    // Senior Refactoring: renderSettingItem replaced by MenuItem component
 
     return (
         <View style={s.container}>
-            <StatusBar barStyle="light-content" backgroundColor="#101D42" />
-            <ScrollView showsVerticalScrollIndicator={false}>
-                {/* Profile Avatar Section */}
-                <View style={s.avatarSection}>
-                    <View style={s.avatarContainer}>
-                        <View style={s.avatar}>
-                            <Text style={s.avatarText}>
-                                {user?.firstName?.charAt(0)}{user?.lastName?.charAt(0)}
-                            </Text>
+            <StatusBar barStyle="light-content" backgroundColor="#0F172A" />
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scrollContent}>
+                {/* 0. Premium Header Section */}
+                <LinearGradient
+                    colors={['#0F172A', '#1E293B']}
+                    style={s.headerGradient}
+                >
+                    <SafeAreaView style={{ paddingTop: insets.top }}>
+                        <View style={s.headerTop}>
+                            <View style={s.headerAvatarContainer}>
+                                <View style={s.avatarRim}>
+                                    <View style={s.avatarBox}>
+                                        <Text style={s.avatarInitial}>
+                                            {user?.firstName?.charAt(0)}{user?.lastName?.charAt(0)}
+                                        </Text>
+                                    </View>
+                                </View>
+                                <TouchableOpacity style={s.cameraButton}>
+                                    <Icon name="camera" size={14} color="#FFFFFF" />
+                                </TouchableOpacity>
+                            </View>
+
+                            <View style={s.headerInfo}>
+                                <Text style={s.userNameText}>{user?.firstName} {user?.lastName}</Text>
+                                <View style={s.deptInfo}>
+                                    <Icon name="school" size={14} color="rgba(255,255,255,0.6)" />
+                                    <Text style={s.deptNameText}>{user?.department}</Text>
+                                </View>
+                            </View>
+
+                            <TouchableOpacity style={s.notificationBtn}>
+                                <Icon name="notifications-outline" size={24} color="#FFFFFF" />
+                                <View style={s.notificationDot} />
+                            </TouchableOpacity>
                         </View>
-                        <TouchableOpacity style={s.editButton}>
-                            <Icon name="camera" size={16} color="#FFFFFF" />
-                        </TouchableOpacity>
-                    </View>
-                    <Text style={s.userName}>{user?.firstName} {user?.lastName}</Text>
-                    <Text style={s.studentNumber}>{user?.studentNumber}</Text>
-                    <View style={s.departmentBadge}>
-                        <Text style={s.departmentText}>{user?.department}</Text>
-                    </View>
-                </View>
 
-                {/* Stats Section */}
-                <View style={s.statsContainer}>
-                    <View style={s.statItem}>
-                        <Text style={s.statLabel}>Sınıf</Text>
-                        <Text style={s.statValue}>{user?.grade}. Sınıf</Text>
-                    </View>
-                    <View style={s.statDivider} />
-                    <View style={s.statItem}>
-                        <Text style={s.statLabel}>Genel Ortalama</Text>
-                        <Text style={s.statValue}>{MOCK_STATS.gpa}</Text>
-                    </View>
-                    <View style={s.statDivider} />
-                    <View style={s.statItem}>
-                        <Text style={s.statLabel}>Kredi</Text>
-                        <Text style={s.statValue}>{MOCK_STATS.totalCredits}</Text>
-                    </View>
-                </View>
-
-                {/* Settings Section */}
-                <View style={s.section}>
-                    <Text style={s.sectionTitle}>Akademik Bilgiler</Text>
-                    {renderSettingItem('school-outline', 'Ders Programım', theme.colors.primary)}
-                    {renderSettingItem('document-text-outline', 'Transkript Belleği', theme.colors.primary)}
-                    {renderSettingItem('calendar-outline', 'Akademik Takvim', theme.colors.primary)}
-                </View>
-
-                <View style={s.section}>
-                    <Text style={s.sectionTitle}>Uygulama Ayarları</Text>
-                    {renderSettingItem('notifications-outline', 'Bildirim Ayarları', theme.colors.text)}
-                    {renderSettingItem(
-                        isDarkMode ? 'moon' : 'sunny-outline',
-                        'Karanlık Mod',
-                        theme.colors.text,
-                        toggleDarkMode,
-                        <View style={{ pointerEvents: 'none' }}>
-                            <Icon
-                                name={isDarkMode ? 'checkbox' : 'square-outline'}
-                                size={22}
-                                color={theme.colors.primary}
-                            />
+                        {/* Quick Metrics Deck (Hyper-Premium Glassmorphism) */}
+                        <View style={s.metricsDeckWrapper}>
+                            <LinearGradient
+                                colors={['rgba(255,255,255,0.08)', 'rgba(255,255,255,0.03)']}
+                                style={s.metricsDeck}
+                            >
+                                <View style={s.metricItem}>
+                                    <Text style={s.metricValue}>3.42</Text>
+                                    <Text style={s.metricLabel}>GANO</Text>
+                                </View>
+                                <View style={s.metricDivider} />
+                                <View style={s.metricItem}>
+                                    <Text style={s.metricValue}>184</Text>
+                                    <Text style={s.metricLabel}>AKTS</Text>
+                                </View>
+                                <View style={s.metricDivider} />
+                                <View style={s.metricItem}>
+                                    <Text style={s.metricValue}>4 / 8</Text>
+                                    <Text style={s.metricLabel}>YARIYIL</Text>
+                                </View>
+                            </LinearGradient>
                         </View>
-                    )}
-                    {renderSettingItem('shield-checkmark-outline', 'Güvenlik ve Gizlilik', theme.colors.text)}
+
+                        {/* Achievement Badges Section (Subtle Polish) */}
+                        <View style={s.badgeSection}>
+                            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.badgeScroll}>
+                                <TouchableOpacity activeOpacity={0.7} style={[s.badgeItem, { backgroundColor: '#FFD70015', borderColor: '#FFD70030', borderWidth: 1 }]}>
+                                    <Icon name="ribbon" size={18} color="#FFD700" />
+                                    <Text style={[s.badgeText, { color: '#FFD700' }]}>High Honor</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity activeOpacity={0.7} style={[s.badgeItem, { backgroundColor: '#00D1FF15', borderColor: '#00D1FF30', borderWidth: 1 }]}>
+                                    <Icon name="terminal" size={18} color="#00D1FF" />
+                                    <Text style={[s.badgeText, { color: '#00D1FF' }]}>Tech Enthusiast</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity activeOpacity={0.7} style={[s.badgeItem, { backgroundColor: '#FF4D4D15', borderColor: '#FF4D4D30', borderWidth: 1 }]}>
+                                    <Icon name="flash" size={18} color="#FF4D4D" />
+                                    <Text style={[s.badgeText, { color: '#FF4D4D' }]}>Fast Learner</Text>
+                                </TouchableOpacity>
+                            </ScrollView>
+                        </View>
+                    </SafeAreaView>
+                </LinearGradient>
+                {/* 1. Digital Passport Launcher (Kimlik Girişi) */}
+                <TouchableOpacity
+                    style={s.digitalIDLauncher}
+                    activeOpacity={0.9}
+                    onPress={() => navigation.navigate('DigitalID' as never)}
+                >
+                    <LinearGradient
+                        colors={['#0F172A', '#1E293B']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={s.launcherGradient}
+                    >
+                        <View style={s.launcherContent}>
+                            <View style={s.launcherLeft}>
+                                <View style={s.launcherIconBox}>
+                                    <Icon name="id-card-outline" size={24} color="#FFFFFF" />
+                                </View>
+                                <View>
+                                    <Text style={s.launcherTitle}>DİJİTAL KİMLİK</Text>
+                                    <Text style={s.launcherSubtitle}>Üniversite kimlik kartını görüntüle</Text>
+                                </View>
+                            </View>
+                            <Icon name="chevron-forward" size={20} color="rgba(255,255,255,0.4)" />
+                        </View>
+                    </LinearGradient>
+                </TouchableOpacity>
+
+                {/* 2. Graduation Roadmap (Mezuniyet Yol Haritası - Enhanced) */}
+                <View style={s.sectionHeader}>
+                    <Text style={s.sectionTitleText}>Mezuniyet Yol Haritası</Text>
+                    <TouchableOpacity>
+                        <Text style={s.sectionActionText}>Detaylar</Text>
+                    </TouchableOpacity>
+                </View>
+                {user?.graduationProgress && (
+                    <GraduationStatusBar progress={user.graduationProgress} theme={theme} />
+                )}
+
+                {/* 3. Academic Insights (GANO Trend & Risk) */}
+                <View style={s.sectionHeader}>
+                    <Text style={s.sectionTitleText}>Akademik Analiz</Text>
+                    <Icon name="trending-up" size={18} color={theme.colors.primary} />
+                </View>
+                <View style={s.insightCard}>
+                    <View style={s.insightHeader}>
+                        <View>
+                            <Text style={s.insightMainValue}>+0.12</Text>
+                            <Text style={s.insightSubLabel}>Geçen döneme göre artış</Text>
+                        </View>
+                        <View style={s.sparklineContainer}>
+                            {[40, 60, 45, 80, 55, 90, 65, 100].map((h, i) => (
+                                <View
+                                    key={i}
+                                    style={[s.sparkBar, { height: verticalScale(h / 3), backgroundColor: i === 7 ? '#3B82F6' : 'rgba(59, 130, 246, 0.2)' }]}
+                                />
+                            ))}
+                        </View>
+                    </View>
                 </View>
 
-                <View style={s.section}>
-                    <Text style={s.sectionTitle}>Destek</Text>
-                    {renderSettingItem('help-circle-outline', 'Yardım Merkezi', theme.colors.text)}
-                    {renderSettingItem('information-circle-outline', 'Hakkımızda', theme.colors.text)}
-                    {renderSettingItem('log-out-outline', 'Çıkış Yap', theme.colors.error, handleLogout)}
-                </View>
+                {/* 4. Attendance Risk (Devamsizlik) */}
+                {user?.attendance && (
+                    <AttendanceRiskCard data={user.attendance} theme={theme} />
+                )}
 
-                <View style={{ height: 40 }} />
+
+                {/* 5. Academic Section (Menu) */}
+                <MenuSection title="Akademik Detaylar" theme={theme}>
+                    <MenuItem
+                        icon="school-outline"
+                        title="Ders Programım"
+                        subtitle="Haftalık ders saati ve yerleri"
+                        color={theme.colors.primary}
+                        theme={theme}
+                    />
+                    <MenuItem
+                        icon="document-text-outline"
+                        title="Transkript Belgesi"
+                        subtitle="Resmi olmayan not dökümü"
+                        color={theme.colors.primary}
+                        theme={theme}
+                    />
+                    <MenuItem
+                        icon="calendar-outline"
+                        title="Akademik Takvim"
+                        subtitle="2025-2026 Eğitim yılı tarihleri"
+                        color={theme.colors.primary}
+                        theme={theme}
+                    />
+                </MenuSection>
+
+                <View style={{ height: verticalScale(100) }} />
             </ScrollView>
         </View>
     );
@@ -130,25 +225,259 @@ export const ProfileScreen: React.FC = () => {
 const styles = (theme: Theme) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: theme.colors.surface,
+        backgroundColor: '#F3F4F6',
     },
-    avatarSection: {
-        backgroundColor: theme.colors.primary,
-        paddingBottom: 40,
-        paddingTop: 20,
-        borderBottomLeftRadius: 40,
-        borderBottomRightRadius: 40,
+    headerGradient: {
+        borderBottomLeftRadius: moderateScale(30),
+        borderBottomRightRadius: moderateScale(30),
+        paddingBottom: verticalScale(30),
+    },
+    headerTop: {
+        flexDirection: 'row',
         alignItems: 'center',
+        paddingHorizontal: scale(20),
+        marginTop: verticalScale(10),
+    },
+    headerAvatarContainer: {
+        position: 'relative',
+    },
+    avatarRim: {
+        width: scale(74),
+        height: scale(74),
+        borderRadius: scale(37),
+        borderWidth: 2,
+        borderColor: 'rgba(255,255,255,0.2)',
+        padding: 3,
+    },
+    avatarBox: {
+        flex: 1,
+        borderRadius: scale(34),
+        backgroundColor: '#FFFFFF',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    avatarInitial: {
+        fontSize: moderateScale(24),
+        fontWeight: 'bold',
+        color: theme.colors.primary,
+    },
+    cameraButton: {
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        backgroundColor: '#3B82F6',
+        width: scale(24),
+        height: scale(24),
+        borderRadius: scale(12),
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 2,
+        borderColor: '#0F172A',
+    },
+    headerInfo: {
+        flex: 1,
+        marginLeft: scale(16),
+    },
+    userNameText: {
+        fontSize: moderateScale(20),
+        fontWeight: 'bold',
+        color: '#FFFFFF',
+        letterSpacing: 0.5,
+    },
+    deptInfo: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+        marginTop: 4,
+    },
+    deptNameText: {
+        fontSize: moderateScale(12),
+        color: 'rgba(255,255,255,0.6)',
+        fontWeight: '500',
+    },
+    notificationBtn: {
+        width: 44,
+        height: 44,
+        borderRadius: 22,
+        backgroundColor: 'rgba(255,255,255,0.1)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    notificationDot: {
+        position: 'absolute',
+        top: 12,
+        right: 12,
+        width: 8,
+        height: 8,
+        borderRadius: 4,
+        backgroundColor: '#FF4D4D',
+        borderWidth: 1.5,
+        borderColor: '#0F172A',
+    },
+    metricsDeckWrapper: {
+        marginHorizontal: scale(20),
+        marginTop: verticalScale(24),
+        borderRadius: moderateScale(24),
+        overflow: 'hidden',
+        borderWidth: 1,
+        borderColor: 'rgba(255,255,255,0.1)',
         ...theme.shadows.medium,
+    },
+    metricsDeck: {
+        flexDirection: 'row',
+        paddingVertical: verticalScale(18),
+    },
+    metricItem: {
+        flex: 1,
+        alignItems: 'center',
+    },
+    metricValue: {
+        fontSize: moderateScale(18),
+        fontWeight: '800',
+        color: '#FFFFFF',
+        letterSpacing: -0.5,
+    },
+    metricLabel: {
+        fontSize: moderateScale(10),
+        color: 'rgba(255,255,255,0.5)',
+        fontWeight: 'bold',
+        marginTop: 4,
+        letterSpacing: 1,
+    },
+    metricDivider: {
+        width: 1,
+        height: verticalScale(24),
+        backgroundColor: 'rgba(255,255,255,0.12)',
+        alignSelf: 'center',
+    },
+    badgeSection: {
+        marginTop: verticalScale(24),
+    },
+    badgeScroll: {
+        paddingHorizontal: scale(20),
+        gap: scale(12),
+    },
+    badgeItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+        paddingHorizontal: scale(16),
+        paddingVertical: verticalScale(10),
+        borderRadius: moderateScale(14),
+    },
+    badgeText: {
+        fontSize: moderateScale(11),
+        fontWeight: '700',
+        letterSpacing: 0.3,
+    },
+    sectionHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: scale(20),
+        marginTop: verticalScale(24),
+        marginBottom: verticalScale(12),
+    },
+    sectionTitleText: {
+        fontSize: moderateScale(15),
+        fontWeight: '800',
+        color: '#1F2937',
+        letterSpacing: -0.5,
+    },
+    sectionActionText: {
+        fontSize: moderateScale(12),
+        color: '#3B82F6',
+        fontWeight: '600',
+    },
+    insightCard: {
+        marginHorizontal: scale(20),
+        backgroundColor: '#FFFFFF',
+        borderRadius: moderateScale(20),
+        padding: scale(20),
+        borderWidth: 1,
+        borderColor: 'rgba(0,0,0,0.03)',
+        ...theme.shadows.small,
+    },
+    insightHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    insightMainValue: {
+        fontSize: moderateScale(22),
+        fontWeight: 'bold',
+        color: '#10B981',
+    },
+    insightSubLabel: {
+        fontSize: moderateScale(11),
+        color: '#6B7280',
+        marginTop: 2,
+    },
+    sparklineContainer: {
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        gap: 3,
+        height: verticalScale(40),
+    },
+    sparkBar: {
+        width: scale(4),
+        borderRadius: 2,
+    },
+    digitalIDLauncher: {
+        marginHorizontal: scale(20),
+        marginBottom: verticalScale(16),
+        borderRadius: moderateScale(20),
+        overflow: 'hidden',
+        borderWidth: 1,
+        borderColor: 'rgba(0,0,0,0.05)',
+        ...theme.shadows.medium,
+    },
+    launcherGradient: {
+        padding: scale(20),
+    },
+    launcherContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    launcherLeft: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: scale(15),
+    },
+    launcherIconBox: {
+        width: scale(48),
+        height: scale(48),
+        borderRadius: moderateScale(14),
+        backgroundColor: 'rgba(255,255,255,0.1)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: 'rgba(255,255,255,0.15)',
+    },
+    launcherTitle: {
+        fontSize: moderateScale(14),
+        fontWeight: 'bold',
+        color: '#FFFFFF',
+        letterSpacing: 1,
+    },
+    launcherSubtitle: {
+        fontSize: moderateScale(11),
+        color: 'rgba(255,255,255,0.6)',
+        marginTop: 2,
+    },
+    // Old styles kept for compatibility if needed, but the layout is now component-driven
+    avatarSection: {
+        display: 'none', // Hide old section
     },
     avatarContainer: {
         position: 'relative',
-        marginBottom: 16,
+        marginBottom: verticalScale(16),
     },
     avatar: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
+        width: scale(100),
+        height: scale(100),
+        borderRadius: scale(50),
         backgroundColor: '#FFFFFF',
         justifyContent: 'center',
         alignItems: 'center',
@@ -156,7 +485,7 @@ const styles = (theme: Theme) => StyleSheet.create({
         borderColor: 'rgba(255, 255, 255, 0.2)',
     },
     avatarText: {
-        fontSize: 32,
+        fontSize: moderateScale(32),
         fontWeight: 'bold',
         color: theme.colors.primary,
     },
@@ -165,43 +494,43 @@ const styles = (theme: Theme) => StyleSheet.create({
         bottom: 0,
         right: 0,
         backgroundColor: theme.colors.primaryLight,
-        width: 32,
-        height: 32,
-        borderRadius: 16,
+        width: scale(32),
+        height: scale(32),
+        borderRadius: scale(16),
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 2,
         borderColor: '#FFFFFF',
     },
     userName: {
-        fontSize: 24,
+        fontSize: moderateScale(24),
         fontWeight: 'bold',
         color: '#FFFFFF',
-        marginBottom: 4,
+        marginBottom: verticalScale(4),
     },
     studentNumber: {
-        fontSize: 16,
+        fontSize: moderateScale(16),
         color: 'rgba(255, 255, 255, 0.7)',
-        marginBottom: 12,
+        marginBottom: verticalScale(12),
     },
     departmentBadge: {
         backgroundColor: 'rgba(255, 255, 255, 0.15)',
-        paddingHorizontal: 16,
-        paddingVertical: 6,
-        borderRadius: 20,
+        paddingHorizontal: scale(16),
+        paddingVertical: verticalScale(6),
+        borderRadius: moderateScale(20),
     },
     departmentText: {
         color: '#FFFFFF',
-        fontSize: 13,
+        fontSize: moderateScale(13),
         fontWeight: '600',
     },
     statsContainer: {
         flexDirection: 'row',
         backgroundColor: theme.colors.card,
-        marginHorizontal: theme.spacing.lg,
-        marginTop: -30,
-        borderRadius: 20,
-        padding: 20,
+        marginHorizontal: scale(20),
+        marginTop: verticalScale(-30),
+        borderRadius: moderateScale(20),
+        padding: scale(20),
         justifyContent: 'space-between',
         alignItems: 'center',
         ...theme.shadows.small,
@@ -211,57 +540,43 @@ const styles = (theme: Theme) => StyleSheet.create({
         flex: 1,
     },
     statLabel: {
-        fontSize: 11,
+        fontSize: moderateScale(11),
         color: theme.colors.textLight,
         textTransform: 'uppercase',
-        marginBottom: 4,
+        marginBottom: verticalScale(4),
     },
     statValue: {
-        fontSize: 16,
+        fontSize: moderateScale(16),
         fontWeight: 'bold',
         color: theme.colors.text,
     },
     statDivider: {
         width: 1,
-        height: 30,
+        height: verticalScale(30),
         backgroundColor: theme.colors.border,
     },
     section: {
-        marginTop: 24,
-        paddingHorizontal: theme.spacing.lg,
+        marginTop: verticalScale(24),
+        paddingHorizontal: scale(20),
     },
     sectionTitle: {
-        fontSize: 13,
+        fontSize: moderateScale(13),
         fontWeight: 'bold',
         color: theme.colors.textLight,
         textTransform: 'uppercase',
-        marginBottom: 12,
+        marginBottom: verticalScale(12),
         letterSpacing: 1,
     },
     settingItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        backgroundColor: theme.colors.card,
-        padding: 12,
-        borderRadius: 15,
-        marginBottom: 10,
-        ...theme.shadows.small,
+        // Replaced by MenuItem container style
     },
     settingLeft: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 12,
+        // Replaced by MenuItem left style
     },
     iconBg: {
-        width: 38,
-        height: 38,
-        borderRadius: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
+        // Replaced by MenuItem iconBg style
     },
     settingTitle: {
-        fontSize: 15,
-        fontWeight: '600',
+        // Replaced by MenuItem title style
     },
 });
