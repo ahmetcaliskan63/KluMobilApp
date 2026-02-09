@@ -14,6 +14,7 @@ import { MOCK_SCHEDULE, Course } from '../../data/mockData';
 import { Card } from '../../components/common';
 import { useNavigation } from '@react-navigation/native';
 import { useAppTheme } from '../../hooks/useAppTheme';
+import { viewport, moderateScale, scale, verticalScale } from '../../utils/responsive';
 
 const DAYS = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma'];
 
@@ -118,39 +119,39 @@ const styles = (theme: Theme) => StyleSheet.create({
     },
     header: {
         backgroundColor: theme.colors.primary,
-        paddingBottom: 20,
-        borderBottomLeftRadius: 30,
-        borderBottomRightRadius: 30,
+        paddingBottom: verticalScale(20),
+        borderBottomLeftRadius: moderateScale(30),
+        borderBottomRightRadius: moderateScale(30),
         ...theme.shadows.medium,
     },
     headerTop: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingHorizontal: 16,
-        marginBottom: 20,
+        paddingHorizontal: scale(16),
+        marginBottom: verticalScale(20),
     },
     backButton: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
+        width: scale(40),
+        height: scale(40),
+        borderRadius: scale(20),
         backgroundColor: 'rgba(255, 255, 255, 0.15)',
         justifyContent: 'center',
         alignItems: 'center',
     },
     headerTitle: {
-        fontSize: 20,
+        fontSize: moderateScale(20),
         fontWeight: 'bold',
         color: '#FFFFFF',
     },
     dayPicker: {
-        paddingHorizontal: 20,
-        gap: 15,
+        paddingHorizontal: scale(20),
+        gap: scale(15),
     },
     dayItem: {
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-        borderRadius: 20,
+        paddingHorizontal: scale(16),
+        paddingVertical: verticalScale(8),
+        borderRadius: moderateScale(20),
         backgroundColor: 'rgba(255, 255, 255, 0.1)',
     },
     activeDayItem: {
@@ -159,42 +160,42 @@ const styles = (theme: Theme) => StyleSheet.create({
     dayText: {
         color: 'rgba(255, 255, 255, 0.7)',
         fontWeight: '600',
-        fontSize: 14,
+        fontSize: moderateScale(14),
     },
     activeDayText: {
         color: theme.colors.primary,
     },
     scrollContent: {
-        padding: 20,
+        padding: scale(20),
     },
     timelineRow: {
         flexDirection: 'row',
-        marginBottom: 20,
+        marginBottom: verticalScale(20),
     },
     timeColumn: {
-        width: 50,
+        width: scale(50),
         alignItems: 'flex-end',
-        paddingRight: 10,
-        paddingTop: 4,
+        paddingRight: scale(10),
+        paddingTop: verticalScale(4),
     },
     startTime: {
-        fontSize: 14,
+        fontSize: moderateScale(14),
         fontWeight: 'bold',
         color: theme.colors.text,
     },
     endTime: {
-        fontSize: 11,
+        fontSize: moderateScale(11),
         color: theme.colors.textLight,
-        marginTop: 2,
+        marginTop: verticalScale(2),
     },
     timelineLine: {
-        width: 20,
+        width: scale(20),
         alignItems: 'center',
     },
     timelineDot: {
-        width: 12,
-        height: 12,
-        borderRadius: 6,
+        width: scale(12),
+        height: scale(12),
+        borderRadius: scale(6),
         zIndex: 1,
     },
     line: {
@@ -208,44 +209,44 @@ const styles = (theme: Theme) => StyleSheet.create({
         flexDirection: 'row',
         padding: 0,
         overflow: 'hidden',
-        borderRadius: 12,
+        borderRadius: moderateScale(12),
         backgroundColor: theme.colors.card,
         borderWidth: 1,
         borderColor: theme.colors.border,
     },
     colorBar: {
-        width: 6,
+        width: scale(6),
         height: '100%',
     },
     courseInfo: {
         flex: 1,
-        padding: 12,
+        padding: scale(12),
     },
     courseName: {
-        fontSize: 16,
+        fontSize: moderateScale(16),
         fontWeight: 'bold',
         color: theme.colors.text,
-        marginBottom: 8,
+        marginBottom: verticalScale(8),
     },
     detailRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 6,
-        marginBottom: 4,
+        gap: scale(6),
+        marginBottom: verticalScale(4),
     },
     detailText: {
-        fontSize: 12,
+        fontSize: moderateScale(12),
         color: theme.colors.textSecondary,
     },
     emptyState: {
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 60,
+        marginTop: verticalScale(60),
         opacity: 0.6,
     },
     emptyText: {
-        marginTop: 16,
-        fontSize: 16,
+        marginTop: verticalScale(16),
+        fontSize: moderateScale(16),
         color: theme.colors.textLight,
         textAlign: 'center',
     },
