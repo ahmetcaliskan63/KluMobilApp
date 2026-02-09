@@ -13,6 +13,8 @@ import { useAuthStore } from '../store/authStore';
 import { RootStackParamList } from '../types/navigation';
 
 import { ProfileScreen } from '../screens/profile/ProfileScreen';
+import { AnnouncementsScreen } from '../screens/announcements/AnnouncementsScreen';
+import { DigitalIDScreen } from '../screens/profile/DigitalIDScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -29,6 +31,15 @@ export const AppNavigator: React.FC = () => {
                 <Stack.Screen name="Auth" component={AuthNavigator} />
                 <Stack.Screen name="Main" component={MainTabNavigator} />
                 <Stack.Screen name="Profile" component={ProfileScreen} />
+                <Stack.Screen name="Announcements" component={AnnouncementsScreen} />
+                <Stack.Screen
+                    name="DigitalID"
+                    component={DigitalIDScreen}
+                    options={{
+                        animation: 'slide_from_bottom',
+                        presentation: 'fullScreenModal'
+                    }}
+                />
             </Stack.Navigator>
         </NavigationContainer>
     );
