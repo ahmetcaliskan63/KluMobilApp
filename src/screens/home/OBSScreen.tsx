@@ -14,6 +14,7 @@ import { MOCK_GRADES, MOCK_STATS, Grade } from '../../data/mockData';
 import { Card } from '../../components/common';
 import { useNavigation } from '@react-navigation/native';
 import { useAppTheme } from '../../hooks/useAppTheme';
+import { viewport, moderateScale, scale, verticalScale } from '../../utils/responsive';
 
 export const OBSScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
@@ -88,13 +89,13 @@ export const OBSScreen: React.FC = () => {
             <StatusBar barStyle="light-content" backgroundColor={theme.colors.primary} />
 
             {/* Header */}
-            <View style={[s.header, { paddingTop: Math.max(insets.top, 20) }]}>
+            <View style={[s.header, { paddingTop: Math.max(insets.top, verticalScale(20)) }]}>
                 <View style={s.headerTop}>
                     <TouchableOpacity onPress={() => navigation.goBack()} style={s.backButton}>
-                        <Icon name="arrow-back" size={24} color="#FFFFFF" />
+                        <Icon name="arrow-back" size={moderateScale(24)} color="#FFFFFF" />
                     </TouchableOpacity>
                     <Text style={s.headerTitle}>Öğrenci Bilgi Sistemi</Text>
-                    <View style={{ width: 40 }} />
+                    <View style={{ width: scale(40) }} />
                 </View>
 
                 {/* Academic Summary */}
@@ -107,12 +108,12 @@ export const OBSScreen: React.FC = () => {
                         <Text style={s.summaryLabel}>GNO</Text>
                     </View>
                     <View style={s.summaryBox}>
-                        <Icon name="ribbon-outline" size={24} color="#FFFFFF" style={{ marginBottom: 4 }} />
+                        <Icon name="ribbon-outline" size={moderateScale(24)} color="#FFFFFF" style={{ marginBottom: verticalScale(4) }} />
                         <Text style={s.summaryValue}>{MOCK_STATS.totalCredits}</Text>
                         <Text style={s.summaryLabel}>TAM. KREDİ</Text>
                     </View>
                     <View style={s.summaryBox}>
-                        <Icon name="calendar-outline" size={24} color="#FFFFFF" style={{ marginBottom: 4 }} />
+                        <Icon name="calendar-outline" size={moderateScale(24)} color="#FFFFFF" style={{ marginBottom: verticalScale(4) }} />
                         <Text style={s.summaryValue}>Güz 2025</Text>
                         <Text style={s.summaryLabel}>DÖNEM</Text>
                     </View>
@@ -153,101 +154,101 @@ const styles = (theme: Theme) => StyleSheet.create({
     },
     header: {
         backgroundColor: theme.colors.primary,
-        paddingBottom: 24,
-        borderBottomLeftRadius: 30,
-        borderBottomRightRadius: 30,
+        paddingBottom: verticalScale(24),
+        borderBottomLeftRadius: moderateScale(30),
+        borderBottomRightRadius: moderateScale(30),
         ...theme.shadows.medium,
     },
     headerTop: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingHorizontal: 16,
-        marginBottom: 24,
+        paddingHorizontal: scale(16),
+        marginBottom: verticalScale(24),
     },
     backButton: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
+        width: scale(40),
+        height: scale(40),
+        borderRadius: scale(20),
         backgroundColor: 'rgba(255, 255, 255, 0.15)',
         justifyContent: 'center',
         alignItems: 'center',
     },
     headerTitle: {
-        fontSize: 18,
+        fontSize: moderateScale(18),
         fontWeight: 'bold',
         color: '#FFFFFF',
     },
     summaryGrid: {
         flexDirection: 'row',
-        paddingHorizontal: 20,
-        gap: 12,
+        paddingHorizontal: scale(20),
+        gap: scale(12),
     },
     summaryBox: {
         flex: 1,
         backgroundColor: 'rgba(255, 255, 255, 0.12)',
-        borderRadius: 20,
-        padding: 12,
+        borderRadius: moderateScale(20),
+        padding: scale(12),
         alignItems: 'center',
         justifyContent: 'center',
     },
     gpaCircle: {
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: 4,
+        marginBottom: verticalScale(4),
     },
     gpaMax: {
-        fontSize: 10,
+        fontSize: moderateScale(10),
         color: 'rgba(255, 255, 255, 0.6)',
-        marginTop: -2,
+        marginTop: verticalScale(-2),
     },
     summaryLabel: {
-        fontSize: 10,
+        fontSize: moderateScale(10),
         color: 'rgba(255, 255, 255, 0.7)',
         fontWeight: 'bold',
         textTransform: 'uppercase',
     },
     summaryValue: {
-        fontSize: 18,
+        fontSize: moderateScale(18),
         fontWeight: 'bold',
         color: '#FFFFFF',
     },
     scrollContent: {
-        padding: 16,
+        padding: scale(16),
     },
     progressCard: {
-        marginBottom: 20,
-        padding: 16,
-        borderRadius: 20,
+        marginBottom: verticalScale(20),
+        padding: scale(16),
+        borderRadius: moderateScale(20),
         backgroundColor: theme.colors.card,
         ...theme.shadows.small,
         borderWidth: 1,
         borderColor: theme.colors.border,
     },
     progressTitle: {
-        fontSize: 15,
+        fontSize: moderateScale(15),
         fontWeight: '700',
         color: theme.colors.text,
-        marginBottom: 12,
+        marginBottom: verticalScale(12),
     },
     progressBarBg: {
-        height: 8,
+        height: verticalScale(8),
         backgroundColor: theme.colors.surface,
-        borderRadius: 4,
-        marginBottom: 8,
+        borderRadius: moderateScale(4),
+        marginBottom: verticalScale(8),
         overflow: 'hidden',
     },
     progressBarFill: {
         height: '100%',
         backgroundColor: theme.colors.primary,
-        borderRadius: 4,
+        borderRadius: moderateScale(4),
     },
     progressDetails: {
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
     progressText: {
-        fontSize: 12,
+        fontSize: moderateScale(12),
         color: theme.colors.textSecondary,
         fontWeight: '500',
     },
@@ -255,23 +256,23 @@ const styles = (theme: Theme) => StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 16,
-        paddingHorizontal: 4,
+        marginBottom: verticalScale(16),
+        paddingHorizontal: scale(4),
     },
     sectionTitle: {
-        fontSize: 18,
+        fontSize: moderateScale(18),
         fontWeight: 'bold',
         color: theme.colors.text,
     },
     filterText: {
-        fontSize: 14,
+        fontSize: moderateScale(14),
         color: theme.colors.primary,
         fontWeight: '600',
     },
     gradeCard: {
-        marginBottom: 14,
-        padding: 16,
-        borderRadius: 20,
+        marginBottom: verticalScale(14),
+        padding: scale(16),
+        borderRadius: moderateScale(20),
         borderWidth: 1,
         borderColor: theme.colors.border,
         backgroundColor: theme.colors.card,
@@ -280,68 +281,68 @@ const styles = (theme: Theme) => StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 16,
+        marginBottom: verticalScale(16),
     },
     courseTitleContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         flex: 1,
-        marginRight: 10,
+        marginRight: scale(10),
     },
     iconContainer: {
-        width: 36,
-        height: 36,
-        borderRadius: 10,
+        width: scale(36),
+        height: scale(36),
+        borderRadius: moderateScale(10),
         justifyContent: 'center',
         alignItems: 'center',
-        marginRight: 12,
+        marginRight: scale(12),
     },
     courseName: {
-        fontSize: 15,
+        fontSize: moderateScale(15),
         fontWeight: '700',
         color: theme.colors.text,
         flex: 1,
     },
     statusBadge: {
-        paddingHorizontal: 10,
-        paddingVertical: 5,
-        borderRadius: 10,
+        paddingHorizontal: scale(10),
+        paddingVertical: verticalScale(5),
+        borderRadius: moderateScale(10),
     },
     statusText: {
-        fontSize: 11,
+        fontSize: moderateScale(11),
         fontWeight: 'bold',
     },
     gradeGrid: {
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: theme.colors.surface,
-        borderRadius: 15,
-        padding: 12,
+        borderRadius: moderateScale(15),
+        padding: scale(12),
     },
     gradeItem: {
         flex: 1,
         alignItems: 'center',
     },
     gradeLabel: {
-        fontSize: 10,
+        fontSize: moderateScale(10),
         color: theme.colors.textLight,
-        marginBottom: 4,
+        marginBottom: verticalScale(4),
         textTransform: 'uppercase',
         fontWeight: '600',
     },
     gradeValue: {
-        fontSize: 14,
+        fontSize: moderateScale(14),
         fontWeight: '700',
         color: theme.colors.text,
     },
     gradeLetter: {
-        fontSize: 15,
+        fontSize: moderateScale(15),
         fontWeight: '800',
         color: theme.colors.primary,
     },
     gradeDivider: {
         width: 1,
-        height: 20,
+        height: verticalScale(20),
         backgroundColor: theme.colors.border,
     },
 });
