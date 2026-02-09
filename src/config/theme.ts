@@ -2,6 +2,7 @@
  * KLU Mobile App Theme Configuration
  * Kırklareli Üniversitesi Kurumsal Renk Paleti
  */
+import { moderateScale, scale, verticalScale } from '../utils/responsive';
 
 export const colors = {
   // Kurumsal Renkler
@@ -72,62 +73,62 @@ export const darkColors = {
 };
 
 export const spacing = {
-  xs: 4,
-  sm: 8,
-  md: 16,
-  lg: 24,
-  xl: 32,
-  xxl: 48,
+  xs: moderateScale(4),
+  sm: moderateScale(8),
+  md: moderateScale(16),
+  lg: moderateScale(24),
+  xl: moderateScale(32),
+  xxl: moderateScale(48),
 };
 
 export const borderRadius = {
-  sm: 4,
-  md: 8,
-  lg: 12,
-  xl: 16,
+  sm: moderateScale(4),
+  md: moderateScale(8),
+  lg: moderateScale(12),
+  xl: moderateScale(16),
   full: 999,
 };
 
 export const typography = {
   h1: {
-    fontSize: 32,
+    fontSize: moderateScale(32),
     fontWeight: '700' as const,
-    lineHeight: 40,
+    lineHeight: moderateScale(40),
   },
   h2: {
-    fontSize: 24,
+    fontSize: moderateScale(24),
     fontWeight: '700' as const,
-    lineHeight: 32,
+    lineHeight: moderateScale(32),
   },
   h3: {
-    fontSize: 20,
+    fontSize: moderateScale(20),
     fontWeight: '600' as const,
-    lineHeight: 28,
+    lineHeight: moderateScale(28),
   },
   h4: {
-    fontSize: 18,
+    fontSize: moderateScale(18),
     fontWeight: '600' as const,
-    lineHeight: 24,
+    lineHeight: moderateScale(24),
   },
   body: {
-    fontSize: 16,
+    fontSize: moderateScale(16),
     fontWeight: '400' as const,
-    lineHeight: 24,
+    lineHeight: moderateScale(24),
   },
   bodyMedium: {
-    fontSize: 16,
+    fontSize: moderateScale(16),
     fontWeight: '500' as const,
-    lineHeight: 24,
+    lineHeight: moderateScale(24),
   },
   caption: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     fontWeight: '400' as const,
-    lineHeight: 20,
+    lineHeight: moderateScale(20),
   },
   small: {
-    fontSize: 12,
+    fontSize: moderateScale(12),
     fontWeight: '400' as const,
-    lineHeight: 16,
+    lineHeight: moderateScale(16),
   },
 };
 
