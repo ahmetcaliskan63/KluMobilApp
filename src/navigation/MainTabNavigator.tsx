@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Platform, Text, TouchableOpacity, Dimensions, Image } from 'react-native';
+import { View, Platform, TouchableOpacity, Image } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { DashboardScreen } from '../screens/home/DashboardScreen';
@@ -14,6 +14,7 @@ import { CafeteriaScreen } from '../screens/cafeteria/CafeteriaScreen';
 import { AnnouncementsScreen } from '../screens/announcements/AnnouncementsScreen';
 import { LibraryScreen } from '../screens/library/LibraryScreen';
 import { SettingsScreen } from '../screens/settings/SettingsScreen';
+import { ProfileScreen } from '../screens/profile/ProfileScreen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { useAppTheme } from '../hooks/useAppTheme';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
@@ -37,22 +38,21 @@ const HomeStackNavigator = () => (
 );
 
 export const MainTabNavigator: React.FC = () => {
-    const { theme, isDarkMode } = useAppTheme();
+    const { theme } = useAppTheme();
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
     return (
         <Tab.Navigator
             initialRouteName="HomeStack"
             screenOptions={({ route }) => ({
-                tabBarIcon: ({ focused, color, size }) => {
+                tabBarIcon: ({ focused }) => {
                     let iconName = '';
-
                     switch (route.name) {
                         case 'HomeStack': iconName = focused ? 'home' : 'home-outline'; break;
                         case 'Cafeteria': iconName = focused ? 'restaurant' : 'restaurant-outline'; break;
-                        case 'Announcements': iconName = focused ? 'notifications' : 'notifications-outline'; break;
                         case 'Library': iconName = focused ? 'book' : 'book-outline'; break;
                         case 'Settings': iconName = focused ? 'settings' : 'settings-outline'; break;
+                        case 'Profile': iconName = focused ? 'person' : 'person-outline'; break;
                     }
 
                     if (route.name === 'HomeStack') return null;
@@ -98,12 +98,12 @@ export const MainTabNavigator: React.FC = () => {
                 },
                 headerShown: true,
                 headerStyle: {
-                    backgroundColor: '#182958', // Reverted to official primary color
-                    height: Platform.OS === 'ios' ? 115 : 100, // Slightly more compact
-                    elevation: 0, // Manual shadow via border or subtle effect
+                    backgroundColor: '#182958',
+                    height: Platform.OS === 'ios' ? 120 : 110,
+                    elevation: 0,
                     shadowOpacity: 0,
                     borderBottomWidth: 1,
-                    borderBottomColor: 'rgba(255, 255, 255, 0.08)', // Subtle separator
+                    borderBottomColor: 'rgba(255, 255, 255, 0.08)',
                 },
                 headerTitleStyle: {
                     fontWeight: '900',
@@ -133,7 +133,7 @@ export const MainTabNavigator: React.FC = () => {
                 ),
                 headerRight: () => (
                     <TouchableOpacity
-                        onPress={() => navigation.navigate('Profile')}
+                        onPress={() => navigation.navigate('Announcements')}
                         style={{ marginRight: 16 }}
                     >
                         <View style={{
@@ -146,7 +146,7 @@ export const MainTabNavigator: React.FC = () => {
                             borderWidth: 1,
                             borderColor: 'rgba(255, 255, 255, 0.2)',
                         }}>
-                            <Icon name="person" size={20} color="#FFFFFF" />
+                            <Icon name="notifications" size={20} color="#FFFFFF" />
                         </View>
                     </TouchableOpacity>
                 ),
@@ -159,9 +159,9 @@ export const MainTabNavigator: React.FC = () => {
                 options={{ title: 'Yemek' }}
             />
             <Tab.Screen
-                name="Announcements"
-                component={AnnouncementsScreen}
-                options={{ title: 'Duyuru' }}
+                name="Library"
+                component={LibraryScreen}
+                options={{ title: 'Kütüphane' }}
             />
             <Tab.Screen
                 name="HomeStack"
@@ -173,6 +173,7 @@ export const MainTabNavigator: React.FC = () => {
                     return {
                         title: 'Ana Sayfa',
                         headerShown: !hideHeader,
+                        unmountOnBlur: true,
                         tabBarIcon: ({ focused }) => (
                             <View style={{
                                 width: 68,
@@ -206,11 +207,21 @@ export const MainTabNavigator: React.FC = () => {
                         tabBarLabel: () => null,
                     };
                 }}
+                listeners={({ navigation }) => ({
+                    tabPress: (e) => {
+                        // Prevent default to ensure our manual navigation with params is handled
+                        e.preventDefault();
+                        navigation.navigate('HomeStack', {
+                            screen: 'Dashboard',
+                            params: { resetToNews: Date.now() }
+                        });
+                    },
+                })}
             />
             <Tab.Screen
-                name="Library"
-                component={LibraryScreen}
-                options={{ title: 'Kütüphane' }}
+                name="Profile"
+                component={ProfileScreen}
+                options={{ title: 'Profil' }}
             />
             <Tab.Screen
                 name="Settings"
