@@ -6,7 +6,6 @@ import {
     ScrollView,
     TouchableOpacity,
     Image,
-    Dimensions,
     StatusBar,
     Animated,
     Platform,
@@ -17,8 +16,7 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { HomeStackParamList } from '../../types/navigation';
 import { useAppTheme } from '../../hooks/useAppTheme';
 import { MOCK_NEWS } from '../../data/mockData';
-
-const { width, height } = Dimensions.get('window');
+import { viewport, moderateScale, scale, verticalScale } from '../../utils/responsive';
 
 type NewsDetailRouteProp = RouteProp<HomeStackParamList, 'NewsDetail'>;
 
@@ -34,7 +32,7 @@ export const NewsDetailScreen: React.FC = () => {
 
     if (!news) return null;
 
-    const headerHeight = 400;
+    const headerHeight = verticalScale(400);
 
     const imageTranslate = scrollY.interpolate({
         inputRange: [-headerHeight, 0, headerHeight],
@@ -163,7 +161,7 @@ const s = StyleSheet.create({
         backgroundColor: '#FFFFFF',
     },
     imageContainer: {
-        height: 400,
+        height: verticalScale(400),
         overflow: 'hidden',
         backgroundColor: '#000',
     },
@@ -178,77 +176,77 @@ const s = StyleSheet.create({
     },
     headerContent: {
         position: 'absolute',
-        bottom: 40,
-        left: 20,
-        right: 20,
+        bottom: verticalScale(40),
+        left: scale(20),
+        right: scale(20),
     },
     title: {
-        fontSize: 24,
+        fontSize: moderateScale(24),
         fontWeight: '800',
         color: '#1C1C1E',
-        lineHeight: 32,
-        marginBottom: 15,
+        lineHeight: moderateScale(32),
+        marginBottom: verticalScale(15),
     },
     metaRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 15,
+        gap: scale(15),
     },
     metaItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 6,
+        gap: scale(6),
     },
     metaText: {
         color: '#8E8E93',
-        fontSize: 14,
+        fontSize: moderateScale(14),
         fontWeight: '600',
     },
     divider: {
         width: 1,
-        height: 14,
+        height: verticalScale(14),
         backgroundColor: '#E5E5EA',
     },
     contentDivider: {
         height: 1,
         backgroundColor: '#F2F2F7',
-        marginVertical: 20,
+        marginVertical: verticalScale(20),
     },
     contentContainer: {
         backgroundColor: '#FFFFFF',
-        padding: 24,
-        minHeight: height - 370,
+        padding: scale(24),
+        minHeight: viewport.height - verticalScale(370),
     },
     indicator: {
-        width: 40,
-        height: 5,
+        width: scale(40),
+        height: verticalScale(5),
         backgroundColor: '#E5E5EA',
-        borderRadius: 2.5,
+        borderRadius: moderateScale(2.5),
         alignSelf: 'center',
-        marginBottom: 25,
+        marginBottom: verticalScale(25),
     },
     summary: {
-        fontSize: 18,
+        fontSize: moderateScale(18),
         fontWeight: '700',
         color: '#1C1C1E',
-        lineHeight: 26,
-        marginBottom: 20,
+        lineHeight: moderateScale(26),
+        marginBottom: verticalScale(20),
     },
     body: {
-        fontSize: 16,
+        fontSize: moderateScale(16),
         color: '#3A3A3C',
-        lineHeight: 28,
+        lineHeight: moderateScale(28),
         fontWeight: '400',
     },
     backButtonContainer: {
         position: 'absolute',
-        left: 20,
+        left: scale(20),
         zIndex: 101,
     },
     backButton: {
-        width: 45,
-        height: 45,
-        borderRadius: 22.5,
+        width: scale(45),
+        height: scale(45),
+        borderRadius: scale(22.5),
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 1,
@@ -263,7 +261,7 @@ const s = StyleSheet.create({
         zIndex: 100,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingHorizontal: 70,
+        paddingHorizontal: scale(70),
         ...Platform.select({
             ios: {
                 shadowColor: '#000',
@@ -278,7 +276,7 @@ const s = StyleSheet.create({
     },
     dynamicTitle: {
         color: '#FFFFFF',
-        fontSize: 16,
+        fontSize: moderateScale(16),
         fontWeight: '700',
     },
 });
