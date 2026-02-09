@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
     View,
     Text,
@@ -6,8 +6,6 @@ import {
     ScrollView,
     TouchableOpacity,
     StatusBar,
-    Platform,
-    Share,
     Animated,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -15,81 +13,76 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { HomeStackParamList } from '../../types/navigation';
 import { useAppTheme } from '../../hooks/useAppTheme';
-import { theme as defaultTheme, Theme } from '../../config/theme';
+import { Theme } from '../../config/theme';
 import { MOCK_ANNOUNCEMENTS } from '../../data/mockData';
-import { Card } from '../../components/common';
+import { moderateScale, scale, verticalScale } from '../../utils/responsive';
 
 type AnnouncementDetailRouteProp = RouteProp<HomeStackParamList, 'AnnouncementDetail'>;
 
+/**
+ * AnnouncementDetailScreen - Ultra-Premium Corporate Final
+ * Saf, minimalist ve yüksek prestijli kurumsal tasarım.
+ */
 export const AnnouncementDetailScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
     const route = useRoute<AnnouncementDetailRouteProp>();
     const { theme } = useAppTheme();
     const { announcementId } = route.params;
-    const scrollY = React.useRef(new Animated.Value(0)).current;
+
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+    const scrollY = useRef(new Animated.Value(0)).current;
 
     const announcement = MOCK_ANNOUNCEMENTS.find(a => a.id === announcementId);
 
+    useEffect(() => {
+        Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 500,
+            useNativeDriver: true,
+        }).start();
+    }, []);
+
     if (!announcement) return null;
 
-    const isAcademic = announcement.category === 'AKADEMİK';
-    const accentColor = isAcademic ? '#0A84FF' : '#101D42';
+    const corporateColor = '#182958'; // KLU Kurumsal Lacivert
 
-    const headerOpacity = scrollY.interpolate({
-        inputRange: [30, 80],
-        outputRange: [0, 1],
-        extrapolate: 'clamp',
-    });
-
-    const scaleAnimBack = React.useRef(new Animated.Value(1)).current;
-    const scaleAnimShare = React.useRef(new Animated.Value(1)).current;
-
-    const createSpring = (anim: Animated.Value, toValue: number) => {
-        Animated.spring(anim, { toValue, useNativeDriver: true, friction: 8, tension: 40 }).start();
-    };
-
-    const handleShare = async () => {
-        try {
-            await Share.share({
-                message: `${announcement.title}\n\nKırklareli Üniversitesi Duyuru Sistemi`,
-            });
-        } catch (error) {
-            console.error(error);
-        }
-    };
+    const s = styles(theme, corporateColor);
 
     return (
         <View style={s.container}>
-            <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+            <StatusBar barStyle="light-content" backgroundColor={corporateColor} />
 
-            {/* Static Header with Dynamic Elements */}
-            <View style={[s.header, { paddingTop: insets.top + 10 }]}>
-                <Animated.View style={{ transform: [{ scale: scaleAnimBack }] }}>
+            {/* Premium Corporate Header - Ultra Minimalist */}
+            <View style={[s.header, { paddingTop: insets.top, backgroundColor: corporateColor }]}>
+                <View style={s.headerNav}>
                     <TouchableOpacity
-                        onPressIn={() => createSpring(scaleAnimBack, 0.9)}
-                        onPressOut={() => createSpring(scaleAnimBack, 1)}
                         onPress={() => navigation.goBack()}
                         style={s.headerButton}
+                        activeOpacity={0.7}
                     >
-                        <Icon name="arrow-back" size={24} color="#1C1C1E" />
+                        <Icon name="chevron-back" size={moderateScale(24)} color="#FFFFFF" />
                     </TouchableOpacity>
-                </Animated.View>
 
-                <Animated.View style={[s.dynamicHeaderTitleBox, { opacity: headerOpacity }]}>
-                    <Text style={s.headerTitle} numberOfLines={1}>{announcement.title}</Text>
-                </Animated.View>
-
-                <Animated.View style={{ transform: [{ scale: scaleAnimShare }] }}>
-                    <TouchableOpacity
-                        onPressIn={() => createSpring(scaleAnimShare, 0.9)}
-                        onPressOut={() => createSpring(scaleAnimShare, 1)}
-                        onPress={handleShare}
-                        style={s.headerButton}
+                    <Animated.Text
+                        style={[
+                            s.headerNavTitle,
+                            {
+                                opacity: scrollY.interpolate({
+                                    inputRange: [40, 80],
+                                    outputRange: [0, 1],
+                                    extrapolate: 'clamp',
+                                })
+                            }
+                        ]}
+                        numberOfLines={1}
                     >
-                        <Icon name="share-outline" size={24} color="#1C1C1E" />
-                    </TouchableOpacity>
-                </Animated.View>
+                        {announcement.title}
+                    </Animated.Text>
+
+                    {/* Placeholder for symmetry */}
+                    <View style={s.headerButton} />
+                </View>
             </View>
 
             <Animated.ScrollView
@@ -100,206 +93,161 @@ export const AnnouncementDetailScreen: React.FC = () => {
                 scrollEventThrottle={16}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={s.scrollContent}
+                style={{ opacity: fadeAnim }}
             >
-                {/* Badge and Title */}
-                <View style={s.titleContainer}>
-                    <View style={[s.categoryBadge, { backgroundColor: `${accentColor}10` }]}>
-                        <Text style={[s.categoryText, { color: accentColor }]}>{announcement.category}</Text>
-                    </View>
-                    <Text style={s.title}>{announcement.title}</Text>
-
-                    <View style={s.metaRow}>
+                {/* Ultra-Clean Title Section */}
+                <View style={s.titleSection}>
+                    <View style={s.badgeRow}>
+                        <View style={s.categoryBadge}>
+                            <Text style={s.categoryText}>{announcement.category}</Text>
+                        </View>
                         <View style={s.metaItem}>
-                            <Icon name="calendar-outline" size={16} color="#8E8E93" />
+                            <Icon name="calendar-outline" size={moderateScale(14)} color={theme.colors.textSecondary} />
                             <Text style={s.metaText}>{announcement.date}</Text>
                         </View>
-                        <View style={s.dot} />
-                        <View style={s.metaItem}>
-                            <Icon name="eye-outline" size={16} color="#8E8E93" />
-                            <Text style={s.metaText}>{announcement.views} görüntülenme</Text>
-                        </View>
+                    </View>
+
+                    <Text style={s.mainTitle}>{announcement.title}</Text>
+
+                    <View style={s.viewCount}>
+                        <Icon name="eye-outline" size={moderateScale(13)} color={theme.colors.textLight} />
+                        <Text style={s.viewText}>{announcement.views} görüntülenme</Text>
                     </View>
                 </View>
 
-                {/* Content */}
-                <Card style={s.contentCard}>
-                    <Text style={s.body}>
+                {/* Content Section - Focused & High Readability */}
+                <View style={s.contentContainer}>
+                    <Text style={s.contentText}>
                         {announcement.content}
                         {"\n\n"}
-                        Kırklareli Üniversitesi Rektörlüğü tarafından yayımlanan bu duyuru, ilgili tüm birimler ve öğrencilerimiz için geçerlidir.{"\n\n"}
-                        Duyuru kapsamında belirtilen hususlara uyulması, akademik takvim ve uygulama süreçleri açısından büyük önem arz etmektedir. Detaylı bilgi için ilgili bölüm sekreterliklerine başvurulabilir veya üniversitemizin resmi web sitesi ziyaret edilebilir.
+                        Kırklareli Üniversitesi Rektörlüğü tarafından yayımlanan bu duyuru, ilgili tüm birimler ve öğrencilerimiz için geçerlidir.
+                        {"\n\n"}
+                        Duyuru kapsamında belirtilen hususlara uyulması, akademik takvim ve uygulama süreçleri açısından büyük önem arz etmektedir.
+                        {"\n\n"}
+                        Detaylı bilgi için ilgili birimlere başvurulabilir veya üniversitemizin resmi web sitesi ziyaret edilebilir.
                     </Text>
-                </Card>
-
-                {/* Attachments Section */}
-                <View style={s.section}>
-                    <Text style={s.sectionTitle}>Ek Dosyalar ve Bağlantılar</Text>
-                    <TouchableOpacity style={s.attachmentItem} activeOpacity={0.7}>
-                        <View style={[s.fileIconWrapper, { backgroundColor: `${accentColor}10` }]}>
-                            <Icon name="document-text" size={24} color={accentColor} />
-                        </View>
-                        <View style={s.fileInfo}>
-                            <Text style={s.fileName}>Duyuru_Detay_Belgesi.pdf</Text>
-                            <Text style={s.fileSize}>1.2 MB • PDF Belgesi</Text>
-                        </View>
-                        <View style={s.downloadCircle}>
-                            <Icon name="download-outline" size={20} color={accentColor} />
-                        </View>
-                    </TouchableOpacity>
                 </View>
 
-                <View style={{ height: 40 }} />
+                {/* Minimalist Bottom Decoration */}
+                <View style={s.bottomAccent}>
+                    <View style={[s.accentLine, { backgroundColor: corporateColor }]} />
+                </View>
+
+                <View style={{ height: verticalScale(100) }} />
             </Animated.ScrollView>
         </View>
     );
 };
 
-const s = StyleSheet.create({
+const styles = (theme: Theme, corporateColor: string) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F8F9FA',
+        backgroundColor: '#FFFFFF',
     },
     header: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
+        elevation: 3,
+        zIndex: 10,
+    },
+    headerNav: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingHorizontal: 16,
-        paddingBottom: 15,
-        backgroundColor: '#FFFFFF',
-        ...Platform.select({
-            ios: {
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.05,
-                shadowRadius: 10,
-            },
-            android: {
-                elevation: 4,
-            },
-        }),
+        paddingHorizontal: scale(12),
+        height: verticalScale(56),
     },
     headerButton: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
+        width: moderateScale(40),
+        height: moderateScale(40),
         justifyContent: 'center',
         alignItems: 'center',
     },
-    headerTitle: {
-        fontSize: 16,
+    headerNavTitle: {
+        fontSize: moderateScale(15),
         fontWeight: '700',
-        color: '#1C1C1E',
-    },
-    dynamicHeaderTitleBox: {
+        color: '#FFFFFF',
         flex: 1,
-        paddingHorizontal: 10,
-        alignItems: 'center',
+        textAlign: 'center',
+        letterSpacing: 0.3,
+        paddingHorizontal: scale(8),
     },
     scrollContent: {
-        padding: 20,
+        paddingTop: verticalScale(32),
     },
-    titleContainer: {
-        marginBottom: 25,
+    titleSection: {
+        paddingHorizontal: scale(24),
+        marginBottom: verticalScale(28),
     },
-    categoryBadge: {
-        alignSelf: 'flex-start',
-        paddingHorizontal: 10,
-        paddingVertical: 4,
-        borderRadius: 8,
-        marginBottom: 12,
-    },
-    categoryText: {
-        fontSize: 11,
-        fontWeight: '900',
-        textTransform: 'uppercase',
-        letterSpacing: 1,
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: '800',
-        color: '#1C1C1E',
-        lineHeight: 32,
-        marginBottom: 15,
-    },
-    metaRow: {
+    badgeRow: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: verticalScale(16),
+    },
+    categoryBadge: {
+        backgroundColor: '#F8F9FB',
+        paddingHorizontal: scale(12),
+        paddingVertical: verticalScale(6),
+        borderRadius: moderateScale(4),
+        borderLeftWidth: 3,
+        borderLeftColor: corporateColor,
+    },
+    categoryText: {
+        fontSize: moderateScale(11),
+        fontWeight: '800',
+        color: corporateColor,
+        textTransform: 'uppercase',
+        letterSpacing: 0.8,
     },
     metaItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 6,
+        gap: scale(6),
     },
     metaText: {
-        fontSize: 13,
-        color: '#8E8E93',
-        fontWeight: '500',
+        fontSize: moderateScale(13),
+        color: theme.colors.textSecondary,
+        fontWeight: '600',
     },
-    dot: {
-        width: 4,
-        height: 4,
-        borderRadius: 2,
-        backgroundColor: '#C7C7CC',
-        marginHorizontal: 12,
+    mainTitle: {
+        fontSize: moderateScale(24),
+        fontWeight: '800',
+        color: '#111827',
+        lineHeight: moderateScale(32),
+        marginBottom: verticalScale(16),
     },
-    contentCard: {
-        padding: 20,
-        backgroundColor: '#FFFFFF',
-        borderRadius: 24,
-        marginBottom: 30,
-    },
-    body: {
-        fontSize: 16,
-        lineHeight: 26,
-        color: '#3A3A3C',
-        fontWeight: '400',
-    },
-    section: {
-        marginBottom: 20,
-    },
-    sectionTitle: {
-        fontSize: 18,
-        fontWeight: '700',
-        color: '#1C1C1E',
-        marginBottom: 15,
-    },
-    attachmentItem: {
+    viewCount: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#FFFFFF',
-        padding: 15,
-        borderRadius: 18,
-        borderWidth: 1,
-        borderColor: '#F2F2F7',
+        gap: scale(5),
     },
-    fileIconWrapper: {
-        width: 48,
-        height: 48,
-        borderRadius: 14,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: 15,
-    },
-    fileInfo: {
-        flex: 1,
-    },
-    fileName: {
-        fontSize: 15,
-        fontWeight: '600',
-        color: '#1C1C1E',
-        marginBottom: 2,
-    },
-    fileSize: {
-        fontSize: 12,
-        color: '#8E8E93',
+    viewText: {
+        fontSize: moderateScale(12),
+        color: theme.colors.textLight,
         fontWeight: '500',
     },
-    downloadCircle: {
-        width: 36,
-        height: 36,
-        borderRadius: 18,
-        backgroundColor: '#F8F9FA',
-        justifyContent: 'center',
+    contentContainer: {
+        paddingHorizontal: scale(24),
+    },
+    contentText: {
+        fontSize: moderateScale(16),
+        lineHeight: moderateScale(28),
+        color: '#374151',
+        fontWeight: '400',
+        textAlign: 'left',
+        letterSpacing: 0.1,
+    },
+    bottomAccent: {
+        marginTop: verticalScale(40),
         alignItems: 'center',
+    },
+    accentLine: {
+        width: scale(40),
+        height: verticalScale(3),
+        borderRadius: moderateScale(2),
+        opacity: 0.3,
     },
 });
