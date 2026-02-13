@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Theme } from '../../config/theme';
+import { Theme, spacing, borderRadius } from '../../config/theme';
 import { useAuthStore } from '../../store/authStore';
 import { useAppTheme } from '../../hooks/useAppTheme';
 import { viewport, moderateScale } from '../../utils/responsive';
@@ -41,29 +41,16 @@ export const DashboardScreen: React.FC = () => {
     const { user } = useAuthStore();
     const insets = useSafeAreaInsets();
     const navigation = useNavigation<DashboardNavigationProp>();
-    const { theme, isDarkMode } = useAppTheme();
+    const { theme } = useAppTheme();
     const s = styles(theme);
     const [activeTab, setActiveTab] = React.useState<'Duyurular' | 'Haberler' | 'Etkinlikler'>('Haberler');
-    const route = useRoute<RouteProp<HomeStackParamList, 'Dashboard'>>();
     const tabWidth = (viewport.width - 48) / 3;
     const translateX = React.useRef(new Animated.Value(tabWidth)).current;
-
-    // Reset to News when 'resetToNews' param changes (triggered by tab bar re-press)
-    React.useEffect(() => {
-        const resetToNews = route.params?.resetToNews;
-        if (resetToNews) {
-            handleTabPress('Haberler', 1);
-            // Clear the param after handling to avoid double trigger
-            navigation.setParams({ resetToNews: undefined } as any);
-        }
-    }, [route.params?.resetToNews]);
-
-    // Removed useFocusEffect to preserve tab state when returning from detail screens
 
     const handleTabPress = (tab: 'Duyurular' | 'Haberler' | 'Etkinlikler', index: number) => {
         setActiveTab(tab);
         Animated.spring(translateX, {
-            toValue: index * ((viewport.width - 48) / 3), // 48 = padding 20*2 + control padding 4*2
+            toValue: index * ((viewport.width - 48) / 3),
             useNativeDriver: true,
             bounciness: 4,
             speed: 12,
@@ -99,9 +86,8 @@ export const DashboardScreen: React.FC = () => {
 
     return (
         <View style={s.container}>
-            <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+            <StatusBar barStyle={theme.colors.background === '#FFFFFF' ? 'dark-content' : 'light-content'} backgroundColor={theme.colors.background} />
 
-            {/* Fixed Premium Segmented Control (Sticky Header) */}
             <View style={s.fixedTabContainer}>
                 <View style={s.segmentedControl}>
                     {(['Duyurular', 'Haberler', 'Etkinlikler'] as const).map((tab, index) => {
@@ -148,7 +134,7 @@ export const DashboardScreen: React.FC = () => {
                     {activeTab === 'Etkinlikler' && MOCK_EVENTS.map(renderEventCard)}
                 </View>
 
-                <View style={{ height: 40 }} />
+                <View style={{ height: spacing.xl }} />
             </ScrollView>
         </View >
     );
@@ -157,31 +143,31 @@ export const DashboardScreen: React.FC = () => {
 const styles = (theme: Theme) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F2F2F7', // Apple System Gray 6
+        backgroundColor: theme.colors.surface,
     },
     scrollView: {
         flex: 1,
     },
     scrollContent: {
-        padding: 20,
+        padding: spacing.md,
         paddingTop: 5,
     },
     fixedTabContainer: {
-        backgroundColor: '#FFFFFF',
-        paddingHorizontal: 20,
+        backgroundColor: theme.colors.background,
+        paddingHorizontal: spacing.md,
         paddingTop: 0,
-        paddingBottom: 2, // Fine-tuned
+        paddingBottom: 2,
         zIndex: 100,
         borderBottomWidth: 1,
-        borderBottomColor: 'rgba(0,0,0,0.03)', // Extremely subtle line
+        borderBottomColor: theme.colors.divider,
     },
     segmentedControl: {
         flexDirection: 'row',
         backgroundColor: 'transparent',
-        borderRadius: 18,
+        borderRadius: borderRadius.lg,
         padding: 4,
         position: 'relative',
-        height: 40, // Reduced from 50
+        height: 40,
         alignItems: 'center',
     },
     segmentButton: {
@@ -199,10 +185,9 @@ const styles = (theme: Theme) => StyleSheet.create({
         height: '100%',
     },
     segmentText: {
-        fontSize: moderateScale(14),
+        ...theme.typography.caption,
+        color: theme.colors.textSecondary,
         fontWeight: '500',
-        color: '#8E8E93',
-        letterSpacing: 0.3,
     },
     segmentTextActive: {
         color: theme.colors.primary,
@@ -217,7 +202,7 @@ const styles = (theme: Theme) => StyleSheet.create({
     activeIndicatorLine: {
         height: 2.5,
         backgroundColor: theme.colors.primary,
-        borderRadius: 2,
+        borderRadius: borderRadius.sm,
         marginTop: 4,
         position: 'absolute',
         bottom: 2,
