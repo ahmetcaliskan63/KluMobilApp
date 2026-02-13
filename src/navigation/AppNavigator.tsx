@@ -15,6 +15,7 @@ import { RootStackParamList } from '../types/navigation';
 import { ProfileScreen } from '../screens/profile/ProfileScreen';
 import { AnnouncementsScreen } from '../screens/announcements/AnnouncementsScreen';
 import { DigitalIDScreen } from '../screens/profile/DigitalIDScreen';
+import { ProfileDetailScreen } from '../screens/profile/ProfileDetailScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -38,6 +39,14 @@ export const AppNavigator: React.FC = () => {
                     options={{
                         animation: 'slide_from_bottom',
                         presentation: 'fullScreenModal'
+                    }}
+                />
+                <Stack.Screen
+                    name="ProfileDetail"
+                    component={ProfileDetailScreen}
+                    options={{
+                        headerShown: false,
+                        animation: 'slide_from_right'
                     }}
                 />
             </Stack.Navigator>
