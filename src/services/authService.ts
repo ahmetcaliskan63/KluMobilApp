@@ -38,7 +38,16 @@ export const authService = {
                             { semester: '2. Güz', gpa: 3.28 },
                             { semester: '2. Bahar', gpa: 3.45 },
                             { semester: '3. Güz', gpa: 3.42 },
-                        ]
+                        ],
+                        tcNo: '25253574856',
+                        faculty: 'Mühendislik Fakültesi',
+                        majorBranch: 'Yazılım Mühendisliği',
+                        birthPlace: 'Harran',
+                        birthDate: '27.11.2002',
+                        phone: '543 482 2635',
+                        address: 'Fevzi Çakmak Mah. Samsun Sk. No: 8 İç Kapı No: 1 Şanlıurfa / Akçakale',
+                        registrationDate: '23.08.2022',
+                        gpa: '2,85',
                     },
                     token: 'mock-jwt-token-' + Date.now(),
                 });
