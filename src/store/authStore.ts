@@ -36,13 +36,13 @@ export const useAuthStore = create<AuthState>()(
                         token: response.token,
                         isAuthenticated: true,
                         isLoading: false,
+                        error: null,
                     });
                 } catch (error: any) {
                     set({
                         isLoading: false,
                         error: error.message || 'Giriş yapılamadı. Lütfen bilgilerinizi kontrol edin.'
                     });
-                    throw error;
                 }
             },
 
