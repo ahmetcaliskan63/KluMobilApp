@@ -5,13 +5,15 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { MenuItem } from '../../components/common/MenuItem';
 import { MenuSection } from '../../components/common/MenuSection';
 import { useThemeStore } from '../../store/themeStore';
+import { Theme, spacing } from '../../config/theme';
 
 export const SettingsScreen: React.FC = () => {
     const { theme } = useAppTheme();
     const { isDarkMode, toggleDarkMode } = useThemeStore();
+    const s = styles(theme);
 
     return (
-        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <View style={s.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <MenuSection title="Uygulama Ayarları" theme={theme}>
                     <MenuItem
@@ -37,68 +39,32 @@ export const SettingsScreen: React.FC = () => {
                     <MenuItem icon="information-circle-outline" title="Hakkında" subtitle="Sürüm 1.0.0" theme={theme} />
                 </MenuSection>
 
-                <TouchableOpacity style={styles.logoutButton}>
-                    <Icon name="log-out-outline" size={20} color="#FF3B30" />
-                    <Text style={styles.logoutText}>Çıkış Yap</Text>
+                <TouchableOpacity style={s.logoutButton}>
+                    <Icon name="log-out-outline" size={20} color={theme.colors.error} />
+                    <Text style={s.logoutText}>Çıkış Yap</Text>
                 </TouchableOpacity>
             </ScrollView>
         </View>
     );
 };
 
-const styles = StyleSheet.create({
+const styles = (theme: Theme) => StyleSheet.create({
     container: {
         flex: 1,
-    },
-    section: {
-        marginTop: 24,
-        paddingHorizontal: 16,
-    },
-    sectionTitle: {
-        fontSize: 13,
-        fontWeight: '700',
-        textTransform: 'uppercase',
-        letterSpacing: 1,
-        marginBottom: 12,
-        marginLeft: 4,
-    },
-    itemContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingVertical: 12,
-        borderBottomWidth: StyleSheet.hairlineWidth,
-    },
-    iconContainer: {
-        width: 40,
-        height: 40,
-        borderRadius: 12,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: 16,
-    },
-    textContainer: {
-        flex: 1,
-    },
-    title: {
-        fontSize: 16,
-        fontWeight: '600',
-    },
-    subtitle: {
-        fontSize: 13,
-        marginTop: 2,
+        backgroundColor: theme.colors.background,
     },
     logoutButton: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 32,
-        marginBottom: 48,
-        paddingVertical: 12,
+        marginTop: spacing.xl,
+        marginBottom: spacing.xxl,
+        paddingVertical: spacing.sm,
     },
     logoutText: {
-        color: '#FF3B30',
+        color: theme.colors.error,
         fontSize: 16,
         fontWeight: '700',
-        marginLeft: 8,
+        marginLeft: spacing.sm,
     },
 });
