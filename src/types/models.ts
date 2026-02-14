@@ -33,6 +33,15 @@ export interface User {
     department: string;
     grade: number;
     profileImage?: string;
+    tcNo?: string;
+    faculty?: string;
+    majorBranch?: string;
+    birthPlace?: string;
+    birthDate?: string;
+    phone?: string;
+    address?: string;
+    registrationDate?: string;
+    gpa?: string;
     attendance?: Attendance[];
     graduationProgress?: GraduationProgress;
     gpaHistory?: GPATrend[];
