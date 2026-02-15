@@ -9,6 +9,7 @@ export type RootStackParamList = {
     Profile: undefined;
     Announcements: undefined;
     DigitalID: undefined;
+    ProfileDetail: undefined;
 };
 
 export type AuthStackParamList = {
