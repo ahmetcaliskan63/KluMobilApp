@@ -14,14 +14,7 @@ import {
 } from 'react-native';
 import { theme as defaultTheme, Theme } from '../../config/theme';
 import { useAppTheme } from '../../hooks/useAppTheme';
-
-const { width, height } = Dimensions.get('window');
-const guidelineBaseWidth = 375;
-const guidelineBaseHeight = 812;
-
-const horizontalScale = (size: number) => (width / guidelineBaseWidth) * size;
-const verticalScale = (size: number) => (height / guidelineBaseHeight) * size;
-const moderateScale = (size: number, factor = 0.5) => size + (horizontalScale(size) - size) * factor;
+import { moderateScale, verticalScale } from '../../utils/responsive';
 
 interface InputProps extends TextInputProps {
     label?: string;
@@ -35,24 +28,23 @@ export const Input: React.FC<InputProps> = ({
     containerStyle,
     ...props
 }) => {
-    const [isFocused, setIsFocused] = useState(false);
     const { theme } = useAppTheme();
     const s = styles(theme);
 
     return (
         <View style={[s.container, containerStyle]}>
             {label && <Text style={s.label}>{label}</Text>}
-            <TextInput
-                style={[
-                    s.input,
-                    isFocused && s.inputFocused,
-                    error && s.inputError,
-                ]}
-                placeholderTextColor={theme.colors.textLight}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
-                {...props}
-            />
+            <View style={[
+                s.inputContainer,
+                error ? s.inputError : null,
+                props.multiline ? s.textArea : null
+            ]}>
+                <TextInput
+                    style={s.input}
+                    placeholderTextColor={theme.colors.textLight}
+                    {...props}
+                />
+            </View>
             {error && <Text style={s.errorText}>{error}</Text>}
         </View>
     );
@@ -60,35 +52,38 @@ export const Input: React.FC<InputProps> = ({
 
 const styles = (theme: Theme) => StyleSheet.create({
     container: {
-        marginBottom: verticalScale(10),
+        marginBottom: verticalScale(16),
     },
     label: {
-        fontSize: moderateScale(13),
-        fontWeight: '500',
-        color: theme.colors.text,
+        fontSize: moderateScale(14),
+        fontWeight: '600',
+        color: theme.colors.textSecondary,
         marginBottom: verticalScale(6),
-        alignSelf: 'flex-start',
+    },
+    inputContainer: {
+        backgroundColor: theme.colors.surface,
+        borderRadius: moderateScale(12),
+        borderWidth: 1,
+        borderColor: theme.colors.border,
+        paddingHorizontal: moderateScale(12),
+        minHeight: verticalScale(50),
+        justifyContent: 'center',
+    },
+    textArea: {
+        minHeight: verticalScale(100),
+        alignItems: 'flex-start',
+        paddingVertical: verticalScale(10),
     },
     input: {
-        borderWidth: 1,
-        borderColor: 'rgba(24, 41, 88, 0.5)',
-        borderRadius: moderateScale(10),
-        paddingHorizontal: horizontalScale(15),
-        paddingVertical: verticalScale(12),
-        fontSize: moderateScale(15),
+        fontSize: moderateScale(16),
         color: theme.colors.text,
-        backgroundColor: theme.colors.background,
-        minHeight: verticalScale(50),
-    },
-    inputFocused: {
-        borderColor: theme.colors.primary,
-        borderWidth: 2,
+        padding: 0,
     },
     inputError: {
         borderColor: theme.colors.error,
     },
     errorText: {
-        fontSize: moderateScale(11),
+        fontSize: moderateScale(12),
         color: theme.colors.error,
         marginTop: verticalScale(4),
     },
