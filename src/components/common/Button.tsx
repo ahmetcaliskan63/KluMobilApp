@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { theme as defaultTheme, Theme } from '../../config/theme';
 import { useAppTheme } from '../../hooks/useAppTheme';
+import { moderateScale, verticalScale } from '../../utils/responsive';
 
 interface ButtonProps {
     title: string;
@@ -93,19 +94,19 @@ const styles = (theme: Theme) => StyleSheet.create({
 
     // Sizes
     small: {
-        paddingVertical: theme.spacing.sm,
-        paddingHorizontal: theme.spacing.md,
-        minHeight: 36,
+        paddingVertical: theme.spacing.xs,
+        paddingHorizontal: theme.spacing.sm,
+        minHeight: verticalScale(34),
     },
     medium: {
-        paddingVertical: theme.spacing.md,
-        paddingHorizontal: theme.spacing.lg,
-        minHeight: 48,
+        paddingVertical: theme.spacing.sm,
+        paddingHorizontal: theme.spacing.md,
+        minHeight: verticalScale(48),
     },
     large: {
-        paddingVertical: theme.spacing.lg,
-        paddingHorizontal: theme.spacing.xl,
-        minHeight: 56,
+        paddingVertical: theme.spacing.md,
+        paddingHorizontal: theme.spacing.lg,
+        minHeight: verticalScale(56),
     },
 
     // Text styles
@@ -114,24 +115,24 @@ const styles = (theme: Theme) => StyleSheet.create({
     },
     primaryText: {
         color: theme.colors.textOnPrimary,
-        fontSize: 16,
+        fontSize: moderateScale(16),
     },
     secondaryText: {
         color: theme.colors.textOnPrimary,
-        fontSize: 16,
+        fontSize: moderateScale(16),
     },
     outlineText: {
         color: theme.colors.primary,
-        fontSize: 16,
+        fontSize: moderateScale(16),
     },
     smallText: {
-        fontSize: 14,
+        fontSize: moderateScale(13),
     },
     mediumText: {
-        fontSize: 16,
+        fontSize: moderateScale(15),
     },
     largeText: {
-        fontSize: 18,
+        fontSize: moderateScale(17),
     },
 
     disabled: {
