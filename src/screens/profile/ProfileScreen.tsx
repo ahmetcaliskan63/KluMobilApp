@@ -156,6 +156,55 @@ export const ProfileScreen: React.FC = () => {
                     </TouchableOpacity>
                 </View>
 
+                {/* 🚀 Hızlı Erişim (Quick Access) Section */}
+                <View style={s.quickAccessSection}>
+                    <View style={s.sectionHeader}>
+                        <View style={s.sectionTitleContainer}>
+                            <View style={[s.sectionIconDot, { backgroundColor: '#3B82F6' }]} />
+                            <Text style={[s.sectionTitle, { color: theme.colors.text }]}>HIZLI ERİŞİM</Text>
+                        </View>
+                        <View style={s.headerLine} />
+                    </View>
+
+                    <View style={s.quickStack}>
+                        {[
+                            { id: '1', title: 'Ders Programı', icon: 'calendar', color: '#3B82F6', subtitle: 'Haftalık Plan' },
+                            { id: '2', title: 'Transkript', icon: 'document-text', color: '#8B5CF6', subtitle: 'Not Dökümü' },
+                            { id: '3', title: 'Akademik Takvim', icon: 'time', color: '#10B981', subtitle: '2025 Planı' },
+                            { id: '4', title: 'Sınav Programı', icon: 'notifications', color: '#F59E0B', subtitle: 'Vize / Final' },
+                            { id: '5', title: 'Sınav Sonuçları', icon: 'ribbon', color: '#EF4444', subtitle: 'Not Sorgula' },
+                            { id: '6', title: 'E-Posta / Şifre', icon: 'key', color: '#6366F1', subtitle: 'Hesap Ayarı' },
+                            { id: '7', title: 'WiFi İşlemleri', icon: 'wifi', color: '#06B6D4', subtitle: 'Kampüs Net' },
+                            { id: '8', title: 'Hocalarımız', icon: 'people', color: '#EC4899', subtitle: 'Akademik Kadro' },
+                            { id: '9', title: 'Birimler', icon: 'business', color: '#475569', subtitle: 'Fakülteler' },
+                        ].map((item) => (
+                            <TouchableOpacity
+                                key={item.id}
+                                style={s.quickListItemWrapper}
+                                activeOpacity={0.8}
+                            >
+                                <LinearGradient
+                                    colors={['#FFFFFF', '#FDFDFD']}
+                                    style={s.quickListItemGradient}
+                                >
+                                    <View style={s.quickListItemContent}>
+                                        <View style={[s.quickIconCircle, { backgroundColor: `${item.color}08` }]}>
+                                            <Icon name={item.icon} size={20} color={item.color} />
+                                        </View>
+
+                                        <View style={s.quickListItemTextWrapper}>
+                                            <Text style={[s.quickListItemTitle, { color: theme.colors.text }]}>{item.title}</Text>
+                                            <Text style={s.quickListItemSubtitle}>{item.subtitle}</Text>
+                                        </View>
+
+                                        <Icon name="chevron-forward" size={14} color="#CBD5E1" />
+                                    </View>
+                                </LinearGradient>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+                </View>
+
                 {/* Content can follow here */}
             </ScrollView>
 
@@ -448,5 +497,93 @@ const styles = (theme: Theme) => StyleSheet.create({
             { scale: 1.4 }
         ],
         marginTop: verticalScale(40),
+    },
+    quickAccessSection: {
+        width: '100%',
+        marginTop: verticalScale(25),
+        marginBottom: verticalScale(10),
+    },
+    sectionHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: verticalScale(15),
+        paddingHorizontal: 5,
+    },
+    sectionTitleContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
+    },
+    sectionIconDot: {
+        width: 4,
+        height: 14,
+        borderRadius: 2,
+    },
+    sectionTitle: {
+        fontSize: moderateScale(11),
+        fontWeight: '900',
+        letterSpacing: 1.2,
+    },
+    headerLine: {
+        flex: 1,
+        height: 1,
+        backgroundColor: 'rgba(80, 80, 80, 0.1)',
+        marginLeft: 15,
+    },
+    quickStack: {
+        flexDirection: 'column',
+        gap: verticalScale(12),
+    },
+    quickListItemWrapper: {
+        width: '100%',
+        borderRadius: moderateScale(16),
+        backgroundColor: theme.colors.card,
+        // Minimalist professional shadow
+        shadowColor: '#000000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.04,
+        shadowRadius: 8,
+        elevation: 2,
+        // Subtle border
+        borderWidth: 1,
+        borderColor: 'rgba(0, 0, 0, 0.05)',
+    },
+    quickListItemGradient: {
+        borderRadius: moderateScale(16),
+        overflow: 'hidden',
+    },
+    quickListItemContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: spacing.md,
+        paddingVertical: verticalScale(14),
+        gap: spacing.md,
+    },
+    quickIconCircle: {
+        width: moderateScale(40),
+        height: moderateScale(40),
+        borderRadius: moderateScale(12),
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    quickListItemTextWrapper: {
+        flex: 1,
+        justifyContent: 'center',
+    },
+    quickListItemTitle: {
+        fontSize: moderateScale(13.5),
+        fontWeight: '700',
+        color: '#1E293B',
+        letterSpacing: -0.2,
+    },
+    quickListItemSubtitle: {
+        fontSize: moderateScale(9.5),
+        fontWeight: '500',
+        color: '#94A3B8',
+        marginTop: 1,
+        letterSpacing: 0.2,
+    },
+    quickListItemChevronWrapper: {
+        paddingHorizontal: spacing.xs,
     },
 });
