@@ -1,8 +1,3 @@
-/**
- * Splash Screen
- * Uygulama açılış ekranı - KLU Kurumsal Tasarım
- */
-
 import React, { useEffect, useState } from 'react';
 import {
     View,
@@ -11,22 +6,12 @@ import {
     Image,
     Animated,
     StatusBar,
-    Dimensions,
 } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { theme } from '../../config/theme';
 import { useAuthStore } from '../../store/authStore';
 import { RootStackParamList } from '../../types/navigation';
-
-const { width, height } = Dimensions.get('window');
-
-// Responsive Scaling Helpers
-const guidelineBaseWidth = 375;
-const guidelineBaseHeight = 812;
-
-const horizontalScale = (size: number) => (width / guidelineBaseWidth) * size;
-const verticalScale = (size: number) => (height / guidelineBaseHeight) * size;
-const moderateScale = (size: number, factor = 0.5) => size + (horizontalScale(size) - size) * factor;
+import { moderateScale, verticalScale } from '../../utils/responsive';
 
 export const SplashScreen: React.FC = () => {
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -62,9 +47,9 @@ export const SplashScreen: React.FC = () => {
     }, [isAuthenticated, fadeAnim, scaleAnim, navigation]);
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: theme.colors.primary }]}>
             <StatusBar
-                backgroundColor="#182958"
+                backgroundColor={theme.colors.primary}
                 barStyle="light-content"
             />
 
@@ -100,7 +85,6 @@ export const SplashScreen: React.FC = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#182958', // Official KLU Blue
     },
     content: {
         flex: 1,
@@ -114,15 +98,15 @@ const styles = StyleSheet.create({
         width: moderateScale(140),
         height: moderateScale(140),
         backgroundColor: 'rgba(255, 255, 255, 0.95)',
-        borderRadius: moderateScale(70),
+        borderRadius: moderateScale(140) / 2,
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: verticalScale(20),
         ...theme.shadows.medium,
     },
     logo: {
-        width: moderateScale(130),
-        height: moderateScale(130),
+        width: moderateScale(110),
+        height: moderateScale(110),
     },
     slogan: {
         fontSize: moderateScale(22),
