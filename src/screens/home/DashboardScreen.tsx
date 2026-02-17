@@ -14,7 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Theme, spacing, borderRadius } from '../../config/theme';
 import { useAuthStore } from '../../store/authStore';
 import { useAppTheme } from '../../hooks/useAppTheme';
-import { viewport, moderateScale } from '../../utils/responsive';
+import { viewport, moderateScale, scale, verticalScale } from '../../utils/responsive';
 import { useNavigation, useRoute, RouteProp, CompositeNavigationProp } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -44,7 +44,7 @@ export const DashboardScreen: React.FC = () => {
     const { theme } = useAppTheme();
     const s = styles(theme);
     const [activeTab, setActiveTab] = React.useState<'Duyurular' | 'Haberler' | 'Etkinlikler'>('Haberler');
-    const tabWidth = (viewport.width - 48) / 3;
+    const tabWidth = (viewport.width - moderateScale(48)) / 3;
     const translateX = React.useRef(new Animated.Value(tabWidth)).current;
 
     const handleTabPress = (tab: 'Duyurular' | 'Haberler' | 'Etkinlikler', index: number) => {
@@ -111,7 +111,7 @@ export const DashboardScreen: React.FC = () => {
                                             <Animated.View
                                                 style={[
                                                     s.activeIndicatorLine,
-                                                    { width: index === 0 ? 30 : index === 1 ? 40 : 35 }
+                                                    { width: index === 0 ? moderateScale(30) : index === 1 ? moderateScale(40) : moderateScale(35) }
                                                 ]}
                                             />
                                         )}
@@ -200,12 +200,12 @@ const styles = (theme: Theme) => StyleSheet.create({
         height: '100%',
     },
     activeIndicatorLine: {
-        height: 2.5,
+        height: verticalScale(2.5),
         backgroundColor: theme.colors.primary,
         borderRadius: borderRadius.sm,
-        marginTop: 4,
+        marginTop: verticalScale(4),
         position: 'absolute',
-        bottom: 2,
+        bottom: verticalScale(2),
     },
     contentList: {
         paddingTop: 10,
