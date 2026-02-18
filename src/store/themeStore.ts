@@ -16,6 +16,7 @@ export const useThemeStore = create<ThemeState>()(
             setDarkMode: (isDark: boolean) => set({ isDarkMode: isDark }),
         }),
         {
+            // Name for the persistent storage key
             name: 'klu-theme-storage',
             storage: createJSONStorage(() => AsyncStorage),
         }
