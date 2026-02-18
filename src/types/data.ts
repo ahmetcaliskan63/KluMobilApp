@@ -10,6 +10,7 @@ export interface Announcement {
     snippet: string;
     content: string;
     views?: string;
+    image?: string;
 }
 
 export interface News {
