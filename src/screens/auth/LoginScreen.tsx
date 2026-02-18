@@ -73,6 +73,7 @@ export const LoginScreen: React.FC = () => {
 
         if (isEmailValid && isPasswordValid) {
             try {
+                // Execute login via global auth store
                 await login({ studentId: email, password });
             } catch (error) {
                 Alert.alert('Hata', 'Giriş yapılırken bir hata oluştu');
