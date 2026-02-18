@@ -7,6 +7,7 @@ import {
     TouchableOpacity,
     StatusBar,
     Animated,
+    Image,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -95,6 +96,17 @@ export const AnnouncementDetailScreen: React.FC = () => {
                 contentContainerStyle={s.scrollContent}
                 style={{ opacity: fadeAnim }}
             >
+                {/* Visual Header - New image addition */}
+                {announcement.image && (
+                    <View style={s.imageWrapper}>
+                        <Image
+                            source={{ uri: announcement.image }}
+                            style={s.mainImage}
+                            resizeMode="cover"
+                        />
+                    </View>
+                )}
+
                 {/* Ultra-Clean Title Section */}
                 <View style={s.titleSection}>
                     <View style={s.badgeRow}>
@@ -175,7 +187,17 @@ const styles = (theme: Theme, corporateColor: string) => StyleSheet.create({
         paddingHorizontal: scale(8),
     },
     scrollContent: {
-        paddingTop: verticalScale(32),
+        paddingTop: verticalScale(0), // Removed padding to let image start from top if needed, or keep minimal
+    },
+    imageWrapper: {
+        width: '100%',
+        height: verticalScale(220),
+        backgroundColor: '#F3F4F6',
+        marginBottom: verticalScale(24),
+    },
+    mainImage: {
+        width: '100%',
+        height: '100%',
     },
     titleSection: {
         paddingHorizontal: scale(24),
@@ -213,10 +235,10 @@ const styles = (theme: Theme, corporateColor: string) => StyleSheet.create({
         fontWeight: '600',
     },
     mainTitle: {
-        fontSize: moderateScale(24),
+        fontSize: moderateScale(22),
         fontWeight: '800',
         color: '#111827',
-        lineHeight: moderateScale(32),
+        lineHeight: moderateScale(30),
         marginBottom: verticalScale(16),
     },
     viewCount: {
