@@ -161,6 +161,7 @@ export const ProfileScreen: React.FC = () => {
                     <View style={s.sectionHeader}>
                         <View style={s.sectionTitleContainer}>
                             <View style={[s.sectionIconDot, { backgroundColor: '#3B82F6' }]} />
+                            {/* Premium Section Title: Uppercase with letter spacing for high-end look */}
                             <Text style={[s.sectionTitle, { color: theme.colors.text }]}>HIZLI ERİŞİM</Text>
                         </View>
                         <View style={s.headerLine} />
