@@ -10,6 +10,7 @@ export interface Announcement {
     snippet: string;
     content: string;
     views?: string;
+    image?: string;
 }
 
 export interface News {
@@ -118,7 +119,8 @@ export const MOCK_ANNOUNCEMENTS: Announcement[] = [
         category: 'Akademik',
         views: '1082',
         snippet: 'Öğretim elemanı alımı sınav sonuçları açıklanmıştır.',
-        content: 'İlgili ilana başvuran adayların sınav sonuçlarını personel daire başkanlığı sayfasından öğrenebilirler.'
+        content: 'İlgili ilana başvuran adayların sınav sonuçlarını personel daire başkanlığı sayfasından öğrenebilirler.',
+        image: 'https://images.unsplash.com/photo-1541339907198-e08759dfc3ef?q=80&w=2070&auto=format&fit=crop'
     },
     {
         id: '2',
@@ -127,7 +129,8 @@ export const MOCK_ANNOUNCEMENTS: Announcement[] = [
         category: 'Kurumsal',
         views: '211',
         snippet: 'Döner sermaye süreçleri hakkında bilgilendirme.',
-        content: 'Tüm birim yöneticilerinin katılımıyla döner sermaye süreçleri ele alınacaktır.'
+        content: 'Tüm birim yöneticilerinin katılımıyla döner sermaye süreçleri ele alınacaktır.',
+        image: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=2070&auto=format&fit=crop'
     },
     {
         id: '3',
@@ -136,7 +139,8 @@ export const MOCK_ANNOUNCEMENTS: Announcement[] = [
         category: 'Akademik',
         views: '1117',
         snippet: 'Yabancı uyruklu öğrenci sınavı başvuruları başlıyor.',
-        content: 'Tr-Yös/1 sınavı için başvuru tarihleri ve detayları uluslararası öğrenci ofisi sayfasında yayınlanmıştır.'
+        content: 'Tr-Yös/1 sınavı için başvuru tarihleri ve detayları uluslararası öğrenci ofisi sayfasında yayınlanmıştır.',
+        image: 'https://images.unsplash.com/photo-1523240318241-70e192ce93bd?q=80&w=2070&auto=format&fit=crop'
     }
 ];
 
