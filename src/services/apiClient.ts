@@ -16,6 +16,7 @@ export const setApiCallbacks = (
 
 const apiClient: AxiosInstance = axios.create({
     baseURL: BASE_URL,
+    // Standard 10s timeout to balance UX and network reliability
     timeout: 10000,
     headers: {
         'Content-Type': 'application/json',
