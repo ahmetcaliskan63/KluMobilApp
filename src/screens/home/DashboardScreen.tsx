@@ -44,6 +44,7 @@ export const DashboardScreen: React.FC = () => {
     const { theme } = useAppTheme();
     const s = styles(theme);
     const [activeTab, setActiveTab] = React.useState<'Duyurular' | 'Haberler' | 'Etkinlikler'>('Haberler');
+    // Dynamic tab width calculation based on viewport to ensure responsiveness
     const tabWidth = (viewport.width - moderateScale(48)) / 3;
     const translateX = React.useRef(new Animated.Value(tabWidth)).current;
 
