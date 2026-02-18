@@ -3,6 +3,7 @@ import { Dimensions, Platform, PixelRatio } from 'react-native';
 const { width, height } = Dimensions.get('window');
 
 // Guideline sizes are based on standard ~5" screen mobile device (iPhone 8/X)
+// These constants are the source of truth for all relative scaling
 const guidelineBaseWidth = 375;
 const guidelineBaseHeight = 812;
 
