@@ -1,5 +1,6 @@
 /**
  * Navigation Type Definitions
+ * Ensures strict type safety across the application for all navigation flows
  */
 
 export type RootStackParamList = {
