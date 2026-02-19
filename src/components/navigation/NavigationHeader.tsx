@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity, Image, StyleSheet, Platform } from 'react-native';
+import { View, TouchableOpacity, Image, StyleSheet, Platform, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../../types/navigation';
@@ -21,11 +21,14 @@ export const NavigationHeaderRight: React.FC = () => {
 
     return (
         <TouchableOpacity
-            onPress={() => navigation.navigate('Announcements')}
+            onPress={() => navigation.navigate('Notifications')}
             style={styles.headerRightContainer}
         >
             <View style={styles.iconWrapper}>
                 <Icon name="notifications" size={20} color="#FFFFFF" />
+                <View style={styles.badge}>
+                    <Text style={styles.badgeText}>3</Text>
+                </View>
             </View>
         </TouchableOpacity>
     );
@@ -61,5 +64,25 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderWidth: 1,
         borderColor: 'rgba(255, 255, 255, 0.2)',
+        position: 'relative',
+    },
+    badge: {
+        position: 'absolute',
+        top: -4,
+        right: -4,
+        backgroundColor: '#EF4444',
+        minWidth: 18,
+        height: 18,
+        borderRadius: 9,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 4,
+        borderWidth: 2,
+        borderColor: '#182958',
+    },
+    badgeText: {
+        color: '#FFFFFF',
+        fontSize: 10,
+        fontWeight: '900',
     },
 });
