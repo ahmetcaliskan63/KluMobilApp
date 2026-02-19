@@ -11,7 +11,7 @@ import { moderateScale } from '../../utils/responsive';
 interface CardProps {
     children: React.ReactNode;
     style?: StyleProp<ViewStyle>;
-    elevation?: 'small' | 'medium' | 'large';
+    elevation?: 'none' | 'small' | 'medium' | 'large';
 }
 
 export const Card: React.FC<CardProps> = ({
