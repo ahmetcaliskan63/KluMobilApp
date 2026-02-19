@@ -16,7 +16,30 @@ const EventCardComponent: React.FC<EventCardProps> = ({ item, theme, onPress }) 
     const handlePressIn = () => Animated.spring(scale, { toValue: 0.98, useNativeDriver: true, tension: 100, friction: 10 }).start();
     const handlePressOut = () => Animated.spring(scale, { toValue: 1, useNativeDriver: true, tension: 100, friction: 10 }).start();
 
-    const [day, month] = item.date.split(' ');
+    const [day, monthName, year] = item.date.split(' ');
+
+    const turkishMonths: { [key: string]: number } = {
+        'Ocak': 0, 'Şubat': 1, 'Mart': 2, 'Nisan': 3, 'Mayıs': 4, 'Haziran': 5,
+        'Temmuz': 6, 'Ağustos': 7, 'Eylül': 8, 'Ekim': 9, 'Kasım': 10, 'Aralık': 11
+    };
+
+    const eventDate = new Date(
+        parseInt(year),
+        turkishMonths[monthName] || 0,
+        parseInt(day)
+    );
+
+    const now = new Date();
+    // Normalize dates to midnight for comparison
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const eventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
+
+    const isFuture = eventDay > today;
+    const isPast = eventDay < today;
+    const isToday = eventDay.getTime() === today.getTime();
+
+    // Use green for future, red for past or today (based on user request: "üstündeki tarih kartı yapıldıysa veya geçmiş bir tarihteyse kırmızı olsun")
+    const pillColor = isFuture ? '#10B981' : '#EF4444';
 
     return (
         <Animated.View style={[styles.container, { transform: [{ scale }] }]}>
@@ -29,9 +52,9 @@ const EventCardComponent: React.FC<EventCardProps> = ({ item, theme, onPress }) 
                 <Image source={{ uri: item.image }} style={styles.image} resizeMode="cover" />
                 <View style={styles.overlay} />
 
-                <View style={styles.datePill}>
-                    <Text style={styles.dayText}>{day}</Text>
-                    <Text style={styles.monthText}>{month?.substring(0, 3)}</Text>
+                <View style={[styles.datePill, { backgroundColor: pillColor }]}>
+                    <Text style={[styles.dayText, { color: '#FFFFFF' }]}>{day}</Text>
+                    <Text style={[styles.monthText, { color: '#FFFFFF' }]}>{monthName?.substring(0, 3)}</Text>
                 </View>
 
                 <View style={styles.infoBlock}>
@@ -98,6 +121,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         minWidth: 50,
+        borderWidth: 1.5,
+        borderColor: '#182958',
         // Simple shadow for pill
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
