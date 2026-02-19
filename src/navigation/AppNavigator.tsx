@@ -16,6 +16,7 @@ import { ProfileScreen } from '../screens/profile/ProfileScreen';
 import { AnnouncementsScreen } from '../screens/announcements/AnnouncementsScreen';
 import { DigitalIDScreen } from '../screens/profile/DigitalIDScreen';
 import { ProfileDetailScreen } from '../screens/profile/ProfileDetailScreen';
+import { NotificationsScreen } from '../screens/notifications/NotificationsScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -33,6 +34,7 @@ export const AppNavigator: React.FC = () => {
                 <Stack.Screen name="Main" component={MainTabNavigator} />
                 <Stack.Screen name="Profile" component={ProfileScreen} />
                 <Stack.Screen name="Announcements" component={AnnouncementsScreen} />
+                <Stack.Screen name="Notifications" component={NotificationsScreen} />
                 <Stack.Screen
                     name="DigitalID"
                     component={DigitalIDScreen}
