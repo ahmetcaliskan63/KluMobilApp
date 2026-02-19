@@ -108,6 +108,16 @@ export const MOCK_EVENTS: Event[] = [
         organizer: 'Bilgisayar Mühendisliği Bölümü',
         image: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=2070&auto=format&fit=crop',
         type: 'Konferans'
+    },
+    {
+        id: '4',
+        title: 'Kariyer Günleri 2026',
+        date: '10 Ocak 2026',
+        time: '09:00',
+        location: 'Rektörlük Konferans Salonu',
+        organizer: 'Kariyer Uygulama ve Araştırma Merkezi',
+        image: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?q=80&w=2070&auto=format&fit=crop',
+        type: 'Üniversite'
     }
 ];
 
@@ -145,11 +155,17 @@ export const MOCK_ANNOUNCEMENTS: Announcement[] = [
 ];
 
 export const MOCK_WEEKLY_MENU: MenuItem[] = [
-    { day: 'Pazartesi', date: '9 Mart', items: ['Mercimek Çorbası', 'Tavuk Sote', 'Bulgur Pilavı', 'Elma'] },
-    { day: 'Salı', date: '10 Mart', items: ['Yayla Çorbası', 'Orman Kebabı', 'Pirinç Pilavı', 'Yoğurt'] },
-    { day: 'Çarşamba', date: '11 Mart', items: ['Tarhana Çorbası', 'Kıymalı Taze Fasulye', 'Mantar Soslu Makarna', 'Salata'] },
-    { day: 'Perşembe', date: '12 Mart', items: ['Ezogelin Çorbası', 'İzmir Köfte', 'Pirinç Pilavı', 'Mevsim Salata'] },
-    { day: 'Cuma', date: '13 Mart', items: ['Domates Çorbası', 'Balık Buğulama', 'Fırın Patates', 'Tahin Helvası'] },
+    { day: 'Pazartesi', date: '16 Şubat', items: ['Domates Çorbası', 'Taze Fasulye', 'Pirinç Pilavı', 'Cacık'] },
+    { day: 'Salı', date: '17 Şubat', items: ['Ezogelin Çorbası', 'Tavuk Şinitzel', 'Makarna', 'Meyve'] },
+    { day: 'Çarşamba', date: '18 Şubat', items: ['Yayla Çorbası', 'İzmir Köfte', 'Bulgur Pilavı', 'Salata'] },
+    { day: 'Perşembe', date: '19 Şubat', items: ['Mercimek Çorbası', 'Kıymalı Bezelye', 'Pirinç Pilavı', 'Yoğurt'] },
+    { day: 'Cuma', date: '20 Şubat', items: ['Tarhana Çorbası', 'Fırın Tavuk', 'Sebzeli Pilav', 'Meyve Suyu'] },
+    { day: 'Cumartesi', date: '21 Şubat', items: ['Düğün Çorbası', 'Tas Kebabı', 'İç Pilavı', 'Tulumba Tatlısı'] }, // Bugün (Varsayılan)
+    { day: 'Pazar', date: '22 Şubat', items: ['Sebze Çorbası', 'Mantı', 'Soslu Makarna', 'Mevsim Salata'] },
+    { day: 'Pazartesi', date: '23 Şubat', items: ['Mercimek Çorbası', 'Tavuk Sote', 'Bulgur Pilavı', 'Elma'] },
+    { day: 'Salı', date: '24 Şubat', items: ['Yayla Çorbası', 'Orman Kebabı', 'Pirinç Pilavı', 'Yoğurt'] },
+    { day: 'Çarşamba', date: '25 Şubat', items: ['Tarhana Çorbası', 'Kıymalı Taze Fasulye', 'Mantar Soslu Makarna', 'Salata'] },
+    { day: 'Perşembe', date: '26 Şubat', items: ['Ezogelin Çorbası', 'İzmir Köfte', 'Pirinç Pilavı', 'Mevsim Salata'] },
 ];
 
 export const MOCK_BORROWED_BOOKS: BorrowedBook[] = [
@@ -171,11 +187,27 @@ export interface Course {
 }
 
 export const MOCK_SCHEDULE: Course[] = [
-    { id: '1', name: 'MAT101 Calculus', room: 'HB202', instructor: 'Prof. Dr. A. Yılmaz', startTime: '15:00', endTime: '17:50', day: 'Çarşamba', color: '#4A90E2', syllabus: ['Limit ve Süreklilik', 'Türev Kuralları', 'Türevin Uygulamaları', 'İntegral'], attendance: 85 },
+    // Pazartesi
     { id: '2', name: 'FIZ101 Physics I', room: 'HB105', instructor: 'Doç. Dr. M. Kaya', startTime: '09:00', endTime: '11:50', day: 'Pazartesi', color: '#50E3C2', syllabus: ['Vektörler', 'Tek Boyutta Hareket', 'Newton Kanunları', 'İş ve Enerji'], attendance: 92 },
-    { id: '3', name: 'BIL101 Intro to Programming', room: 'Lab 1', instructor: 'Dr. Öğr. Üyesi S. Demir', startTime: '13:00', endTime: '15:50', day: 'Salı', color: '#F5A623', syllabus: ['Algoritma Kavramı', 'Değişkenler ve Veri Tipleri', 'Koşullu İfadeler', 'Diziler'], attendance: 100 },
+    { id: '6', name: 'BIL201 Veri Yapıları', room: 'Lab 2', instructor: 'Dr. Öğr. Üyesi A. Demir', startTime: '13:00', endTime: '15:50', day: 'Pazartesi', color: '#3B82F6' },
+
+    // Salı
+    { id: '3', name: 'BIL101 Intro to Programming', room: 'Lab 1', instructor: 'Dr. Öğr. Üyesi S. Demir', startTime: '09:00', endTime: '11:50', day: 'Salı', color: '#F5A623', syllabus: ['Algoritma Kavramı', 'Değişkenler ve Veri Tipleri', 'Koşullu İfadeler', 'Diziler'], attendance: 100 },
+    { id: '7', name: 'MAT201 Diferansiyel Denklemler', room: 'HB202', instructor: 'Prof. Dr. L. Aksoy', startTime: '13:00', endTime: '15:50', day: 'Salı', color: '#10B981' },
+    { id: '8', name: 'ENG201 Teknik İngilizce', room: 'HB305', instructor: 'Okutman M. Yılmaz', startTime: '16:00', endTime: '17:50', day: 'Salı', color: '#6366F1' },
+
+    // Çarşamba
+    { id: '1', name: 'MAT101 Calculus', room: 'HB202', instructor: 'Prof. Dr. A. Yılmaz', startTime: '10:00', endTime: '12:50', day: 'Çarşamba', color: '#4A90E2', syllabus: ['Limit ve Süreklilik', 'Türev Kuralları', 'Türevin Uygulamaları', 'İntegral'], attendance: 85 },
+    { id: '9', name: 'BIL203 Nesne Yönelimli Programlama', room: 'Lab 1', instructor: 'Dr. Öğr. Üyesi C. Can', startTime: '14:00', endTime: '16:50', day: 'Çarşamba', color: '#F43F5E' },
+
+    // Perşembe
     { id: '4', name: 'TUR101 Türk Dili I', room: 'HB301', instructor: 'Öğr. Gör. H. Arslan', startTime: '10:00', endTime: '11:50', day: 'Perşembe', color: '#D0021B' },
-    { id: '5', name: 'ING101 English I', room: 'HB202', instructor: 'Okutman E. Aksoy', startTime: '14:00', endTime: '15:50', day: 'Cuma', color: '#9013FE' },
+    { id: '10', name: 'BIL205 Ayrık Matematik', room: 'HB204', instructor: 'Doç. Dr. V. Şahin', startTime: '13:00', endTime: '15:50', day: 'Perşembe', color: '#8B5CF6' },
+
+    // Cuma
+    { id: '5', name: 'ING101 English I', room: 'HB202', instructor: 'Okutman E. Aksoy', startTime: '09:00', endTime: '10:50', day: 'Cuma', color: '#9013FE' },
+    { id: '11', name: 'AIT101 Atatürk İlkeleri ve İnkılap Tarihi I', room: 'Amfi 1', instructor: 'Öğr. Gör. T. Güneş', startTime: '11:00', endTime: '12:50', day: 'Cuma', color: '#EC4899' },
+    { id: '12', name: 'Müh. Etiği ve Sosyal Sorumluluk', room: 'HB202', instructor: 'Dr. K. Özdemir', startTime: '14:00', endTime: '15:50', day: 'Cuma', color: '#F97316' },
 ];
 
 export interface Grade {
