@@ -9,6 +9,7 @@ import {
     StatusBar,
     Modal,
     Pressable,
+    Animated,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -158,15 +159,6 @@ export const ProfileScreen: React.FC = () => {
 
                 {/* 🚀 Hızlı Erişim (Quick Access) Section */}
                 <View style={s.quickAccessSection}>
-                    <View style={s.sectionHeader}>
-                        <View style={s.sectionTitleContainer}>
-                            <View style={[s.sectionIconDot, { backgroundColor: '#3B82F6' }]} />
-                            {/* Premium Section Title: Uppercase with letter spacing for high-end look */}
-                            <Text style={[s.sectionTitle, { color: theme.colors.text }]}>HIZLI ERİŞİM</Text>
-                        </View>
-                        <View style={s.headerLine} />
-                    </View>
-
                     <View style={s.quickStack}>
                         {[
                             { id: '1', title: 'Ders Programı', icon: 'calendar', color: '#3B82F6', subtitle: 'Haftalık Plan' },
@@ -178,31 +170,59 @@ export const ProfileScreen: React.FC = () => {
                             { id: '7', title: 'WiFi İşlemleri', icon: 'wifi', color: '#06B6D4', subtitle: 'Kampüs Net' },
                             { id: '8', title: 'Hocalarımız', icon: 'people', color: '#EC4899', subtitle: 'Akademik Kadro' },
                             { id: '9', title: 'Birimler', icon: 'business', color: '#475569', subtitle: 'Fakülteler' },
-                        ].map((item) => (
-                            <TouchableOpacity
-                                key={item.id}
-                                style={s.quickListItemWrapper}
-                                activeOpacity={0.8}
-                            >
-                                <LinearGradient
-                                    colors={['#FFFFFF', '#FDFDFD']}
-                                    style={s.quickListItemGradient}
-                                >
-                                    <View style={s.quickListItemContent}>
-                                        <View style={[s.quickIconCircle, { backgroundColor: `${item.color}08` }]}>
-                                            <Icon name={item.icon} size={20} color={item.color} />
-                                        </View>
+                        ].map((item) => {
+                            // Add press animation scale
+                            const scaleValue = React.useRef(new Animated.Value(1)).current;
 
-                                        <View style={s.quickListItemTextWrapper}>
-                                            <Text style={[s.quickListItemTitle, { color: theme.colors.text }]}>{item.title}</Text>
-                                            <Text style={s.quickListItemSubtitle}>{item.subtitle}</Text>
-                                        </View>
+                            const onPressIn = () => {
+                                Animated.spring(scaleValue, {
+                                    toValue: 0.96,
+                                    useNativeDriver: true,
+                                }).start();
+                            };
 
-                                        <Icon name="chevron-forward" size={14} color="#CBD5E1" />
-                                    </View>
-                                </LinearGradient>
-                            </TouchableOpacity>
-                        ))}
+                            const onPressOut = () => {
+                                Animated.spring(scaleValue, {
+                                    toValue: 1,
+                                    friction: 3,
+                                    tension: 40,
+                                    useNativeDriver: true,
+                                }).start();
+                            };
+
+                            return (
+                                <Animated.View key={item.id} style={{ transform: [{ scale: scaleValue }] }}>
+                                    <TouchableOpacity
+                                        style={s.quickListItemWrapper}
+                                        activeOpacity={1}
+                                        onPressIn={onPressIn}
+                                        onPressOut={onPressOut}
+                                        onPress={() => {
+                                            if (item.id === '1') {
+                                                navigation.navigate('HomeStack' as never, { screen: 'Schedule' } as never);
+                                            }
+                                        }}
+                                    >
+                                        <LinearGradient
+                                            colors={['#F8FAFC', '#F1F5F9']} // Light Grey Background
+                                            style={s.quickListItemGradient}
+                                        >
+                                            <View style={s.quickListItemContent}>
+                                                <View style={[s.quickIconCircle, { backgroundColor: item.color + '15' }]}>
+                                                    <Icon name={item.icon} size={20} color={item.color} />
+                                                </View>
+
+                                                <View style={s.quickListItemTextWrapper}>
+                                                    <Text style={[s.quickListItemTitle, { color: theme.colors.text }]}>{item.title}</Text>
+                                                </View>
+
+                                                <Icon name="chevron-forward" size={14} color="#CBD5E1" />
+                                            </View>
+                                        </LinearGradient>
+                                    </TouchableOpacity>
+                                </Animated.View>
+                            );
+                        })}
                     </View>
                 </View>
 
@@ -258,7 +278,7 @@ const styles = (theme: Theme) => StyleSheet.create({
         backgroundColor: theme.colors.background,
     },
     scrollContent: {
-        paddingBottom: spacing.xxl,
+        paddingBottom: verticalScale(100), // Increased for better visibility
         paddingHorizontal: spacing.xl,
     },
     decorativeCircle: {
@@ -533,56 +553,53 @@ const styles = (theme: Theme) => StyleSheet.create({
     },
     quickStack: {
         flexDirection: 'column',
-        gap: verticalScale(12),
+        gap: verticalScale(4), // Minimal spacing between cards
     },
     quickListItemWrapper: {
         width: '100%',
-        borderRadius: moderateScale(16),
-        backgroundColor: theme.colors.card,
-        // Minimalist professional shadow
-        shadowColor: '#000000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.04,
-        shadowRadius: 8,
-        elevation: 2,
-        // Subtle border
-        borderWidth: 1,
-        borderColor: 'rgba(0, 0, 0, 0.05)',
+        borderRadius: moderateScale(22),
+        backgroundColor: '#F1F5F9',
+        // Sharper, more visible shadow
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.12,
+        shadowRadius: 6,
+        elevation: 5,
+        borderWidth: 1.5,
+        borderColor: '#CBD5E1',
     },
     quickListItemGradient: {
-        borderRadius: moderateScale(16),
+        borderRadius: moderateScale(22),
         overflow: 'hidden',
     },
     quickListItemContent: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: spacing.md,
-        paddingVertical: verticalScale(14),
-        gap: spacing.md,
+        paddingHorizontal: spacing.lg,
+        paddingVertical: verticalScale(12),
+        gap: spacing.lg,
     },
     quickIconCircle: {
-        width: moderateScale(40),
-        height: moderateScale(40),
-        borderRadius: moderateScale(12),
+        width: moderateScale(46),
+        height: moderateScale(46),
+        borderRadius: moderateScale(14),
         justifyContent: 'center',
         alignItems: 'center',
+        // Subtle depth for the icon circle itself
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 4,
     },
     quickListItemTextWrapper: {
         flex: 1,
         justifyContent: 'center',
     },
     quickListItemTitle: {
-        fontSize: moderateScale(13.5),
+        fontSize: moderateScale(14),
         fontWeight: '700',
         color: '#1E293B',
-        letterSpacing: -0.2,
-    },
-    quickListItemSubtitle: {
-        fontSize: moderateScale(9.5),
-        fontWeight: '500',
-        color: '#94A3B8',
-        marginTop: 1,
-        letterSpacing: 0.2,
+        letterSpacing: -0.3,
     },
     quickListItemChevronWrapper: {
         paddingHorizontal: spacing.xs,
