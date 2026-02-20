@@ -5,7 +5,7 @@ import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { DashboardScreen } from '../screens/home/DashboardScreen';
-import { ScheduleScreen } from '../screens/home/ScheduleScreen';
+import { ScheduleScreen } from '../screens/schedule/ScheduleScreen';
 import { OBSScreen } from '../screens/home/OBSScreen';
 import { CourseDetailScreen } from '../screens/home/CourseDetailScreen';
 import { ExamDetailScreen } from '../screens/home/ExamDetailScreen';
