@@ -8,12 +8,14 @@ import {
     StatusBar,
 } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { theme } from '../../config/theme';
 import { useAuthStore } from '../../store/authStore';
 import { RootStackParamList } from '../../types/navigation';
 import { moderateScale, verticalScale } from '../../utils/responsive';
 
 export const SplashScreen: React.FC = () => {
+    const insets = useSafeAreaInsets();
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const { isAuthenticated } = useAuthStore();
     const [fadeAnim] = useState(new Animated.Value(0));
@@ -73,7 +75,7 @@ export const SplashScreen: React.FC = () => {
                 </Animated.View>
             </View>
 
-            <View style={styles.footerContainer}>
+            <View style={[styles.footerContainer, { paddingBottom: Math.max(insets.bottom, verticalScale(30)) }]}>
                 <Text style={styles.footerText}>
                     © 2026 - Bilgi İşlem Daire Başkanlığı
                 </Text>
@@ -105,8 +107,8 @@ const styles = StyleSheet.create({
         ...theme.shadows.medium,
     },
     logo: {
-        width: moderateScale(110),
-        height: moderateScale(110),
+        width: moderateScale(135),
+        height: moderateScale(135),
     },
     slogan: {
         fontSize: moderateScale(22),
