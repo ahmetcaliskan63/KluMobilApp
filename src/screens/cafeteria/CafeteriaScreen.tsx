@@ -51,119 +51,101 @@ export const CafeteriaScreen: React.FC = () => {
     const renderMealCard = () => {
         const icons = ['restaurant', 'pizza', 'nutrition', 'ice-cream'];
 
+        const CardContainer = LinearGradient;
+        const cardProps = isToday ? {
+            colors: ['#182958', '#101D42', '#080F26'],
+            start: { x: 0, y: 0 },
+            end: { x: 1, y: 1 },
+            style: s.todayCard
+        } : {
+            colors: ['#2A458F', '#1F346E', '#162857'],
+            start: { x: 0, y: 0 },
+            end: { x: 1, y: 1 },
+            style: s.otherDayCard
+        };
+
         return (
             <Animated.View style={[s.mealCardContainer, { opacity: fadeAnim }]}>
-                {isToday ? (
-                    <LinearGradient
-                        colors={['#182958', '#101D42', '#080F26']}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
-                        style={s.todayCard}
-                    >
-                        {/* Decorative mesh glows */}
-                        <View style={[s.glowCircle, { top: -50, right: -50, backgroundColor: '#3B82F6', opacity: 0.2 }]} />
-                        <View style={[s.glowCircle, { bottom: -20, left: -40, backgroundColor: '#6366F1', opacity: 0.15 }]} />
+                <CardContainer {...(cardProps as any)}>
+                    {/* Decorative mesh glows - now for all cards */}
+                    <View style={[s.glowCircle, { top: -50, right: -50, backgroundColor: isToday ? '#3B82F6' : '#60A5FA', opacity: isToday ? 0.2 : 0.15 }]} />
+                    <View style={[s.glowCircle, { bottom: -20, left: -40, backgroundColor: isToday ? '#6366F1' : '#818CF8', opacity: isToday ? 0.15 : 0.1 }]} />
 
-                        <View style={s.cardHeader}>
-                            <View>
-                                <Text style={s.todayDayTitle}>{activeMenu.day}</Text>
-                                <Text style={s.todayDateSub}>{activeMenu.date}</Text>
-                            </View>
+                    <View style={s.cardHeader}>
+                        <View>
+                            <Text style={isToday ? s.todayDayTitle : s.otherDayTitle}>{activeMenu.day}</Text>
+                            <Text style={isToday ? s.todayDateSub : s.otherDateSub}>{activeMenu.date}</Text>
+                        </View>
+                        {isToday && (
                             <View style={s.premiumBadge}>
                                 <Icon name="sparkles" size={14} color="#FFD700" />
                                 <Text style={s.premiumBadgeText}>GÜNÜN MENÜSÜ</Text>
                             </View>
-                        </View>
+                        )}
+                    </View>
 
-                        <View style={s.glassDivider} />
+                    <View style={isToday ? s.glassDivider : s.lightDivider} />
 
-                        <View style={s.menuList}>
-                            {activeMenu.items.map((item, idx) => (
-                                <View key={idx} style={s.glassPill}>
-                                    <View style={s.todayIconContainer}>
-                                        <Icon
-                                            name={(icons[idx % icons.length] || 'restaurant-outline') + '-outline'}
-                                            size={20}
-                                            color="#FFFFFF"
-                                        />
-                                    </View>
-                                    <Text style={s.todayItemText}>{item}</Text>
-                                    <Icon name="chevron-forward" size={16} color="rgba(255,255,255,0.3)" />
+                    <View style={s.menuList}>
+                        {activeMenu.items.map((item, idx) => (
+                            <View key={idx} style={isToday ? s.glassPill : s.lightPill}>
+                                <View style={isToday ? s.todayIconContainer : s.otherIconContainer}>
+                                    <Icon
+                                        name={(icons[idx % icons.length] || 'restaurant-outline') + '-outline'}
+                                        size={20}
+                                        color="#FFFFFF"
+                                    />
                                 </View>
-                            ))}
-                        </View>
-
-                        <View style={s.cardFooter}>
-                            <View style={s.navButtons}>
-                                <TouchableOpacity
-                                    disabled={(selectedIndex as number) === 0}
-                                    onPress={() => navigate('prev')}
-                                    style={[s.navBtn, s.glassNavBtn, (selectedIndex as number) === 0 && s.navBtnDisabled]}
-                                >
-                                    <Icon name="chevron-back" size={24} color={(selectedIndex as number) === 0 ? 'rgba(255,255,255,0.2)' : '#FFFFFF'} />
-                                    <Text style={[s.navBtnText, s.glassNavBtnText, (selectedIndex as number) === 0 && { opacity: 0.3 }]}>Önceki</Text>
-                                </TouchableOpacity>
-
-                                <TouchableOpacity
-                                    disabled={selectedIndex === MOCK_WEEKLY_MENU.length - 1}
-                                    onPress={() => navigate('next')}
-                                    style={[s.navBtn, s.glassNavBtn, selectedIndex === MOCK_WEEKLY_MENU.length - 1 && s.navBtnDisabled]}
-                                >
-                                    <Text style={[s.navBtnText, s.glassNavBtnText, selectedIndex === MOCK_WEEKLY_MENU.length - 1 && { opacity: 0.3 }]}>Sonraki</Text>
-                                    <Icon name="chevron-forward" size={24} color={selectedIndex === MOCK_WEEKLY_MENU.length - 1 ? 'rgba(255,255,255,0.2)' : '#FFFFFF'} />
-                                </TouchableOpacity>
+                                <Text style={isToday ? s.todayItemText : s.otherItemText}>{item}</Text>
+                                {isToday && <Icon name="chevron-forward" size={16} color="rgba(255,255,255,0.3)" />}
                             </View>
-                        </View>
-                    </LinearGradient>
-                ) : (
-                    <View style={s.otherDayCard}>
-                        <View style={s.cardHeader}>
-                            <View>
-                                <Text style={s.otherDayTitle}>{activeMenu.day}</Text>
-                                <Text style={s.otherDateSub}>{activeMenu.date}</Text>
-                            </View>
-                        </View>
+                        ))}
+                    </View>
 
-                        <View style={s.lightDivider} />
+                    <View style={s.cardFooter}>
+                        <View style={s.navButtons}>
+                            <TouchableOpacity
+                                disabled={(selectedIndex as number) === 0}
+                                onPress={() => navigate('prev')}
+                                style={[s.navBtn, isToday ? s.glassNavBtn : s.lightNavBtn, (selectedIndex as number) === 0 && s.navBtnDisabled]}
+                            >
+                                <Icon
+                                    name="chevron-back"
+                                    size={24}
+                                    color={isToday
+                                        ? ((selectedIndex as number) === 0 ? 'rgba(255,255,255,0.2)' : '#FFFFFF')
+                                        : (selectedIndex === 0 ? 'rgba(255,255,255,0.2)' : '#FFFFFF')
+                                    }
+                                />
+                                <Text style={[
+                                    s.navBtnText,
+                                    isToday ? s.glassNavBtnText : s.lightNavBtnText,
+                                    (selectedIndex as number) === 0 && { opacity: 0.3 }
+                                ]}>Önceki</Text>
+                            </TouchableOpacity>
 
-                        <View style={s.menuList}>
-                            {activeMenu.items.map((item, idx) => (
-                                <View key={idx} style={s.lightPill}>
-                                    <View style={s.otherIconContainer}>
-                                        <Icon
-                                            name={(icons[idx % icons.length] || 'restaurant-outline') + '-outline'}
-                                            size={20}
-                                            color="#64748B"
-                                        />
-                                    </View>
-                                    <Text style={s.otherItemText}>{item}</Text>
-                                </View>
-                            ))}
-                        </View>
-
-                        <View style={s.cardFooter}>
-                            <View style={s.navButtons}>
-                                <TouchableOpacity
-                                    disabled={selectedIndex === 0}
-                                    onPress={() => navigate('prev')}
-                                    style={[s.navBtn, s.lightNavBtn, selectedIndex === 0 && s.navBtnDisabled]}
-                                >
-                                    <Icon name="chevron-back" size={24} color={selectedIndex === 0 ? '#CBD5E1' : '#182958'} />
-                                    <Text style={[s.navBtnText, s.lightNavBtnText, selectedIndex === 0 && { color: '#CBD5E1' }]}>Önceki</Text>
-                                </TouchableOpacity>
-
-                                <TouchableOpacity
-                                    disabled={selectedIndex === MOCK_WEEKLY_MENU.length - 1}
-                                    onPress={() => navigate('next')}
-                                    style={[s.navBtn, s.lightNavBtn, selectedIndex === MOCK_WEEKLY_MENU.length - 1 && s.navBtnDisabled]}
-                                >
-                                    <Text style={[s.navBtnText, s.lightNavBtnText, selectedIndex === MOCK_WEEKLY_MENU.length - 1 && { color: '#CBD5E1' }]}>Sonraki</Text>
-                                    <Icon name="chevron-forward" size={24} color={selectedIndex === MOCK_WEEKLY_MENU.length - 1 ? '#CBD5E1' : '#182958'} />
-                                </TouchableOpacity>
-                            </View>
+                            <TouchableOpacity
+                                disabled={selectedIndex === MOCK_WEEKLY_MENU.length - 1}
+                                onPress={() => navigate('next')}
+                                style={[s.navBtn, isToday ? s.glassNavBtn : s.lightNavBtn, selectedIndex === MOCK_WEEKLY_MENU.length - 1 && s.navBtnDisabled]}
+                            >
+                                <Text style={[
+                                    s.navBtnText,
+                                    isToday ? s.glassNavBtnText : s.lightNavBtnText,
+                                    selectedIndex === MOCK_WEEKLY_MENU.length - 1 && { opacity: 0.3 }
+                                ]}>Sonraki</Text>
+                                <Icon
+                                    name="chevron-forward"
+                                    size={24}
+                                    color={isToday
+                                        ? (selectedIndex === MOCK_WEEKLY_MENU.length - 1 ? 'rgba(255,255,255,0.2)' : '#FFFFFF')
+                                        : (selectedIndex === MOCK_WEEKLY_MENU.length - 1 ? 'rgba(255,255,255,0.2)' : '#FFFFFF')
+                                    }
+                                />
+                            </TouchableOpacity>
                         </View>
                     </View>
-                )}
+                </CardContainer>
             </Animated.View>
         );
     };
@@ -176,10 +158,7 @@ export const CafeteriaScreen: React.FC = () => {
                 <View style={[s.bgGlow, { bottom: '20%', left: '-20%', width: 400, height: 400, backgroundColor: 'rgba(99, 102, 241, 0.03)' }]} />
             </View>
 
-            <ScrollView
-                contentContainerStyle={[s.content, { paddingTop: 20 }]}
-                showsVerticalScrollIndicator={false}
-            >
+            <View style={s.mainContent}>
                 {renderMealCard()}
 
                 <View style={s.bottomInfo}>
@@ -188,9 +167,7 @@ export const CafeteriaScreen: React.FC = () => {
                         Menüler haftalık olarak güncellenmektedir. Kampüs yemekhanesi hafta içi 08:30 - 18:00 saatleri arasında hizmet vermektedir.
                     </Text>
                 </View>
-
-                <View style={{ height: 120 }} />
-            </ScrollView>
+            </View>
 
             {!isToday && (
                 <TouchableOpacity
@@ -227,14 +204,22 @@ const styles = (theme: Theme) => StyleSheet.create({
     content: {
         padding: 20,
     },
+    mainContent: {
+        flex: 1,
+        padding: 20,
+        paddingTop: 30,
+        justifyContent: 'flex-start',
+    },
     mealCardContainer: {
         width: '100%',
         marginBottom: 20,
     },
     todayCard: {
         borderRadius: 40,
-        padding: 28,
-        minHeight: 520,
+        padding: 24,
+        paddingBottom: 28,
+        minHeight: 550,
+        height: 550,
         overflow: 'hidden',
         borderWidth: 1,
         borderColor: 'rgba(255, 255, 255, 0.1)',
@@ -242,11 +227,11 @@ const styles = (theme: Theme) => StyleSheet.create({
             ios: {
                 shadowColor: '#000',
                 shadowOffset: { width: 0, height: 20 },
-                shadowOpacity: 0.4,
+                shadowOpacity: 0.2,
                 shadowRadius: 30,
             },
             android: {
-                elevation: 15,
+                elevation: 8,
             }
         }),
     },
@@ -259,17 +244,18 @@ const styles = (theme: Theme) => StyleSheet.create({
     cardHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        marginBottom: 30,
+        alignItems: 'center',
+        height: 60,
+        marginBottom: 20,
     },
     todayDayTitle: {
-        fontSize: moderateScale(30),
+        fontSize: moderateScale(28),
         fontWeight: '900',
         color: '#FFFFFF',
         letterSpacing: -1,
     },
     todayDateSub: {
-        fontSize: 16,
+        fontSize: 15,
         color: 'rgba(255, 255, 255, 0.6)',
         fontWeight: '600',
         marginTop: 4,
@@ -294,26 +280,26 @@ const styles = (theme: Theme) => StyleSheet.create({
     glassDivider: {
         height: 1,
         backgroundColor: 'rgba(255, 255, 255, 0.1)',
-        marginBottom: 30,
+        marginBottom: 20,
     },
     menuList: {
-        gap: 16,
+        gap: 12,
     },
     glassPill: {
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: 'rgba(255, 255, 255, 0.08)',
         borderRadius: 24,
-        padding: 14,
+        padding: 12,
         paddingRight: 18,
         borderWidth: 1,
         borderColor: 'rgba(255, 255, 255, 0.05)',
         gap: 16,
     },
     todayIconContainer: {
-        width: 44,
-        height: 44,
-        borderRadius: 14,
+        width: 42,
+        height: 42,
+        borderRadius: 13,
         backgroundColor: 'rgba(255, 255, 255, 0.12)',
         justifyContent: 'center',
         alignItems: 'center',
@@ -326,7 +312,7 @@ const styles = (theme: Theme) => StyleSheet.create({
     },
     cardFooter: {
         marginTop: 'auto',
-        paddingTop: 40,
+        paddingTop: 30,
     },
     navButtons: {
         flexDirection: 'row',
@@ -365,63 +351,66 @@ const styles = (theme: Theme) => StyleSheet.create({
         color: '#182958',
     },
     otherDayCard: {
-        backgroundColor: '#FFFFFF',
         borderRadius: 40,
-        padding: 28,
-        minHeight: 480,
+        padding: 24,
+        paddingBottom: 28,
+        minHeight: 550,
+        height: 550,
+        overflow: 'hidden',
         borderWidth: 1,
-        borderColor: '#F1F5F9',
+        borderColor: 'rgba(255, 255, 255, 0.1)',
         ...Platform.select({
             ios: {
                 shadowColor: '#000',
-                shadowOffset: { width: 0, height: 10 },
-                shadowOpacity: 0.05,
-                shadowRadius: 20,
+                shadowOffset: { width: 0, height: 20 },
+                shadowOpacity: 0.2,
+                shadowRadius: 30,
             },
             android: {
-                elevation: 4,
+                elevation: 10,
             }
         }),
     },
     otherDayTitle: {
         fontSize: moderateScale(28),
         fontWeight: '900',
-        color: '#1E293B',
+        color: '#FFFFFF',
         letterSpacing: -1,
     },
     otherDateSub: {
         fontSize: 15,
-        color: '#64748B',
+        color: 'rgba(255, 255, 255, 0.6)',
         fontWeight: '600',
         marginTop: 4,
     },
     lightDivider: {
         height: 1,
-        backgroundColor: '#F1F5F9',
-        marginBottom: 30,
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        marginBottom: 20,
     },
     lightPill: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#F8FAFC',
+        backgroundColor: 'rgba(255, 255, 255, 0.08)',
         borderRadius: 24,
-        padding: 14,
+        padding: 12,
+        paddingRight: 18,
         borderWidth: 1,
-        borderColor: '#F1F5F9',
+        borderColor: 'rgba(255, 255, 255, 0.05)',
         gap: 16,
     },
     otherIconContainer: {
-        width: 44,
-        height: 44,
-        borderRadius: 14,
-        backgroundColor: '#F1F5F9',
+        width: 42,
+        height: 42,
+        borderRadius: 13,
+        backgroundColor: 'rgba(255, 255, 255, 0.12)',
         justifyContent: 'center',
         alignItems: 'center',
     },
     otherItemText: {
         fontSize: moderateScale(16),
         fontWeight: '700',
-        color: '#334155',
+        color: '#FFFFFF',
         flex: 1,
     },
     bottomInfo: {
@@ -443,7 +432,7 @@ const styles = (theme: Theme) => StyleSheet.create({
     },
     todayFab: {
         position: 'absolute',
-        bottom: 110,
+        bottom: 150,
         alignSelf: 'center',
     },
     fabGradient: {
