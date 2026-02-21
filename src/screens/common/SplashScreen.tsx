@@ -58,6 +58,7 @@ export const SplashScreen: React.FC = () => {
             <View style={styles.content}>
                 <Animated.View
                     style={[
+                        // Optimized responsive layout with dynamic positioning
                         styles.logoAndSlogan,
                         {
                             opacity: fadeAnim,
