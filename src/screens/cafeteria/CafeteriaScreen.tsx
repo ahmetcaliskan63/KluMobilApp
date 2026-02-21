@@ -179,7 +179,8 @@ export const CafeteriaScreen: React.FC = () => {
                         colors={['#182958', '#101D42']}
                         style={s.fabGradient}
                     >
-                        <Icon name="calendar-outline" size={20} color="#FFFFFF" />
+                        {/* Standardized high-contrast white icons for state-of-the-art look */}
+                        <Icon name="calendar-outline" size={24} color="#FFFFFF" />
                         <Text style={s.todayFabText}>Bugün</Text>
                     </LinearGradient>
                 </TouchableOpacity>
