@@ -67,7 +67,7 @@ export const CafeteriaScreen: React.FC = () => {
         return (
             <Animated.View style={[s.mealCardContainer, { opacity: fadeAnim }]}>
                 <CardContainer {...(cardProps as any)}>
-                    {/* Decorative mesh glows - now for all cards */}
+                    {/* Decorative hyper-premium mesh glows - consistent across all days */}
                     <View style={[s.glowCircle, { top: -50, right: -50, backgroundColor: isToday ? '#3B82F6' : '#60A5FA', opacity: isToday ? 0.2 : 0.15 }]} />
                     <View style={[s.glowCircle, { bottom: -20, left: -40, backgroundColor: isToday ? '#6366F1' : '#818CF8', opacity: isToday ? 0.15 : 0.1 }]} />
 
