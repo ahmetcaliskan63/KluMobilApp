@@ -58,7 +58,6 @@ export const SplashScreen: React.FC = () => {
             <View style={styles.content}>
                 <Animated.View
                     style={[
-                        // Optimized responsive layout with dynamic positioning
                         styles.logoAndSlogan,
                         {
                             opacity: fadeAnim,
@@ -101,7 +100,6 @@ const styles = StyleSheet.create({
         width: moderateScale(140),
         height: moderateScale(140),
         backgroundColor: 'rgba(255, 255, 255, 0.95)',
-        borderWidth: 8, // Sophisticated premium double-ring effect
         borderRadius: moderateScale(140) / 2,
         alignItems: 'center',
         justifyContent: 'center',
