@@ -91,6 +91,7 @@ export const NotificationsScreen: React.FC = () => {
         <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
             <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
 
+            {/* Header: Extended to top to remove white gap and integrate with Status Bar */}
             <LinearGradient
                 colors={['#182958', '#101D42']}
                 style={[styles.header, { paddingTop: insets.top + 10 }]}
