@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
         ...theme.shadows.medium,
     },
     logo: {
-        width: moderateScale(135),
+        width: moderateScale(135), // Precision scaled for perfect fit in 140dp circle
         height: moderateScale(135),
     },
     slogan: {
