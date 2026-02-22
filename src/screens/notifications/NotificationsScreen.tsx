@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { useAppTheme } from '../../hooks/useAppTheme';
 import { moderateScale, verticalScale } from '../../utils/responsive';
@@ -42,6 +43,7 @@ const NOTIFICATIONS = [
 ];
 
 export const NotificationsScreen: React.FC = () => {
+    const insets = useSafeAreaInsets();
     const navigation = useNavigation();
     const { theme } = useAppTheme();
 
@@ -86,12 +88,12 @@ export const NotificationsScreen: React.FC = () => {
     };
 
     return (
-        <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
-            <StatusBar barStyle="light-content" backgroundColor="#182958" />
+        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+            <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
 
             <LinearGradient
                 colors={['#182958', '#101D42']}
-                style={styles.header}
+                style={[styles.header, { paddingTop: insets.top + 10 }]}
             >
                 <TouchableOpacity
                     onPress={() => navigation.goBack()}
@@ -120,7 +122,7 @@ export const NotificationsScreen: React.FC = () => {
                     </View>
                 )}
             />
-        </SafeAreaView>
+        </View>
     );
 };
 
@@ -129,12 +131,11 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     header: {
-        height: verticalScale(100),
+        height: verticalScale(110),
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: 16,
-        paddingTop: 20,
     },
     headerTitle: {
         fontSize: moderateScale(18),
