@@ -433,7 +433,7 @@ const styles = (theme: Theme) => StyleSheet.create({
     },
     todayFab: {
         position: 'absolute',
-        bottom: 130, // Optimized vertical balance for floating action button
+        bottom: 150,
         alignSelf: 'center',
     },
     fabGradient: {
