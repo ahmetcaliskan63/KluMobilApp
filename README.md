@@ -1,97 +1,123 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# <img src="screenshot_login.png" align="right" width="120" /> KLU Mobil
+> **Kırklareli Üniversitesi'nin yenilikçi, modern ve kullanıcı dostu resmi öğrenci mobil uygulaması.**
 
-# Getting Started
+[![React Native](https://img.shields.io/badge/React_Native-v0.73+-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactnative.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-v5.0+-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Zustand](https://img.shields.io/badge/State--Management-Zustand-orange?style=for-the-badge)](https://github.com/pmndrs/zustand)
+[![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS-E21B23?style=for-the-badge)](https://www.klu.edu.tr/)
+[![Design](https://img.shields.io/badge/Design-Hyper--Premium-FFD700?style=for-the-badge)](https://apple.com/design)
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+KLU Mobil, Kırklareli Üniversitesi öğrencilerinin kampüs hayatını dijitalleştirmek ve kolaylaştırmak için tasarlanmış bir mobil uygulamadır. "Hyper-Premium" tasarım anlayışıyla geliştirilen uygulama, Apple tasarım standartlarından ilham alan arayüzü, akıcı animasyonları ve kullanıcı odaklı özellikleriyle modern bir üniversite deneyimi sunar.
 
-## Step 1: Start Metro
+---
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## ✨ Öne Çıkan Özellikler
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+### 🛡️ Modern Güvenlik ve Kimlik
+- **Dijital Kimlik Kartı:** Fiziksel karta ihtiyaç duymadan, Glassmorphism temalı şık ve güvenli dijital öğrenci kimliği. QR kod desteği ile kampüs geçişleri artık daha hızlı.
+- **Güvenli Giriş:** Modern kimlik doğrulama sistemleri ile verileriniz her zaman güvende.
 
-```sh
-# Using npm
-npm start
+### 📊 Akademik Asistan
+- **Kişiselleştirilmiş Dashboard:** "Persona" sistemi ile akademik durumunuzu, not ortalamanızı (GPA) ve dönemlik istatistiklerinizi tek bir bakışta takip edin.
+- **Akademik İlerleme:** Eksik krediler, tamamlanan dersler ve başarı durumu takibi.
 
-# OR using Yarn
-yarn start
+### 🍽️ Kampüs Yaşamı
+- **Akıllı Yemekhane:**
+    - Günlük ve haftalık yemek listelerini görüntüleme.
+    - Anlık bakiye takibi ve kolay yükleme.
+    - QR/Barkod entegrasyonu ile temassız ödeme kolaylığı.
+- **Kütüphane Yönetimi:** Kitap arama, ödünç alınan kitapların süresini uzatma ve yaklaşan iadeler için bildirimler.
+
+### 📅 Planlama ve İletişim
+- **Dinamik Ders Programı:** Haftalık ders takviminizi modern ve okunaklı bir tasarımda görüntüleyin. Boş derslikleri ve ders konumlarını keşfedin.
+- **Gelişmiş Duyuru Sistemi:** Üniversite ve bölüm duyurularından anında haberdar olun. Görsel destekli zengin içerikler ile hiçbir önemli bilgiyi kaçırmayın.
+
+---
+
+## 🎨 Tasarım Felsefesi: "Hyper-Premium"
+
+Uygulama, standart mobil arayüzlerin ötesine geçerek kullanıcıya lüks bir deneyim sunmayı amaçlar:
+
+- **Mesh Gradients:** Arka planlarda kullanılan dinamik ve yumuşak renk geçişleri ile derinlik hissi.
+- **Glassmorphism:** Saydamlık ve "frosted glass" (buzlu cam) efektleri ile katmanlı bir yapı.
+- **Apple Design Standards:** Tipografi, beyaz boşluk kullanımı ve minimalist ikonografi ile iOS standartlarında bir estetik.
+- **Haptic & Fluid Animations:** React Native Reanimated ile güçlendirilmiş, kullanıcı etkileşimini anlamlı kılan mikrosaniye hassasiyetinde animasyonlar.
+
+---
+
+## 🛠️ Teknik Altyapı
+
+| Teknoloji | Kullanım Amacı |
+| :--- | :--- |
+| **React Native** | Cross-platform (iOS/Android) uygulama iskeleti |
+| **TypeScript** | Tip güvenliği ve ölçeklenebilir kod yapısı |
+| **Zustand** | Hafif ve hızlı global state yönetimi |
+| **React Navigation** | Akıcı ekran geçişleri ve navigation mimarisi |
+| **Reanimated & Moti** | Yüksek performanslı arayüz animasyonları |
+| **Linear Gradient** | Premium görsel bileşenler için renk geçişleri |
+
+---
+
+## 📂 Proje Yapısı
+
+```text
+src/
+├── assets/          # Görüntüler, fontlar ve statik dosyalar
+├── components/      # "Hyper-Premium" UI bileşenleri (Buttons, Cards, Modals)
+├── navigation/      # Stack ve Tab navigasyon yapılandırması
+├── screens/         # Uygulama ekranları (Dashboard, Profile, Cafeteria vb.)
+├── store/           # Zustand state tanımları
+├── services/        # API entegrasyonları ve dış servisler
+├── types/           # TypeScript arayüz ve tip tanımlamaları
+└── utils/           # Yardımcı fonksiyonlar ve sabitler
 ```
 
-## Step 2: Build and run your app
+---
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+## 🚀 Kurulum ve Çalıştırma
 
-### Android
+### Ön Koşullar
+- Node.js (v20+)
+- React Native Environment (Android SDK / Xcode)
 
-```sh
-# Using npm
-npm run android
+### Adımlar
 
-# OR using Yarn
-yarn android
-```
+1. **Bağımlılıkları Yükleyin:**
+   ```bash
+   npm install
+   ```
 
-### iOS
+2. **iOS için (Sadece macOS):**
+   ```bash
+   cd ios && pod install && cd ..
+   ```
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+3. **Uygulamayı Başlatın:**
+   ```bash
+   # Terminal 1 (Metro Bundler)
+   npm start
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+   # Terminal 2 (iOS veya Android)
+   npm run android  # veya npm run ios
+   ```
 
-```sh
-bundle install
-```
+---
 
-Then, and every time you update your native dependencies, run:
+## 🗺️ Gelecek Planları (Roadmap)
 
-```sh
-bundle exec pod install
-```
+- [ ] **Toplu Taşıma Entegrasyonu:** Kampüs içi ve şehir içi otobüs saatlerinin canlı takibi.
+- [ ] **Kulüp Etkinlikleri:** Öğrenci toplulukları için etkinlik yönetim ve katılım sistemi.
+- [ ] **Akıllı Bildirimler:** Yaklaşan sınavlar ve düşük bakiye uyarıları için kişiselleştirilmiş bildirimler.
+- [ ] **Dark Mode:** Tüm uygulama için optimize edilmiş gece modu desteği.
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+---
 
-```sh
-# Using npm
-npm run ios
+## 📄 Lisans ve İletişim
 
-# OR using Yarn
-yarn ios
-```
+Bu uygulama, **Kırklareli Üniversitesi** ekosistemi için modern bir vizyon projesidir. Geliştirme süreci devam etmektedir.
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+<p align="center">
+  <img src="https://www.klu.edu.tr/images/logo.png" width="80" /><br>
+  <b>KLU Mobil - Geleceğin Kampüsü, Bugün Cebinizde.</b><br>
+  <i>Eğitimde Yenilik, Tasarımda Mükemmellik.</i>
+</p>
