@@ -48,6 +48,13 @@ export interface BorrowedBook {
     status: 'On Time' | 'Warning' | 'Overdue';
 }
 
+export const FALLBACK_IMAGES = {
+    ACADEMIC: 'https://images.unsplash.com/photo-1541339907198-e08759dfc3ef?q=80&w=2070&auto=format&fit=crop',
+    SOCIAL: 'https://images.unsplash.com/photo-1523240318241-70e192ce93bd?q=80&w=2070&auto=format&fit=crop',
+    EVENT: 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=2070&auto=format&fit=crop',
+    CAMPUS: 'https://images.unsplash.com/photo-1523050335456-c7e462590163?q=80&w=2070&auto=format&fit=crop',
+};
+
 export const MOCK_NEWS: News[] = [
     {
         id: '1',
@@ -55,7 +62,7 @@ export const MOCK_NEWS: News[] = [
         date: '22/01/2026',
         location: 'Meslek Yüksekokulları Koordinatörlüğü',
         views: '193',
-        image: 'https://images.unsplash.com/photo-1544531585-9847b68c8c86?q=80&w=2070&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=2070&auto=format&fit=crop',
         content: 'Üniversitemiz bünyesindeki Meslek Yüksekokullarının koordinasyonunu sağlamak amacıyla 2026 yılının ilk toplantısı gerçekleştirildi.'
     },
     {
@@ -73,7 +80,7 @@ export const MOCK_NEWS: News[] = [
         date: '20/01/2026',
         location: 'Kurumsal İletişim Koordinatörlüğü',
         views: '412',
-        image: 'https://images.unsplash.com/photo-1523050335456-c7e462590163?q=80&w=2070&auto=format&fit=crop',
+        image: FALLBACK_IMAGES.CAMPUS,
         content: 'Turizm Fakültemizin elde ettiği akreditasyon başarısı düzenlenen törenle kutlandı.'
     }
 ];
@@ -86,7 +93,7 @@ export const MOCK_EVENTS: Event[] = [
         time: '14:00',
         location: 'Mühendislik Fakültesi Konferans Salonu',
         organizer: 'Yazılım ve Bilişim Kulübü',
-        image: 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=2070&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=2070&auto=format&fit=crop',
         type: 'Kulüp'
     },
     {
@@ -96,7 +103,7 @@ export const MOCK_EVENTS: Event[] = [
         time: '20:00',
         location: 'Merkez Kampüs Festival Alanı',
         organizer: 'Sağlık Kültür ve Spor Daire Başkanlığı',
-        image: 'https://images.unsplash.com/photo-1459749411177-042180ce673c?q=80&w=2070&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=2070&auto=format&fit=crop',
         type: 'Üniversite'
     },
     {
@@ -106,7 +113,7 @@ export const MOCK_EVENTS: Event[] = [
         time: '10:00',
         location: 'Merkezi Konferans Salonu',
         organizer: 'Bilgisayar Mühendisliği Bölümü',
-        image: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=2070&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=2070&auto=format&fit=crop',
         type: 'Konferans'
     },
     {
@@ -116,7 +123,7 @@ export const MOCK_EVENTS: Event[] = [
         time: '09:00',
         location: 'Rektörlük Konferans Salonu',
         organizer: 'Kariyer Uygulama ve Araştırma Merkezi',
-        image: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?q=80&w=2070&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=2070&auto=format&fit=crop',
         type: 'Üniversite'
     }
 ];
@@ -130,7 +137,7 @@ export const MOCK_ANNOUNCEMENTS: Announcement[] = [
         views: '1082',
         snippet: 'Öğretim elemanı alımı sınav sonuçları açıklanmıştır.',
         content: 'İlgili ilana başvuran adayların sınav sonuçlarını personel daire başkanlığı sayfasından öğrenebilirler.',
-        image: 'https://images.unsplash.com/photo-1541339907198-e08759dfc3ef?q=80&w=2070&auto=format&fit=crop'
+        image: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=2070&auto=format&fit=crop'
     },
     {
         id: '2',
@@ -150,22 +157,16 @@ export const MOCK_ANNOUNCEMENTS: Announcement[] = [
         views: '1117',
         snippet: 'Yabancı uyruklu öğrenci sınavı başvuruları başlıyor.',
         content: 'Tr-Yös/1 sınavı için başvuru tarihleri ve detayları uluslararası öğrenci ofisi sayfasında yayınlanmıştır.',
-        image: 'https://images.unsplash.com/photo-1523240318241-70e192ce93bd?q=80&w=2070&auto=format&fit=crop'
+        image: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=2070&auto=format&fit=crop'
     }
 ];
 
 export const MOCK_WEEKLY_MENU: MenuItem[] = [
-    { day: 'Pazartesi', date: '16 Şubat', items: ['Domates Çorbası', 'Taze Fasulye', 'Pirinç Pilavı', 'Cacık'] },
-    { day: 'Salı', date: '17 Şubat', items: ['Ezogelin Çorbası', 'Tavuk Şinitzel', 'Makarna', 'Meyve'] },
-    { day: 'Çarşamba', date: '18 Şubat', items: ['Yayla Çorbası', 'İzmir Köfte', 'Bulgur Pilavı', 'Salata'] },
-    { day: 'Perşembe', date: '19 Şubat', items: ['Mercimek Çorbası', 'Kıymalı Bezelye', 'Pirinç Pilavı', 'Yoğurt'] },
-    { day: 'Cuma', date: '20 Şubat', items: ['Tarhana Çorbası', 'Fırın Tavuk', 'Sebzeli Pilav', 'Meyve Suyu'] },
-    { day: 'Cumartesi', date: '21 Şubat', items: ['Düğün Çorbası', 'Tas Kebabı', 'İç Pilavı', 'Tulumba Tatlısı'] }, // Bugün (Varsayılan)
-    { day: 'Pazar', date: '22 Şubat', items: ['Sebze Çorbası', 'Mantı', 'Soslu Makarna', 'Mevsim Salata'] },
     { day: 'Pazartesi', date: '23 Şubat', items: ['Mercimek Çorbası', 'Tavuk Sote', 'Bulgur Pilavı', 'Elma'] },
     { day: 'Salı', date: '24 Şubat', items: ['Yayla Çorbası', 'Orman Kebabı', 'Pirinç Pilavı', 'Yoğurt'] },
-    { day: 'Çarşamba', date: '25 Şubat', items: ['Tarhana Çorbası', 'Kıymalı Taze Fasulye', 'Mantar Soslu Makarna', 'Salata'] },
+    { day: 'Çarşamba', date: '25 Şubat', items: ['Tarhana Çorbası', 'Kıymalı Taze Fasulye', 'Makarna', 'Salata'] },
     { day: 'Perşembe', date: '26 Şubat', items: ['Ezogelin Çorbası', 'İzmir Köfte', 'Pirinç Pilavı', 'Mevsim Salata'] },
+    { day: 'Cuma', date: '27 Şubat', items: ['Domates Çorbası', 'Fırın Tavuk', 'Sebzeli Pilav', 'Kemalpaşa Tatlısı'] },
 ];
 
 export const MOCK_BORROWED_BOOKS: BorrowedBook[] = [
