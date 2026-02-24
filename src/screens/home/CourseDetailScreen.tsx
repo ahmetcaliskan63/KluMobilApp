@@ -47,7 +47,7 @@ export const CourseDetailScreen: React.FC = () => {
             <View style={[s.header, { paddingTop: Math.max(insets.top, 20), backgroundColor: course.color }]}>
                 <View style={s.headerTop}>
                     <TouchableOpacity
-                        onPress={() => navigation.goBack()}
+                        onPress={() => (navigation as any).navigate('Profile')}
                         style={s.headerButton}
                     >
                         <Icon name="arrow-back" size={24} color="#FFFFFF" />
