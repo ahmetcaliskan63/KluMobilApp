@@ -38,7 +38,7 @@ export const ScheduleScreen: React.FC = () => {
                 style={[s.header, { paddingTop: Math.max(insets.top, 20) }]}
             >
                 <View style={s.headerTop}>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={s.backButton}>
+                    <TouchableOpacity onPress={() => (navigation as any).navigate('Profile')} style={s.backButton}>
                         <Icon name="chevron-back" size={24} color="#FFFFFF" />
                     </TouchableOpacity>
                     <Text style={s.headerTitle}>Ders Programı</Text>
@@ -168,12 +168,14 @@ const styles = (theme: Theme) => StyleSheet.create({
         letterSpacing: -0.5,
     },
     dayPicker: {
-        paddingHorizontal: 20,
-        gap: 12,
+        paddingHorizontal: 10,
+        gap: 6,
+        minWidth: '100%',
+        justifyContent: 'center',
     },
     dayItem: {
-        paddingHorizontal: 20,
-        paddingVertical: 10,
+        paddingHorizontal: 10,
+        paddingVertical: 8,
         borderRadius: 20,
         backgroundColor: 'rgba(255, 255, 255, 0.1)',
     },
@@ -183,7 +185,7 @@ const styles = (theme: Theme) => StyleSheet.create({
     dayText: {
         color: 'rgba(255, 255, 255, 0.8)',
         fontWeight: '700',
-        fontSize: moderateScale(14),
+        fontSize: moderateScale(13),
     },
     activeDayText: {
         color: '#182958',
