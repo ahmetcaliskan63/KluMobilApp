@@ -35,6 +35,7 @@ export const AnnouncementDetailScreen: React.FC = () => {
     const scrollY = useRef(new Animated.Value(0)).current;
 
     const announcement = MOCK_ANNOUNCEMENTS.find(a => a.id === announcementId);
+    const [imageError, setImageError] = React.useState(false);
 
     useEffect(() => {
         Animated.timing(fadeAnim, {
@@ -97,10 +98,19 @@ export const AnnouncementDetailScreen: React.FC = () => {
                 style={{ opacity: fadeAnim }}
             >
                 {/* Visual Header - New image addition */}
-                {announcement.image && (
+                {(announcement.image || imageError) && (
                     <View style={s.imageWrapper}>
                         <Image
-                            source={{ uri: announcement.image }}
+                            source={{
+                                uri: imageError
+                                    ? (announcement.category === 'Akademik'
+                                        ? 'https://images.unsplash.com/photo-1541339907198-e08759dfc3ef?q=80&w=2070&auto=format&fit=crop'
+                                        : 'https://images.unsplash.com/photo-1523240318241-70e192ce93bd?q=80&w=2070&auto=format&fit=crop')
+                                    : (announcement.image || (announcement.category === 'Akademik'
+                                        ? 'https://images.unsplash.com/photo-1541339907198-e08759dfc3ef?q=80&w=2070&auto=format&fit=crop'
+                                        : 'https://images.unsplash.com/photo-1523240318241-70e192ce93bd?q=80&w=2070&auto=format&fit=crop'))
+                            }}
+                            onError={() => setImageError(true)}
                             style={s.mainImage}
                             resizeMode="cover"
                         />
