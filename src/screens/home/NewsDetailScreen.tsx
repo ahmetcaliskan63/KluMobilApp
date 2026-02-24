@@ -26,8 +26,8 @@ export const NewsDetailScreen: React.FC = () => {
     const route = useRoute<NewsDetailRouteProp>();
     const { theme } = useAppTheme();
     const { newsId } = route.params;
+    const [imageError, setImageError] = React.useState(false);
     const scrollY = React.useRef(new Animated.Value(0)).current;
-
     const news = MOCK_NEWS.find(n => n.id === newsId);
 
     if (!news) return null;
@@ -93,7 +93,8 @@ export const NewsDetailScreen: React.FC = () => {
             >
                 <View style={s.imageContainer}>
                     <Animated.Image
-                        source={{ uri: news.image }}
+                        source={{ uri: imageError ? 'https://images.unsplash.com/photo-1523050335456-c7e462590163?q=80&w=2070&auto=format&fit=crop' : (news.image || 'https://images.unsplash.com/photo-1523050335456-c7e462590163?q=80&w=2070&auto=format&fit=crop') }}
+                        onError={() => setImageError(true)}
                         style={[
                             s.image,
                             {
