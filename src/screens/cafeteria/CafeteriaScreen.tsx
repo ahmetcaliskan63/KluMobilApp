@@ -8,7 +8,8 @@ import {
     StatusBar,
     Dimensions,
     Platform,
-    Animated
+    Animated,
+    FlatList
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -23,36 +24,41 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 export const CafeteriaScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
     const { theme } = useAppTheme();
-    const s = styles(theme);
+    const s = styles(theme, insets);
 
-    const [selectedIndex, setSelectedIndex] = useState(5);
-    const fadeAnim = useRef(new Animated.Value(0)).current;
+    // Get current day (0=Sun, 1=Mon, ..., 5=Fri, 6=Sat)
+    const today = new Date();
+    const dayOfWeek = today.getDay(); // Sunday=0, Monday=1, etc.
 
-    const activeMenu = MOCK_WEEKLY_MENU[selectedIndex];
-    const isToday = selectedIndex === 5;
+    // Logic: 
+    // - If Mon-Fri (1-5), show that day (index 0-4)
+    // - If Sat/Sun (6/0), show Friday (index 4)
+    const initialIndex = dayOfWeek === 0 || dayOfWeek === 6 ? 4 : dayOfWeek - 1;
 
-    useEffect(() => {
-        fadeAnim.setValue(0);
-        Animated.timing(fadeAnim, {
-            toValue: 1,
-            duration: 400,
-            useNativeDriver: true,
-        }).start();
-    }, [selectedIndex]);
+    const [selectedIndex, setSelectedIndex] = useState(initialIndex);
+    const flatListRef = useRef<FlatList>(null);
 
-    const navigate = (direction: 'prev' | 'next') => {
-        if (direction === 'prev' && selectedIndex > 0) {
-            setSelectedIndex(selectedIndex - 1);
-        } else if (direction === 'next' && selectedIndex < MOCK_WEEKLY_MENU.length - 1) {
-            setSelectedIndex(selectedIndex + 1);
-        }
+    const transitionTo = (nextIndex: number) => {
+        if (nextIndex < 0 || nextIndex >= MOCK_WEEKLY_MENU.length) return;
+        setSelectedIndex(nextIndex);
+        flatListRef.current?.scrollToIndex({
+            index: nextIndex,
+            animated: true,
+        });
     };
 
-    const renderMealCard = () => {
+    const navigate = (direction: 'prev' | 'next') => {
+        const nextIndex = direction === 'prev' ? selectedIndex - 1 : selectedIndex + 1;
+        transitionTo(nextIndex);
+    };
+
+    const renderMealItem = ({ item, index }: { item: typeof MOCK_WEEKLY_MENU[0], index: number }) => {
         const icons = ['restaurant', 'pizza', 'nutrition', 'ice-cream'];
+        const isItemActualToday = (dayOfWeek !== 0 && dayOfWeek !== 6) && (index === dayOfWeek - 1);
+        const isItemToday = isItemActualToday;
 
         const CardContainer = LinearGradient;
-        const cardProps = isToday ? {
+        const cardProps = isItemToday ? {
             colors: ['#182958', '#101D42', '#080F26'],
             start: { x: 0, y: 0 },
             end: { x: 1, y: 1 },
@@ -65,18 +71,18 @@ export const CafeteriaScreen: React.FC = () => {
         };
 
         return (
-            <Animated.View style={[s.mealCardContainer, { opacity: fadeAnim }]}>
+            <View style={s.mealCardContainer}>
                 <CardContainer {...(cardProps as any)}>
-                    {/* Decorative hyper-premium mesh glows - consistent across all days */}
-                    <View style={[s.glowCircle, { top: -50, right: -50, backgroundColor: isToday ? '#3B82F6' : '#60A5FA', opacity: isToday ? 0.2 : 0.15 }]} />
-                    <View style={[s.glowCircle, { bottom: -20, left: -40, backgroundColor: isToday ? '#6366F1' : '#818CF8', opacity: isToday ? 0.15 : 0.1 }]} />
+                    {/* Decorative hyper-premium mesh glows */}
+                    <View style={[s.glowCircle, { top: -50, right: -50, backgroundColor: isItemToday ? '#3B82F6' : '#60A5FA', opacity: isItemToday ? 0.2 : 0.15 }]} />
+                    <View style={[s.glowCircle, { bottom: -20, left: -40, backgroundColor: isItemToday ? '#6366F1' : '#818CF8', opacity: isItemToday ? 0.15 : 0.1 }]} />
 
                     <View style={s.cardHeader}>
                         <View>
-                            <Text style={isToday ? s.todayDayTitle : s.otherDayTitle}>{activeMenu.day}</Text>
-                            <Text style={isToday ? s.todayDateSub : s.otherDateSub}>{activeMenu.date}</Text>
+                            <Text style={isItemToday ? s.todayDayTitle : s.otherDayTitle}>{item.day}</Text>
+                            <Text style={isItemToday ? s.todayDateSub : s.otherDateSub}>{item.date}</Text>
                         </View>
-                        {isToday && (
+                        {isItemToday && (
                             <View style={s.premiumBadge}>
                                 <Icon name="sparkles" size={14} color="#FFD700" />
                                 <Text style={s.premiumBadgeText}>GÜNÜN MENÜSÜ</Text>
@@ -84,20 +90,20 @@ export const CafeteriaScreen: React.FC = () => {
                         )}
                     </View>
 
-                    <View style={isToday ? s.glassDivider : s.lightDivider} />
+                    <View style={isItemToday ? s.glassDivider : s.lightDivider} />
 
                     <View style={s.menuList}>
-                        {activeMenu.items.map((item, idx) => (
-                            <View key={idx} style={isToday ? s.glassPill : s.lightPill}>
-                                <View style={isToday ? s.todayIconContainer : s.otherIconContainer}>
+                        {item.items.map((menuItem, idx) => (
+                            <View key={idx} style={isItemToday ? s.glassPill : s.lightPill}>
+                                <View style={isItemToday ? s.todayIconContainer : s.otherIconContainer}>
                                     <Icon
                                         name={(icons[idx % icons.length] || 'restaurant-outline') + '-outline'}
                                         size={20}
                                         color="#FFFFFF"
                                     />
                                 </View>
-                                <Text style={isToday ? s.todayItemText : s.otherItemText}>{item}</Text>
-                                {isToday && <Icon name="chevron-forward" size={16} color="rgba(255,255,255,0.3)" />}
+                                <Text style={isItemToday ? s.todayItemText : s.otherItemText}>{menuItem}</Text>
+                                {isItemToday && <Icon name="chevron-forward" size={16} color="rgba(255,255,255,0.3)" />}
                             </View>
                         ))}
                     </View>
@@ -105,48 +111,48 @@ export const CafeteriaScreen: React.FC = () => {
                     <View style={s.cardFooter}>
                         <View style={s.navButtons}>
                             <TouchableOpacity
-                                disabled={(selectedIndex as number) === 0}
-                                onPress={() => navigate('prev')}
-                                style={[s.navBtn, isToday ? s.glassNavBtn : s.lightNavBtn, (selectedIndex as number) === 0 && s.navBtnDisabled]}
+                                disabled={index === 0}
+                                onPress={() => transitionTo(index - 1)}
+                                style={[s.navBtn, isItemToday ? s.glassNavBtn : s.lightNavBtn, index === 0 && s.navBtnDisabled]}
                             >
                                 <Icon
                                     name="chevron-back"
                                     size={24}
-                                    color={isToday
-                                        ? ((selectedIndex as number) === 0 ? 'rgba(255,255,255,0.2)' : '#FFFFFF')
-                                        : (selectedIndex === 0 ? 'rgba(255,255,255,0.2)' : '#FFFFFF')
+                                    color={isItemToday
+                                        ? (index === 0 ? 'rgba(255,255,255,0.2)' : '#FFFFFF')
+                                        : (index === 0 ? 'rgba(24, 41, 88, 0.2)' : '#182958')
                                     }
                                 />
                                 <Text style={[
                                     s.navBtnText,
-                                    isToday ? s.glassNavBtnText : s.lightNavBtnText,
-                                    (selectedIndex as number) === 0 && { opacity: 0.3 }
+                                    isItemToday ? s.glassNavBtnText : s.lightNavBtnText,
+                                    index === 0 && { opacity: 0.3 }
                                 ]}>Önceki</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity
-                                disabled={selectedIndex === MOCK_WEEKLY_MENU.length - 1}
-                                onPress={() => navigate('next')}
-                                style={[s.navBtn, isToday ? s.glassNavBtn : s.lightNavBtn, selectedIndex === MOCK_WEEKLY_MENU.length - 1 && s.navBtnDisabled]}
+                                disabled={index === MOCK_WEEKLY_MENU.length - 1}
+                                onPress={() => transitionTo(index + 1)}
+                                style={[s.navBtn, isItemToday ? s.glassNavBtn : s.lightNavBtn, index === MOCK_WEEKLY_MENU.length - 1 && s.navBtnDisabled]}
                             >
                                 <Text style={[
                                     s.navBtnText,
-                                    isToday ? s.glassNavBtnText : s.lightNavBtnText,
-                                    selectedIndex === MOCK_WEEKLY_MENU.length - 1 && { opacity: 0.3 }
+                                    isItemToday ? s.glassNavBtnText : s.lightNavBtnText,
+                                    index === MOCK_WEEKLY_MENU.length - 1 && { opacity: 0.3 }
                                 ]}>Sonraki</Text>
                                 <Icon
                                     name="chevron-forward"
                                     size={24}
-                                    color={isToday
-                                        ? (selectedIndex === MOCK_WEEKLY_MENU.length - 1 ? 'rgba(255,255,255,0.2)' : '#FFFFFF')
-                                        : (selectedIndex === MOCK_WEEKLY_MENU.length - 1 ? 'rgba(255,255,255,0.2)' : '#FFFFFF')
+                                    color={isItemToday
+                                        ? (index === MOCK_WEEKLY_MENU.length - 1 ? 'rgba(255,255,255,0.2)' : '#FFFFFF')
+                                        : (index === MOCK_WEEKLY_MENU.length - 1 ? 'rgba(24, 41, 88, 0.2)' : '#182958')
                                     }
                                 />
                             </TouchableOpacity>
                         </View>
                     </View>
                 </CardContainer>
-            </Animated.View>
+            </View>
         );
     };
 
@@ -159,7 +165,29 @@ export const CafeteriaScreen: React.FC = () => {
             </View>
 
             <View style={s.mainContent}>
-                {renderMealCard()}
+                <FlatList
+                    ref={flatListRef}
+                    data={MOCK_WEEKLY_MENU}
+                    renderItem={renderMealItem}
+                    horizontal
+                    pagingEnabled={true}
+                    showsHorizontalScrollIndicator={false}
+                    initialScrollIndex={initialIndex}
+                    getItemLayout={(data, index) => ({
+                        length: SCREEN_WIDTH - 40,
+                        offset: (SCREEN_WIDTH - 40) * index,
+                        index,
+                    })}
+                    onMomentumScrollEnd={(event) => {
+                        const newIndex = Math.round(event.nativeEvent.contentOffset.x / (SCREEN_WIDTH - 40));
+                        setSelectedIndex(newIndex);
+                    }}
+                    scrollEventThrottle={16}
+                    decelerationRate="normal"
+                    snapToInterval={SCREEN_WIDTH - 40}
+                    snapToAlignment="center"
+                    keyExtractor={(item) => item.date}
+                />
 
                 <View style={s.bottomInfo}>
                     <Icon name="information-circle-outline" size={20} color="#64748B" />
@@ -169,11 +197,11 @@ export const CafeteriaScreen: React.FC = () => {
                 </View>
             </View>
 
-            {!isToday && (
+            {selectedIndex !== initialIndex && (
                 <TouchableOpacity
                     activeOpacity={0.8}
                     style={s.todayFab}
-                    onPress={() => setSelectedIndex(5)}
+                    onPress={() => transitionTo(initialIndex)}
                 >
                     <LinearGradient
                         colors={['#182958', '#101D42']}
@@ -189,7 +217,7 @@ export const CafeteriaScreen: React.FC = () => {
     );
 };
 
-const styles = (theme: Theme) => StyleSheet.create({
+const styles = (theme: Theme, insets: any) => StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#FFFFFF',
@@ -209,10 +237,11 @@ const styles = (theme: Theme) => StyleSheet.create({
         flex: 1,
         padding: 20,
         paddingTop: 30,
+        paddingBottom: Math.max(insets.bottom, 20) + 80, // Dynamic spacing for tab bar
         justifyContent: 'flex-start',
     },
     mealCardContainer: {
-        width: '100%',
+        width: SCREEN_WIDTH - 40,
         marginBottom: 20,
     },
     todayCard: {
@@ -241,6 +270,7 @@ const styles = (theme: Theme) => StyleSheet.create({
         width: 150,
         height: 150,
         borderRadius: 75,
+        zIndex: -1,
     },
     cardHeader: {
         flexDirection: 'row',
@@ -433,7 +463,7 @@ const styles = (theme: Theme) => StyleSheet.create({
     },
     todayFab: {
         position: 'absolute',
-        bottom: 150,
+        bottom: Math.max(insets.bottom, 20) + 100,
         alignSelf: 'center',
     },
     fabGradient: {
