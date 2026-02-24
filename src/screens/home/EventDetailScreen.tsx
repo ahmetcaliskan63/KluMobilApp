@@ -35,6 +35,7 @@ export const EventDetailScreen: React.FC = () => {
     const fadeAnim = useRef(new Animated.Value(0)).current;
 
     const event = MOCK_EVENTS.find(e => e.id === eventId);
+    const [imageError, setImageError] = React.useState(false);
 
     useEffect(() => {
         Animated.timing(fadeAnim, {
@@ -109,7 +110,8 @@ export const EventDetailScreen: React.FC = () => {
                 {/* Hero Image Section */}
                 <View style={s.heroContainer}>
                     <Animated.Image
-                        source={{ uri: event.image }}
+                        source={{ uri: imageError ? 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=2070&auto=format&fit=crop' : (event.image || 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=2070&auto=format&fit=crop') }}
+                        onError={() => setImageError(true)}
                         style={[
                             s.heroImage,
                             {
