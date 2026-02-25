@@ -12,11 +12,15 @@ import { AuthNavigator } from './AuthNavigator';
 import { useAuthStore } from '../store/authStore';
 import { RootStackParamList } from '../types/navigation';
 
-import { ProfileScreen } from '../screens/profile/ProfileScreen';
+import {
+    ProfileScreen,
+    DigitalIDScreen,
+    ProfileDetailScreen
+} from '../screens/profile';
+import { TranscriptScreen } from '../screens/transcript';
 import { AnnouncementsScreen } from '../screens/announcements/AnnouncementsScreen';
-import { DigitalIDScreen } from '../screens/profile/DigitalIDScreen';
-import { ProfileDetailScreen } from '../screens/profile/ProfileDetailScreen';
 import { NotificationsScreen } from '../screens/notifications/NotificationsScreen';
+import AcademicCalendarScreen from '../screens/academic-calendar/AcademicCalendarScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -46,6 +50,22 @@ export const AppNavigator: React.FC = () => {
                 <Stack.Screen
                     name="ProfileDetail"
                     component={ProfileDetailScreen}
+                    options={{
+                        headerShown: false,
+                        animation: 'slide_from_right'
+                    }}
+                />
+                <Stack.Screen
+                    name="Transcript"
+                    component={TranscriptScreen}
+                    options={{
+                        headerShown: false,
+                        animation: 'slide_from_right'
+                    }}
+                />
+                <Stack.Screen
+                    name="AcademicCalendar"
+                    component={AcademicCalendarScreen}
                     options={{
                         headerShown: false,
                         animation: 'slide_from_right'
