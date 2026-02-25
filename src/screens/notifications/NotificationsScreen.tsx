@@ -173,11 +173,10 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.04,
         shadowRadius: 20,
         elevation: 4,
-        borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.8)',
+        borderWidth: 1.5,
+        borderColor: '#d1d5db',
     },
     unreadItem: {
-        borderColor: 'rgba(239, 68, 68, 0.1)',
         backgroundColor: '#FFFBFA', // Very subtle red tint for unread
     },
     iconContainer: {
