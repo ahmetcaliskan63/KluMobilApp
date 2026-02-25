@@ -200,6 +200,10 @@ export const ProfileScreen: React.FC = () => {
                                         onPress={() => {
                                             if (item.id === '1') {
                                                 navigation.navigate('HomeStack' as never, { screen: 'Schedule' } as never);
+                                            } else if (item.id === '2') {
+                                                navigation.navigate('Transcript');
+                                            } else if (item.id === '3') {
+                                                navigation.navigate('AcademicCalendar');
                                             }
                                         }}
                                     >
