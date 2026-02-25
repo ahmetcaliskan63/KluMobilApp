@@ -12,6 +12,8 @@ export type RootStackParamList = {
     Notifications: undefined;
     DigitalID: undefined;
     ProfileDetail: undefined;
+    Transcript: undefined;
+    AcademicCalendar: undefined;
 };
 
 export type AuthStackParamList = {
