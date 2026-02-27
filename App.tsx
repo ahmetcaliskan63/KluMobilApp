@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { AppNavigator } from './src/navigation/AppNavigator';
-import { theme } from './src/config/theme';
-import { useAuthStore } from './src/store/authStore';
-import { setApiCallbacks } from './src/services/apiClient';
+import { AppNavigator } from '@/navigation/AppNavigator';
+import { theme } from '@/config/theme';
+import { useAuthStore } from '@/store/authStore';
+import { setApiCallbacks } from '@/services/apiClient';
 
 function App(): React.JSX.Element {
   useEffect(() => {
@@ -14,6 +14,7 @@ function App(): React.JSX.Element {
       () => useAuthStore.getState().token,
       () => useAuthStore.getState().logout()
     );
+    useAuthStore.getState().initialize();
   }, []);
 
   return (
