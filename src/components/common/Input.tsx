@@ -2,7 +2,7 @@
  * Custom Input Component
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import {
     View,
     TextInput,
@@ -10,11 +10,10 @@ import {
     StyleSheet,
     TextInputProps,
     ViewStyle,
-    Dimensions,
 } from 'react-native';
-import { theme as defaultTheme, Theme } from '../../config/theme';
-import { useAppTheme } from '../../hooks/useAppTheme';
-import { moderateScale, verticalScale } from '../../utils/responsive';
+import { Theme } from '@/config/theme';
+import { useAppTheme } from '@/hooks/useAppTheme';
+import { moderateScale, verticalScale } from '@/utils/responsive';
 
 interface InputProps extends TextInputProps {
     label?: string;
@@ -37,7 +36,7 @@ export const Input: React.FC<InputProps> = ({
             <View style={[
                 s.inputContainer,
                 error ? s.inputError : null,
-                props.multiline ? s.textArea : null
+                (props as TextInputProps).multiline ? s.textArea : null
             ]}>
                 <TextInput
                     style={s.input}
