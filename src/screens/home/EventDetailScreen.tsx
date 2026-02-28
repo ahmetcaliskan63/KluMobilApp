@@ -3,9 +3,7 @@ import {
     View,
     Text,
     StyleSheet,
-    ScrollView,
     TouchableOpacity,
-    Image,
     StatusBar,
     Animated,
     Platform,
@@ -13,10 +11,11 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { HomeStackParamList } from '../../types/navigation';
-import { useAppTheme } from '../../hooks/useAppTheme';
-import { MOCK_EVENTS } from '../../data/mockData';
-import { viewport, moderateScale, scale, verticalScale } from '../../utils/responsive';
+import { HomeStackParamList } from '@/types/navigation';
+import { useAppTheme } from '@/hooks/useAppTheme';
+import { MOCK_EVENTS } from '@/data/mockData';
+import { viewport, moderateScale, scale, verticalScale } from '@/utils/responsive';
+import { Theme } from '@/config/theme';
 
 type EventDetailRouteProp = RouteProp<HomeStackParamList, 'EventDetail'>;
 
@@ -209,7 +208,7 @@ export const EventDetailScreen: React.FC = () => {
     );
 };
 
-const styles = (theme: any, corporateColor: string, headerHeight: number) => StyleSheet.create({
+const styles = (_theme: Theme, corporateColor: string, headerHeight: number) => StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#FFFFFF',
