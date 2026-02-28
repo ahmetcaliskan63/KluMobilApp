@@ -1,5 +1,5 @@
-import apiClient from './apiClient';
-import { LoginCredentials, AuthResponse } from '../types/models';
+// import apiClient from '@/services/apiClient';
+import { LoginCredentials, AuthResponse } from '@/types/models';
 
 export const authService = {
     login: async (credentials: LoginCredentials): Promise<AuthResponse> => {
@@ -60,7 +60,7 @@ export const authService = {
         return Promise.resolve();
     },
 
-    forgotPassword: async (email: string): Promise<void> => {
+    forgotPassword: async (_email: string): Promise<void> => {
         // await apiClient.post('/auth/forgot-password', { email });
         return new Promise((resolve) => setTimeout(resolve, 2000));
     },
