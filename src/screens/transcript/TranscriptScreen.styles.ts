@@ -1,8 +1,8 @@
 import { StyleSheet } from 'react-native';
-import { Theme } from '../../config/theme';
-import { moderateScale, verticalScale } from '../../utils/responsive';
+import { Theme } from '@/config/theme';
+import { moderateScale, verticalScale } from '@/utils/responsive';
 
-export const styles = (theme: Theme) => StyleSheet.create({
+export const styles = (_theme: Theme) => StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#F3F6F9',
