@@ -10,10 +10,11 @@ import {
     ActivityIndicator,
     ViewStyle,
     TextStyle,
+    StyleProp,
 } from 'react-native';
-import { theme as defaultTheme, Theme } from '../../config/theme';
-import { useAppTheme } from '../../hooks/useAppTheme';
-import { moderateScale, verticalScale } from '../../utils/responsive';
+import { Theme } from '@/config/theme';
+import { useAppTheme } from '@/hooks/useAppTheme';
+import { moderateScale, verticalScale } from '@/utils/responsive';
 
 interface ButtonProps {
     title: string;
@@ -39,18 +40,18 @@ export const Button: React.FC<ButtonProps> = ({
     const { theme } = useAppTheme();
     const s = styles(theme);
 
-    const buttonStyle = [
+    const buttonStyle: StyleProp<ViewStyle> = [
         s.button,
-        s[variant],
-        s[size],
+        s[variant as keyof typeof s] as ViewStyle,
+        s[size as keyof typeof s] as ViewStyle,
         disabled && s.disabled,
         style,
     ];
 
-    const textStyles = [
+    const textStyles: StyleProp<TextStyle> = [
         s.text,
-        s[`${variant}Text` as keyof typeof s],
-        s[`${size}Text` as keyof typeof s],
+        s[`${variant}Text` as keyof typeof s] as TextStyle,
+        s[`${size}Text` as keyof typeof s] as TextStyle,
         textStyle,
     ];
 
@@ -77,65 +78,65 @@ const styles = (theme: Theme) => StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'row',
-    },
+    } as ViewStyle,
 
     // Variants
     primary: {
         backgroundColor: theme.colors.primary,
-    },
+    } as ViewStyle,
     secondary: {
         backgroundColor: theme.colors.secondary,
-    },
+    } as ViewStyle,
     outline: {
         backgroundColor: 'transparent',
         borderWidth: 1,
         borderColor: theme.colors.primary,
-    },
+    } as ViewStyle,
 
     // Sizes
     small: {
         paddingVertical: theme.spacing.xs,
         paddingHorizontal: theme.spacing.sm,
         minHeight: verticalScale(34),
-    },
+    } as ViewStyle,
     medium: {
         paddingVertical: theme.spacing.sm,
         paddingHorizontal: theme.spacing.md,
         minHeight: verticalScale(48),
-    },
+    } as ViewStyle,
     large: {
         paddingVertical: theme.spacing.md,
         paddingHorizontal: theme.spacing.lg,
         minHeight: verticalScale(56),
-    },
+    } as ViewStyle,
 
     // Text styles
     text: {
         fontWeight: '600',
-    },
+    } as TextStyle,
     primaryText: {
         color: theme.colors.textOnPrimary,
         fontSize: moderateScale(16),
-    },
+    } as TextStyle,
     secondaryText: {
         color: theme.colors.textOnPrimary,
         fontSize: moderateScale(16),
-    },
+    } as TextStyle,
     outlineText: {
         color: theme.colors.primary,
         fontSize: moderateScale(16),
-    },
+    } as TextStyle,
     smallText: {
         fontSize: moderateScale(13),
-    },
+    } as TextStyle,
     mediumText: {
         fontSize: moderateScale(15),
-    },
+    } as TextStyle,
     largeText: {
         fontSize: moderateScale(17),
-    },
+    } as TextStyle,
 
     disabled: {
         opacity: 0.5,
-    },
+    } as ViewStyle,
 });
