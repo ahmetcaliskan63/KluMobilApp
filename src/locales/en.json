@@ -1,0 +1,15 @@
+{
+    "common": {
+        "ok": "OK",
+        "cancel": "Cancel",
+        "save": "Save",
+        "error": "Error",
+        "loading": "Loading..."
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "announcements": "Announcements",
+        "news": "News",
+        "events": "Events"
+    }
+}
