@@ -1,0 +1,20 @@
+{
+    "common": {
+        "error": "Bir hata oluştu. Lütfen tekrar deneyin.",
+        "loading": "Yükleniyor...",
+        "retry": "Tekrar Dene"
+    },
+    "dashboard": {
+        "announcements": "Duyurular",
+        "news": "Haberler",
+        "events": "Etkinlikler"
+    },
+    "transcript": {
+        "title": "Akademik Transkript",
+        "loadError": "Transkript yüklenemedi.",
+        "summary": "Akademik Özet",
+        "gpa": "Genel Ortalama",
+        "totalAkts": "Tamamlanan AKTS",
+        "activeSemester": "Aktif Dönem"
+    }
+}
