@@ -1,0 +1,15 @@
+{
+    "common": {
+        "ok": "Tamam",
+        "cancel": "İptal",
+        "save": "Kaydet",
+        "error": "Hata",
+        "loading": "Yükleniyor..."
+    },
+    "dashboard": {
+        "title": "Panel",
+        "announcements": "Duyurular",
+        "news": "Haberler",
+        "events": "Etkinlikler"
+    }
+}
