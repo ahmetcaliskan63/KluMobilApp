@@ -5,17 +5,13 @@ import {
     StyleSheet,
     ScrollView,
     TouchableOpacity,
-    Platform,
     StatusBar,
     Animated,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Theme, spacing, borderRadius } from '../../config/theme';
-import { useAuthStore } from '../../store/authStore';
+import { Theme, spacing, borderRadius, shadows } from '../../config/theme';
 import { useAppTheme } from '../../hooks/useAppTheme';
-import { viewport, moderateScale, scale, verticalScale } from '../../utils/responsive';
-import { useNavigation, useRoute, RouteProp, CompositeNavigationProp } from '@react-navigation/native';
+import { viewport, moderateScale, verticalScale } from '../../utils/responsive';
+import { useNavigation, CompositeNavigationProp } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainTabParamList, HomeStackParamList } from '../../types/navigation';
@@ -38,23 +34,22 @@ type DashboardNavigationProp = CompositeNavigationProp<
 // Senior Refactoring: Cards moved to src/components/home
 
 export const DashboardScreen: React.FC = () => {
-    const { user } = useAuthStore();
-    const insets = useSafeAreaInsets();
     const navigation = useNavigation<DashboardNavigationProp>();
     const { theme } = useAppTheme();
     const s = styles(theme);
     const [activeTab, setActiveTab] = React.useState<'Duyurular' | 'Haberler' | 'Etkinlikler'>('Haberler');
-    // Dynamic tab width calculation based on viewport to ensure responsiveness
-    const tabWidth = (viewport.width - moderateScale(48)) / 3;
-    const translateX = React.useRef(new Animated.Value(tabWidth)).current;
+    // Segmented control metrics
+    const SEGMENT_PADDING = 4;
+    const SEGMENT_WIDTH = (viewport.width - spacing.md * 2 - SEGMENT_PADDING * 2) / 3;
+    const translateX = React.useRef(new Animated.Value(SEGMENT_WIDTH)).current;
 
     const handleTabPress = (tab: 'Duyurular' | 'Haberler' | 'Etkinlikler', index: number) => {
         setActiveTab(tab);
         Animated.spring(translateX, {
-            toValue: index * ((viewport.width - 48) / 3),
+            toValue: index * SEGMENT_WIDTH,
             useNativeDriver: true,
-            bounciness: 4,
-            speed: 12,
+            bounciness: 2,
+            speed: 14,
         }).start();
     };
 
@@ -91,6 +86,15 @@ export const DashboardScreen: React.FC = () => {
 
             <View style={s.fixedTabContainer}>
                 <View style={s.segmentedControl}>
+                    <Animated.View
+                        style={[
+                            s.activeBackground,
+                            {
+                                width: SEGMENT_WIDTH,
+                                transform: [{ translateX }]
+                            }
+                        ]}
+                    />
                     {(['Duyurular', 'Haberler', 'Etkinlikler'] as const).map((tab, index) => {
                         const isActive = activeTab === tab;
                         return (
@@ -98,26 +102,14 @@ export const DashboardScreen: React.FC = () => {
                                 key={tab}
                                 style={s.segmentButton}
                                 onPress={() => handleTabPress(tab, index)}
-                                activeOpacity={0.7}
+                                activeOpacity={0.8}
                             >
-                                <View style={s.tabContentWrapper}>
-                                    <View style={s.textIndicatorWrapper}>
-                                        <Text style={[
-                                            s.segmentText,
-                                            isActive && s.segmentTextActive
-                                        ]}>
-                                            {tab}
-                                        </Text>
-                                        {isActive && (
-                                            <Animated.View
-                                                style={[
-                                                    s.activeIndicatorLine,
-                                                    { width: index === 0 ? moderateScale(30) : index === 1 ? moderateScale(40) : moderateScale(35) }
-                                                ]}
-                                            />
-                                        )}
-                                    </View>
-                                </View>
+                                <Text style={[
+                                    s.segmentText,
+                                    isActive && s.segmentTextActive
+                                ]}>
+                                    {tab}
+                                </Text>
                             </TouchableOpacity>
                         );
                     })}
@@ -151,25 +143,34 @@ const styles = (theme: Theme) => StyleSheet.create({
     },
     scrollContent: {
         padding: spacing.md,
-        paddingTop: 5,
+        paddingTop: 0,
     },
     fixedTabContainer: {
         backgroundColor: theme.colors.background,
         paddingHorizontal: spacing.md,
-        paddingTop: 0,
-        paddingBottom: 2,
+        paddingTop: spacing.sm,
+        paddingBottom: spacing.xs,
         zIndex: 100,
-        borderBottomWidth: 1,
-        borderBottomColor: theme.colors.divider,
     },
     segmentedControl: {
         flexDirection: 'row',
-        backgroundColor: 'transparent',
-        borderRadius: borderRadius.lg,
+        backgroundColor: theme.colors.accent,
+        borderRadius: borderRadius.full,
         padding: 4,
         position: 'relative',
-        height: 40,
+        height: verticalScale(46),
         alignItems: 'center',
+        borderWidth: 1.5,
+        borderColor: theme.colors.primary,
+    },
+    activeBackground: {
+        position: 'absolute',
+        top: 4,
+        bottom: 4,
+        left: 4,
+        backgroundColor: theme.colors.primary,
+        borderRadius: borderRadius.full,
+        ...shadows.small,
     },
     segmentButton: {
         flex: 1,
@@ -178,37 +179,17 @@ const styles = (theme: Theme) => StyleSheet.create({
         justifyContent: 'center',
         zIndex: 1,
     },
-    tabContentWrapper: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 8,
-        height: '100%',
-    },
     segmentText: {
         ...theme.typography.caption,
         color: theme.colors.textSecondary,
-        fontWeight: '500',
+        fontWeight: '600',
+        fontSize: moderateScale(14),
     },
     segmentTextActive: {
-        color: theme.colors.primary,
+        color: theme.colors.textOnPrimary,
         fontWeight: '700',
-        fontSize: moderateScale(14.5),
-    },
-    textIndicatorWrapper: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100%',
-    },
-    activeIndicatorLine: {
-        height: verticalScale(2.5),
-        backgroundColor: theme.colors.primary,
-        borderRadius: borderRadius.sm,
-        marginTop: verticalScale(4),
-        position: 'absolute',
-        bottom: verticalScale(2),
     },
     contentList: {
-        paddingTop: 10,
+        paddingTop: 0,
     },
 });
