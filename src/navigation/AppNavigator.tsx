@@ -9,7 +9,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SplashScreen } from '../screens/common/SplashScreen';
 import { MainTabNavigator } from './MainTabNavigator';
 import { AuthNavigator } from './AuthNavigator';
-import { useAuthStore } from '../store/authStore';
 import { RootStackParamList } from '../types/navigation';
 
 import {
@@ -21,6 +20,8 @@ import { TranscriptScreen } from '../screens/transcript';
 import { AnnouncementsScreen } from '../screens/announcements/AnnouncementsScreen';
 import { NotificationsScreen } from '../screens/notifications/NotificationsScreen';
 import AcademicCalendarScreen from '../screens/academic-calendar/AcademicCalendarScreen';
+import { ExamScheduleScreen } from '../screens/exam-schedule/ExamScheduleScreen';
+import { ExamResultsScreen } from '../screens/exam-results/ExamResultsScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -66,6 +67,22 @@ export const AppNavigator: React.FC = () => {
                 <Stack.Screen
                     name="AcademicCalendar"
                     component={AcademicCalendarScreen}
+                    options={{
+                        headerShown: false,
+                        animation: 'slide_from_right'
+                    }}
+                />
+                <Stack.Screen
+                    name="ExamSchedule"
+                    component={ExamScheduleScreen}
+                    options={{
+                        headerShown: false,
+                        animation: 'slide_from_right'
+                    }}
+                />
+                <Stack.Screen
+                    name="ExamResults"
+                    component={ExamResultsScreen}
                     options={{
                         headerShown: false,
                         animation: 'slide_from_right'
