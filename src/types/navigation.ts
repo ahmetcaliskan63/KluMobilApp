@@ -14,6 +14,8 @@ export type RootStackParamList = {
     ProfileDetail: undefined;
     Transcript: undefined;
     AcademicCalendar: undefined;
+    ExamSchedule: undefined;
+    ExamResults: undefined;
 };
 
 export type AuthStackParamList = {
