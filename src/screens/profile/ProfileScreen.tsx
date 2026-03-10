@@ -5,15 +5,15 @@ import {
     StyleSheet,
     ScrollView,
     TouchableOpacity,
-    Alert,
     StatusBar,
     Modal,
     Pressable,
     Animated,
+    Linking,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Theme, spacing } from '../../config/theme';
 import LinearGradient from 'react-native-linear-gradient';
 import { useAuthStore } from '../../store/authStore';
@@ -23,23 +23,14 @@ import { DigitalPassportCard } from '../../components/profile/DigitalPassportCar
 
 export const ProfileScreen: React.FC = () => {
     const navigation = useNavigation<any>();
-    const { user, logout } = useAuthStore();
+    const { user } = useAuthStore();
     const { theme } = useAppTheme();
     const insets = useSafeAreaInsets();
     const [showIdModal, setShowIdModal] = useState(false);
+    const [showCalendarModal, setShowCalendarModal] = useState(false);
     const [isLandscape, setIsLandscape] = useState(false);
     const s = styles(theme);
 
-    const handleLogout = () => {
-        Alert.alert(
-            'Çıkış Yap',
-            'Hesabınızdan çıkış yapmak istediğinize emin misiniz?',
-            [
-                { text: 'İptal', style: 'cancel' },
-                { text: 'Çıkış Yap', style: 'destructive', onPress: logout },
-            ]
-        );
-    };
 
     return (
         <View style={s.container}>
@@ -203,7 +194,13 @@ export const ProfileScreen: React.FC = () => {
                                             } else if (item.id === '2') {
                                                 navigation.navigate('Transcript');
                                             } else if (item.id === '3') {
-                                                navigation.navigate('AcademicCalendar');
+                                                setShowCalendarModal(true);
+                                            } else if (item.id === '4') {
+                                                navigation.navigate('ExamSchedule');
+                                            } else if (item.id === '5') {
+                                                navigation.navigate('ExamResults');
+                                            } else if (item.id === '6') {
+                                                Linking.openURL('https://kluposta.klu.edu.tr/');
                                             }
                                         }}
                                     >
@@ -270,6 +267,100 @@ export const ProfileScreen: React.FC = () => {
                             <DigitalPassportCard user={user} theme={theme} />
                         </View>
                     </View>
+                </Pressable>
+            </Modal>
+
+            {/* Academic Calendar Selection Modal */}
+            <Modal
+                visible={showCalendarModal}
+                transparent={true}
+                animationType="slide"
+                onRequestClose={() => setShowCalendarModal(false)}
+            >
+                <Pressable
+                    style={s.modalOverlay}
+                    onPress={() => setShowCalendarModal(false)}
+                >
+                    <Animated.View
+                        style={s.calendarModalCard}
+                    >
+                        <View style={s.calendarModalHeader}>
+                            <Text style={[s.calendarModalTitle, { color: theme.colors.text }]}>Akademik Takvim</Text>
+                            <Text style={s.calendarModalSubtitle}>2024 - 2025 Eğitim Yılı Program Seçimi</Text>
+                        </View>
+
+                        <View style={s.calendarBtnStack}>
+                            <TouchableOpacity
+                                style={s.calendarOptionBtn}
+                                onPress={() => {
+                                    Linking.openURL('https://www.klu.edu.tr/dosyalar/birimler/ogrenci_isleri/dosyalar/dokumanlar/2024-2025_AKADEMIK_TAKVIM_ONLISANS-LISANS.pdf');
+                                    setShowCalendarModal(false);
+                                }}
+                            >
+                                <LinearGradient
+                                    colors={['#0F172A', '#1E3A8A']}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 1 }}
+                                    style={s.calendarBtnGradient}
+                                >
+                                    <View style={s.calendarBtnMain}>
+                                        <Text style={s.calendarBtnText}>Lisans Akademik Takvim</Text>
+                                        <Text style={s.calendarBtnSubtext}>Fakülte ve Yüksekokullar</Text>
+                                    </View>
+                                    <Icon name="chevron-forward" size={18} color="rgba(255,255,255,0.6)" />
+                                </LinearGradient>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                style={s.calendarOptionBtn}
+                                onPress={() => {
+                                    Linking.openURL('https://www.klu.edu.tr/dosyalar/birimler/ogrenci_isleri/dosyalar/dokumanlar/2024-2025_AKADEMIK_TAKVIM_ONLISANS-LISANS.pdf');
+                                    setShowCalendarModal(false);
+                                }}
+                            >
+                                <LinearGradient
+                                    colors={['#064E3B', '#059669']}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 1 }}
+                                    style={s.calendarBtnGradient}
+                                >
+                                    <View style={s.calendarBtnMain}>
+                                        <Text style={s.calendarBtnText}>Ön Lisans Akademik Takvim</Text>
+                                        <Text style={s.calendarBtnSubtext}>Meslek Yüksekokulları</Text>
+                                    </View>
+                                    <Icon name="chevron-forward" size={18} color="rgba(255,255,255,0.6)" />
+                                </LinearGradient>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                style={s.calendarOptionBtn}
+                                onPress={() => {
+                                    Linking.openURL('https://www.klu.edu.tr/dosyalar/birimler/ogrenci_isleri/dosyalar/dokumanlar/2024-2025_LISANSUSTU_AKADEMIK_TAKVIMI.pdf');
+                                    setShowCalendarModal(false);
+                                }}
+                            >
+                                <LinearGradient
+                                    colors={['#312E81', '#4338CA']}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 1 }}
+                                    style={s.calendarBtnGradient}
+                                >
+                                    <View style={s.calendarBtnMain}>
+                                        <Text style={s.calendarBtnText}>Lisansüstü Akademik Takvim</Text>
+                                        <Text style={s.calendarBtnSubtext}>Enstitü Programları</Text>
+                                    </View>
+                                    <Icon name="chevron-forward" size={18} color="rgba(255,255,255,0.6)" />
+                                </LinearGradient>
+                            </TouchableOpacity>
+                        </View>
+
+                        <TouchableOpacity
+                            style={s.calendarCloseBtn}
+                            onPress={() => setShowCalendarModal(false)}
+                        >
+                            <Text style={s.calendarCloseBtnText}>Kapat</Text>
+                        </TouchableOpacity>
+                    </Animated.View>
                 </Pressable>
             </Modal>
         </View>
@@ -607,5 +698,108 @@ const styles = (theme: Theme) => StyleSheet.create({
     },
     quickListItemChevronWrapper: {
         paddingHorizontal: spacing.xs,
+    },
+    calendarModalCard: {
+        width: '92%',
+        backgroundColor: '#FFFFFF',
+        borderRadius: moderateScale(30),
+        paddingVertical: verticalScale(30),
+        paddingHorizontal: spacing.xl,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 25 },
+        shadowOpacity: 0.25,
+        shadowRadius: 35,
+        elevation: 25,
+        borderWidth: 2,
+        borderColor: '#991B1B', // Darker red as requested
+    },
+    calendarModalHeader: {
+        alignItems: 'center',
+        marginBottom: verticalScale(28),
+    },
+    calendarIconWrapper: {
+        width: moderateScale(64),
+        height: moderateScale(64),
+        borderRadius: moderateScale(22),
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: verticalScale(16),
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.15,
+        shadowRadius: 12,
+        elevation: 5,
+    },
+    calendarModalTitle: {
+        fontSize: moderateScale(24),
+        fontWeight: '900',
+        marginBottom: 6,
+        letterSpacing: -0.8,
+    },
+    calendarModalSubtitle: {
+        fontSize: moderateScale(14),
+        color: '#64748B',
+        textAlign: 'center',
+        fontWeight: '600',
+        letterSpacing: -0.2,
+    },
+    calendarBtnStack: {
+        width: '100%',
+        gap: verticalScale(14),
+    },
+    calendarOptionBtn: {
+        width: '100%',
+        borderRadius: moderateScale(20),
+        overflow: 'hidden',
+        borderWidth: 1.5,
+        borderColor: 'rgba(255, 255, 255, 0.15)',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.2,
+        shadowRadius: 10,
+        elevation: 6,
+    },
+    calendarBtnGradient: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: spacing.xl,
+        paddingVertical: verticalScale(16),
+    },
+    calendarBtnMain: {
+        gap: 2,
+    },
+    calendarBtnText: {
+        color: '#FFFFFF',
+        fontSize: moderateScale(15),
+        fontWeight: '800',
+        letterSpacing: -0.3,
+    },
+    calendarBtnSubtext: {
+        color: 'rgba(255, 255, 255, 0.6)',
+        fontSize: moderateScale(11),
+        fontWeight: '500',
+    },
+    calendarCloseBtn: {
+        marginTop: verticalScale(25),
+        paddingVertical: verticalScale(12),
+        paddingHorizontal: spacing.xxl,
+        borderRadius: moderateScale(16),
+        backgroundColor: '#F1F5F9',
+        borderWidth: 1.5,
+        borderColor: '#CBD5E1',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 2,
+    },
+    calendarCloseBtnText: {
+        color: '#475569',
+        fontSize: moderateScale(14),
+        fontWeight: '800',
+        letterSpacing: 1,
+        textTransform: 'uppercase',
     },
 });
