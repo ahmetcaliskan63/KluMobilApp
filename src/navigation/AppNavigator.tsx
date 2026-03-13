@@ -9,7 +9,10 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SplashScreen } from '../screens/common/SplashScreen';
 import { MainTabNavigator } from './MainTabNavigator';
 import { AuthNavigator } from './AuthNavigator';
-import { RootStackParamList } from '../types/navigation';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { CustomDrawerContent } from '../components/navigation/CustomDrawerContent';
+import { RootStackParamList, DrawerParamList } from '../types/navigation';
+import { viewport } from '../utils/responsive';
 
 import {
     ProfileScreen,
@@ -24,6 +27,22 @@ import { ExamScheduleScreen } from '../screens/exam-schedule/ExamScheduleScreen'
 import { ExamResultsScreen } from '../screens/exam-results/ExamResultsScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
+const Drawer = createDrawerNavigator<DrawerParamList>();
+
+const MainDrawerNavigator = () => (
+    <Drawer.Navigator
+        drawerContent={(props) => <CustomDrawerContent {...props} />}
+        screenOptions={{
+            headerShown: false,
+            drawerType: 'front',
+            drawerStyle: {
+                width: viewport.width * 0.8,
+            },
+        }}
+    >
+        <Drawer.Screen name="MainTabs" component={MainTabNavigator} />
+    </Drawer.Navigator>
+);
 
 export const AppNavigator: React.FC = () => {
     return (
@@ -36,7 +55,7 @@ export const AppNavigator: React.FC = () => {
                 }}>
                 <Stack.Screen name="Splash" component={SplashScreen} />
                 <Stack.Screen name="Auth" component={AuthNavigator} />
-                <Stack.Screen name="Main" component={MainTabNavigator} />
+                <Stack.Screen name="Main" component={MainDrawerNavigator} />
                 <Stack.Screen name="Profile" component={ProfileScreen} />
                 <Stack.Screen name="Announcements" component={AnnouncementsScreen} />
                 <Stack.Screen name="Notifications" component={NotificationsScreen} />
