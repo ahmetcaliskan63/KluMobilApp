@@ -6,6 +6,7 @@
 export type RootStackParamList = {
     Splash: undefined;
     Auth: undefined;
+    MainDrawer: undefined;
     Main: undefined;
     Profile: undefined;
     Announcements: undefined;
@@ -16,6 +17,14 @@ export type RootStackParamList = {
     AcademicCalendar: undefined;
     ExamSchedule: undefined;
     ExamResults: undefined;
+};
+
+export type DrawerParamList = {
+    MainTabs: undefined;
+    OurUniversity: undefined;
+    CandidateStudent: undefined;
+    Contact: undefined;
+    Social: undefined;
 };
 
 export type AuthStackParamList = {
