@@ -104,16 +104,43 @@ export const MainTabNavigator: React.FC = () => {
             <Tab.Screen
                 name="Cafeteria"
                 component={CafeteriaScreen}
-                options={{ title: 'Yemek' }}
+                listeners={({ navigation }) => ({
+                    tabPress: (e) => {
+                        e.preventDefault();
+                        navigation.navigate('Cafeteria');
+                    },
+                })}
+                options={() => ({
+                    title: 'Yemek',
+                    unmountOnBlur: true,
+                })}
             />
             <Tab.Screen
                 name="Library"
                 component={LibraryScreen}
-                options={{ title: 'Kütüphane' }}
+                listeners={({ navigation }) => ({
+                    tabPress: (e) => {
+                        e.preventDefault();
+                        navigation.navigate('Library');
+                    },
+                })}
+                options={() => ({
+                    title: 'Kütüphane',
+                    unmountOnBlur: true,
+                })}
             />
             <Tab.Screen
                 name="HomeStack"
                 component={HomeStackNavigator}
+                listeners={({ navigation }) => ({
+                    tabPress: (e) => {
+                        e.preventDefault();
+                        navigation.navigate('HomeStack', { 
+                            screen: 'Dashboard',
+                            params: { resetToNews: Date.now() }
+                        });
+                    },
+                })}
                 options={({ route }) => {
                     const routeName = getFocusedRouteNameFromRoute(route) ?? 'Dashboard';
                     const detailScreens = [
@@ -138,12 +165,30 @@ export const MainTabNavigator: React.FC = () => {
             <Tab.Screen
                 name="Profile"
                 component={ProfileScreen}
-                options={{ title: 'Profil' }}
+                listeners={({ navigation }) => ({
+                    tabPress: (e) => {
+                        e.preventDefault();
+                        navigation.navigate('Profile');
+                    },
+                })}
+                options={() => ({
+                    title: 'Profil',
+                    unmountOnBlur: true,
+                })}
             />
             <Tab.Screen
                 name="Settings"
                 component={SettingsScreen}
-                options={{ title: 'Ayarlar' }}
+                listeners={({ navigation }) => ({
+                    tabPress: (e) => {
+                        e.preventDefault();
+                        navigation.navigate('Settings');
+                    },
+                })}
+                options={() => ({
+                    title: 'Ayarlar',
+                    unmountOnBlur: true,
+                })}
             />
         </Tab.Navigator >
     );
