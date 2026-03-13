@@ -11,7 +11,7 @@ import {
 import { Theme, spacing, borderRadius, shadows } from '../../config/theme';
 import { useAppTheme } from '../../hooks/useAppTheme';
 import { viewport, moderateScale, verticalScale } from '../../utils/responsive';
-import { useNavigation, CompositeNavigationProp } from '@react-navigation/native';
+import { useNavigation, CompositeNavigationProp, useRoute, RouteProp } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainTabParamList, HomeStackParamList } from '../../types/navigation';
@@ -30,11 +30,13 @@ type DashboardNavigationProp = CompositeNavigationProp<
     BottomTabNavigationProp<MainTabParamList>
 >;
 
+type DashboardRouteProp = RouteProp<HomeStackParamList, 'Dashboard'>;
 
 // Senior Refactoring: Cards moved to src/components/home
 
 export const DashboardScreen: React.FC = () => {
     const navigation = useNavigation<DashboardNavigationProp>();
+    const route = useRoute<DashboardRouteProp>();
     const { theme } = useAppTheme();
     const s = styles(theme);
     const [activeTab, setActiveTab] = React.useState<'Duyurular' | 'Haberler' | 'Etkinlikler'>('Haberler');
@@ -43,7 +45,7 @@ export const DashboardScreen: React.FC = () => {
     const SEGMENT_WIDTH = (viewport.width - spacing.md * 2 - SEGMENT_PADDING * 2) / 3;
     const translateX = React.useRef(new Animated.Value(SEGMENT_WIDTH)).current;
 
-    const handleTabPress = (tab: 'Duyurular' | 'Haberler' | 'Etkinlikler', index: number) => {
+    const handleTabPress = React.useCallback((tab: 'Duyurular' | 'Haberler' | 'Etkinlikler', index: number) => {
         setActiveTab(tab);
         Animated.spring(translateX, {
             toValue: index * SEGMENT_WIDTH,
@@ -51,7 +53,14 @@ export const DashboardScreen: React.FC = () => {
             bounciness: 2,
             speed: 14,
         }).start();
-    };
+    }, [SEGMENT_WIDTH, translateX]);
+
+    // Listen for tab reset parameter from navigation
+    React.useEffect(() => {
+        if (route.params?.resetToNews) {
+            handleTabPress('Haberler', 1);
+        }
+    }, [route.params?.resetToNews, handleTabPress]);
 
     const renderNewsCard = React.useCallback((item: News) => (
         <NewsCard
