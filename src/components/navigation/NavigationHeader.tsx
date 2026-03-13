@@ -1,20 +1,24 @@
 import React from 'react';
-import { View, TouchableOpacity, Image, StyleSheet, Platform, Text } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../../types/navigation';
 
-export const NavigationHeaderLeft: React.FC = () => (
-    <View style={styles.headerLeftContainer}>
-        <View style={styles.logoWrapper}>
-            <Image
-                source={require('../../assets/logo.png')}
-                style={styles.logo}
-                resizeMode="contain"
-            />
-        </View>
-    </View>
-);
+export const NavigationHeaderLeft: React.FC = () => {
+    const navigation = useNavigation<any>();
+
+    return (
+        <TouchableOpacity
+            style={styles.headerLeftContainer}
+            onPress={() => navigation.openDrawer()}
+            activeOpacity={0.7}
+        >
+            <View style={styles.menuIconWrapper}>
+                <Icon name="menu-outline" size={24} color="#FFFFFF" />
+            </View>
+        </TouchableOpacity>
+    );
+};
 
 export const NavigationHeaderRight: React.FC = () => {
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -38,19 +42,15 @@ const styles = StyleSheet.create({
     headerLeftContainer: {
         marginLeft: 16,
     },
-    logoWrapper: {
-        width: 42,
-        height: 42,
-        borderRadius: 21,
-        backgroundColor: '#FFFFFF',
+    menuIconWrapper: {
+        width: 38,
+        height: 38,
+        borderRadius: 19,
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 1,
         borderColor: 'rgba(255, 255, 255, 0.2)',
-    },
-    logo: {
-        width: 38,
-        height: 38,
     },
     headerRightContainer: {
         marginRight: 16,
