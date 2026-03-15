@@ -367,7 +367,7 @@ const styles = (theme: Theme) => StyleSheet.create({
         marginBottom: spacing.md,
         padding: spacing.md,
         borderWidth: 1.5,
-        borderColor: '#E2E8F0', // Nice grey border
+        borderColor: '#CBD5E1', // Darker grey border
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.02,
