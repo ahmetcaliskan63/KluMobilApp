@@ -81,16 +81,14 @@ export const FacultyScreen: React.FC = () => {
         return FACULTY_DIRECTORY.filter(f => names.includes(f.name));
     }, []);
 
-    const filteredFaculty = FACULTY_DIRECTORY;
-
     const handleEmailPress = async (email: string) => {
         const url = `mailto:${email}`;
         if (await Linking.canOpenURL(url)) await Linking.openURL(url);
     };
 
     const renderFacultyCard = (item: any, isPremium = false) => (
-        <TouchableOpacity 
-            key={item.id} 
+        <TouchableOpacity
+            key={item.id}
             style={[s.memberCard, isPremium && s.premiumMemberCard]}
             activeOpacity={0.8}
         >
@@ -102,7 +100,7 @@ export const FacultyScreen: React.FC = () => {
                     <Text style={[s.memberName, { color: theme.colors.text }]}>{item.name}</Text>
                     <Text style={[s.memberDept, { color: theme.colors.textSecondary }]}>{item.dept}</Text>
                 </View>
-                <TouchableOpacity 
+                <TouchableOpacity
                     style={[s.cardActionBtn, { backgroundColor: theme.colors.primary + '10' }]}
                     onPress={() => handleEmailPress(item.email)}
                 >
@@ -148,7 +146,7 @@ export const FacultyScreen: React.FC = () => {
     return (
         <View style={s.container}>
             <StatusBar barStyle="light-content" backgroundColor="#0f172a" />
-            
+
             {/* 👑 Senior Designer Header */}
             <LinearGradient colors={['#0f172a', '#1e293b']} style={[s.header, { paddingTop: insets.top + spacing.sm }]}>
                 <View style={s.headerRow}>
@@ -160,21 +158,20 @@ export const FacultyScreen: React.FC = () => {
                 </View>
             </LinearGradient>
 
-            <Animated.ScrollView 
+            <Animated.ScrollView
                 style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}
                 contentContainerStyle={[s.scrollContent, { paddingBottom: insets.bottom + 40 }]}
                 showsVerticalScrollIndicator={false}
             >
-                {/* 1. Danışman Hoca */}
-                <Text style={s.sectionHeader}>Akademik Danışman</Text>
+                <Text style={[s.sectionHeader, { marginTop: 0 }]}>Akademik Danışman</Text>
                 {renderFeaturedCard(ACADEMIC_PROFILES.ADVISOR, 'DANIŞMANIM')}
 
                 {/* 2. Bölüm Başkanı */}
-                <Text style={s.sectionHeader}>Bölüm Yönetimi</Text>
+                <Text style={[s.sectionHeader, { marginTop: spacing.md }]}>Bölüm Yönetimi</Text>
                 {renderFeaturedCard(ACADEMIC_PROFILES.DEPT_HEAD, 'BÖLÜM BAŞKANI')}
 
                 {/* 3. Dönem Hocalarım */}
-                <View style={s.sectionTitleRow}>
+                <View style={[s.sectionTitleRow, { marginTop: spacing.md }]}>
                     <Text style={s.sectionHeader}>Dönem Hocalarım</Text>
                     <View style={s.termBadge}>
                         <Text style={s.termBadgeText}>2024-2025 Bahar</Text>
@@ -183,19 +180,6 @@ export const FacultyScreen: React.FC = () => {
                 <View style={s.termList}>
                     {termInstructors.map(item => renderFacultyCard(item, true))}
                 </View>
-
-                {/* 4. Tüm Akademik Kadro */}
-                <Text style={s.sectionHeader}>Akademik Kadro</Text>
-                <View style={s.facultyGrid}>
-                    {filteredFaculty.map(item => renderFacultyCard(item))}
-                    {filteredFaculty.length === 0 && (
-                        <View style={s.emptyState}>
-                            <Icon name="person-remove" size={48} color="rgba(0,0,0,0.1)" />
-                            <Text style={[s.emptyText, { color: theme.colors.textSecondary }]}>Hoca bulunamadı</Text>
-                        </View>
-                    )}
-                </View>
-
             </Animated.ScrollView>
         </View>
     );
@@ -254,7 +238,7 @@ const styles = (theme: Theme) => StyleSheet.create({
         fontWeight: '500',
     },
     scrollContent: {
-        padding: spacing.lg,
+        padding: spacing.md,
     },
     sectionHeader: {
         fontSize: moderateScale(14),
@@ -262,8 +246,8 @@ const styles = (theme: Theme) => StyleSheet.create({
         color: '#64748B',
         textTransform: 'uppercase',
         letterSpacing: 1.2,
-        marginBottom: spacing.md,
-        marginTop: spacing.xl,
+        marginBottom: spacing.xs,
+        marginTop: spacing.md,
         marginLeft: 4,
     },
     sectionTitleRow: {
@@ -382,8 +366,8 @@ const styles = (theme: Theme) => StyleSheet.create({
         borderRadius: 24,
         marginBottom: spacing.md,
         padding: spacing.md,
-        borderWidth: 1,
-        borderColor: 'rgba(0,0,0,0.03)',
+        borderWidth: 1.5,
+        borderColor: '#E2E8F0', // Nice grey border
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.02,
