@@ -65,7 +65,7 @@ export const FacultyScreen: React.FC = () => {
                     <Icon name="chevron-back" size={28} color="#FFF" />
                 </TouchableOpacity>
                 <Text style={s.headerTitle}>Hocalarımız</Text>
-                <View style={{ width: 44 }} /> {/* Balance for back button */}
+                <View style={{ width: 44 }} />
             </LinearGradient>
 
             <ScrollView 
@@ -76,12 +76,10 @@ export const FacultyScreen: React.FC = () => {
                 <Text style={s.sectionTitle}>Danışman Hoca</Text>
                 <View style={s.advisorCardWrapper}>
                     <LinearGradient
-                        colors={['#1E293B', '#0F172A']} // Deep Slate/Navy Premium look
+                        colors={['#1E293B', '#0F172A']}
                         style={s.advisorCard}
                     >
-                        {/* Decorative Gold Glow */}
                         <View style={s.goldGlow} />
-
                         <View style={s.advisorHeaderInfo}>
                             <View style={s.advisorAvatarContainer}>
                                 <LinearGradient colors={['#F59E0B', '#FCD34D']} style={s.advisorAvatarBorder}>
@@ -93,7 +91,6 @@ export const FacultyScreen: React.FC = () => {
                                     <Icon name="star" size={12} color="#FFF" />
                                 </View>
                             </View>
-
                             <View style={s.advisorTextInfo}>
                                 <Text style={s.advisorName}>{MY_ADVISOR.name}</Text>
                                 <Text style={s.advisorTitle}>{MY_ADVISOR.title}</Text>
@@ -102,9 +99,7 @@ export const FacultyScreen: React.FC = () => {
                                 </View>
                             </View>
                         </View>
-
                         <View style={s.advisorDivider} />
-
                         <View style={s.advisorContactSection}>
                             <View style={s.contactRow}>
                                 <View style={s.contactIconCircle}>
@@ -112,7 +107,6 @@ export const FacultyScreen: React.FC = () => {
                                 </View>
                                 <Text style={s.contactText}>{MY_ADVISOR.office}</Text>
                             </View>
-
                             <TouchableOpacity 
                                 style={s.contactRowBtn}
                                 activeOpacity={0.7}
@@ -124,7 +118,6 @@ export const FacultyScreen: React.FC = () => {
                                 <Text style={[s.contactText, s.contactEmail]}>{MY_ADVISOR.email}</Text>
                             </TouchableOpacity>
                         </View>
-
                     </LinearGradient>
                 </View>
 
