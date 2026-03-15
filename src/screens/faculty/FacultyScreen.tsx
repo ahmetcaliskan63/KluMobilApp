@@ -191,9 +191,9 @@ const styles = (theme: Theme) => StyleSheet.create({
         backgroundColor: '#F8FAFC',
     },
     header: {
-        paddingBottom: spacing.lg,
-        borderBottomLeftRadius: 32,
-        borderBottomRightRadius: 32,
+        paddingBottom: spacing.sm,
+        borderBottomLeftRadius: 24,
+        borderBottomRightRadius: 24,
         elevation: 8,
     },
     headerRow: {
