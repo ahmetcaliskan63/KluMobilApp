@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
     View,
     Text,
     StyleSheet,
-    ScrollView,
     TouchableOpacity,
     StatusBar,
     Linking,
+    Animated,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -15,23 +15,48 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Theme, spacing } from '../../config/theme';
 import { useAppTheme } from '../../hooks/useAppTheme';
 import { moderateScale } from '../../utils/responsive';
+import { MOCK_SCHEDULE } from '../../data/mockData';
 
-// Mock Data for Professors (In a real app, fetch from User's department API)
-const MY_ADVISOR = {
-    id: 'adv_1',
-    name: 'Prof. Dr. Ayşe Yılmaz',
-    title: 'Bölüm Başkanı / Akademik Danışman',
-    department: 'Yazılım Mühendisliği',
-    email: 'ayse.yilmaz@klu.edu.tr',
-    office: 'A Blok, Kat 3, No: 312',
-    avatarLetter: 'AY',
+
+// 🎩 Mock Data for Featured Faculty
+const ACADEMIC_PROFILES = {
+    ADVISOR: {
+        id: 'adv_1',
+        name: 'Prof. Dr. Ayşe Yılmaz',
+        title: 'Akademik Danışman',
+        role: 'Bölüm Başkanı',
+        department: 'Yazılım Mühendisliği',
+        email: 'ayse.yilmaz@klu.edu.tr',
+        office: 'A Blok, Kat 3, No: 312',
+        avatar: 'AY',
+        color: ['#1E293B', '#0F172A'], // Premium Navy/Slate
+        accent: '#F59E0B', // Gold
+    },
+    DEPT_HEAD: {
+        id: 'dept_1',
+        name: 'Prof. Dr. Ahmet Demir',
+        title: 'Bölüm Başkanı',
+        role: 'Yazılım Mühendisliği Bölüm Başkanı',
+        department: 'Yazılım Mühendisliği',
+        email: 'ahmet.demir@klu.edu.tr',
+        office: 'B Blok, Kat 2, No: 205',
+        avatar: 'AD',
+        color: ['#334155', '#1E293B'], // Slate
+        accent: '#94A3B8', // Silver
+    }
 };
 
-const FACULTY_MEMBERS = [
-    { id: '1', name: 'Doç. Dr. Mehmet Demir', title: 'Öğretim Üyesi', dept: 'Yazılım Mühendisliği', email: 'mehmet.demir@klu.edu.tr', avatar: 'MD', color: '#3B82F6' },
-    { id: '2', name: 'Dr. Öğr. Üyesi Zeynep Kaya', title: 'Öğretim Üyesi', dept: 'Yazılım Mühendisliği', email: 'zeynep.kaya@klu.edu.tr', avatar: 'ZK', color: '#8B5CF6' },
-    { id: '3', name: 'Arş. Gör. Ali Veli', title: 'Araştırma Görevlisi', dept: 'Yazılım Mühendisliği', email: 'ali.veli@klu.edu.tr', avatar: 'AV', color: '#10B981' },
-    { id: '4', name: 'Prof. Dr. Canan Çelik', title: 'Öğretim Üyesi', dept: 'Bilgisayar Mühendisliği', email: 'canan.celik@klu.edu.tr', avatar: 'CÇ', color: '#F59E0B' },
+// 👩‍🏫 Mock database for detailed faculty info (to bridge names from schedule)
+const FACULTY_DIRECTORY = [
+    { id: 'f1', name: 'Doç. Dr. M. Kaya', email: 'm.kaya@klu.edu.tr', office: 'C-201', dept: 'Yazılım Mühendisliği', avatar: 'MK', color: '#3B82F6' },
+    { id: 'f2', name: 'Dr. Öğr. Üyesi A. Demir', email: 'a.demir@klu.edu.tr', office: 'Lab-2', dept: 'Yazılım Mühendisliği', avatar: 'AD', color: '#8B5CF6' },
+    { id: 'f3', name: 'Dr. Öğr. Üyesi S. Demir', email: 's.demir@klu.edu.tr', office: 'Lab-1', dept: 'Yazılım Mühendisliği', avatar: 'SD', color: '#10B981' },
+    { id: 'f4', name: 'Prof. Dr. L. Aksoy', email: 'l.aksoy@klu.edu.tr', office: 'HB-202', dept: 'Matematik Bölümü', avatar: 'LA', color: '#F59E0B' },
+    { id: 'f5', name: 'Okutman M. Yılmaz', email: 'm.yilmaz@klu.edu.tr', office: 'HB-305', dept: 'Yabancı Diller', avatar: 'MY', color: '#6366F1' },
+    { id: 'f6', name: 'Prof. Dr. A. Yılmaz', email: 'a.yilmaz@klu.edu.tr', office: 'HB-202', dept: 'Matematik Bölümü', avatar: 'AY', color: '#4A90E2' },
+    { id: 'f7', name: 'Dr. Öğr. Üyesi C. Can', email: 'c.can@klu.edu.tr', office: 'Lab-1', dept: 'Yazılım Mühendisliği', avatar: 'CC', color: '#F43F5E' },
+    { id: 'f8', name: 'Öğr. Gör. H. Arslan', email: 'h.arslan@klu.edu.tr', office: 'HB-301', dept: 'Türk Dili', avatar: 'HA', color: '#D0021B' },
+    { id: 'f9', name: 'Doç. Dr. V. Şahin', email: 'v.sahin@klu.edu.tr', office: 'HB-204', dept: 'Yazılım Mühendisliği', avatar: 'VŞ', color: '#8B5CF6' },
 ];
 
 export const FacultyScreen: React.FC = () => {
@@ -40,115 +65,138 @@ export const FacultyScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
     const s = styles(theme);
 
+    // Animations
+    const fadeAnim = useState(new Animated.Value(0))[0];
+    const slideAnim = useState(new Animated.Value(20))[0];
+    useEffect(() => {
+        Animated.parallel([
+            Animated.timing(fadeAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
+            Animated.timing(slideAnim, { toValue: 0, duration: 600, useNativeDriver: true }),
+        ]).start();
+    }, []);
+
+    // 🧠 Extract "Term Instructors" from Schedule
+    const termInstructors = useMemo(() => {
+        const names = [...new Set(MOCK_SCHEDULE.map(course => course.instructor))];
+        return FACULTY_DIRECTORY.filter(f => names.includes(f.name));
+    }, []);
+
+    const filteredFaculty = FACULTY_DIRECTORY;
+
     const handleEmailPress = async (email: string) => {
         const url = `mailto:${email}`;
-        const supported = await Linking.canOpenURL(url);
-        if (supported) {
-            await Linking.openURL(url);
-        }
+        if (await Linking.canOpenURL(url)) await Linking.openURL(url);
     };
+
+    const renderFacultyCard = (item: any, isPremium = false) => (
+        <TouchableOpacity 
+            key={item.id} 
+            style={[s.memberCard, isPremium && s.premiumMemberCard]}
+            activeOpacity={0.8}
+        >
+            <View style={s.memberCardInner}>
+                <View style={[s.avatarCircle, { backgroundColor: item.color + '10', borderColor: item.color + '30' }]}>
+                    <Text style={[s.avatarInitial, { color: item.color }]}>{item.avatar}</Text>
+                </View>
+                <View style={s.memberInfo}>
+                    <Text style={[s.memberName, { color: theme.colors.text }]}>{item.name}</Text>
+                    <Text style={[s.memberDept, { color: theme.colors.textSecondary }]}>{item.dept}</Text>
+                </View>
+                <TouchableOpacity 
+                    style={[s.cardActionBtn, { backgroundColor: theme.colors.primary + '10' }]}
+                    onPress={() => handleEmailPress(item.email)}
+                >
+                    <Icon name="mail" size={18} color={theme.colors.primary} />
+                </TouchableOpacity>
+            </View>
+        </TouchableOpacity>
+    );
+
+    const renderFeaturedCard = (profile: any, label: string) => (
+        <View style={s.featuredWrapper}>
+            <LinearGradient colors={profile.color} style={s.featuredCard}>
+                <View style={[s.featuredGlow, { backgroundColor: profile.accent }]} />
+                <View style={s.featuredHeader}>
+                    <View style={[s.featuredAvatarBorder, { borderColor: profile.accent }]}>
+                        <View style={s.featuredAvatar}>
+                            <Text style={s.featuredAvatarText}>{profile.avatar}</Text>
+                        </View>
+                    </View>
+                    <View style={s.featuredText}>
+                        <View style={s.labelBadge}>
+                            <Text style={[s.labelText, { color: profile.accent }]}>{label}</Text>
+                        </View>
+                        <Text style={s.featuredName}>{profile.name}</Text>
+                        <Text style={s.featuredTitle}>{profile.role}</Text>
+                    </View>
+                </View>
+                <View style={s.featuredDivider} />
+                <View style={s.featuredActions}>
+                    <TouchableOpacity style={s.featuredActionItem} onPress={() => handleEmailPress(profile.email)}>
+                        <Icon name="mail" size={16} color={profile.accent} />
+                        <Text style={s.featuredActionText}>{profile.email}</Text>
+                    </TouchableOpacity>
+                    <View style={s.featuredActionItem}>
+                        <Icon name="location" size={16} color={profile.accent} />
+                        <Text style={s.featuredActionText}>{profile.office}</Text>
+                    </View>
+                </View>
+            </LinearGradient>
+        </View>
+    );
 
     return (
         <View style={s.container}>
-            <StatusBar barStyle="light-content" backgroundColor={theme.colors.primary} />
+            <StatusBar barStyle="light-content" backgroundColor="#0f172a" />
             
-            {/* Custom Header */}
-            <LinearGradient
-                colors={[theme.colors.primary, theme.colors.primaryDark || '#0f172a']}
-                style={[s.header, { paddingTop: insets.top + spacing.sm }]}
-            >
-                <TouchableOpacity 
-                    style={s.backButton} 
-                    onPress={() => navigation.goBack()}
-                    activeOpacity={0.7}
-                >
-                    <Icon name="chevron-back" size={28} color="#FFF" />
-                </TouchableOpacity>
-                <Text style={s.headerTitle}>Hocalarımız</Text>
-                <View style={{ width: 44 }} />
+            {/* 👑 Senior Designer Header */}
+            <LinearGradient colors={['#0f172a', '#1e293b']} style={[s.header, { paddingTop: insets.top + spacing.sm }]}>
+                <View style={s.headerRow}>
+                    <TouchableOpacity style={s.backBtn} onPress={() => navigation.goBack()}>
+                        <Icon name="chevron-back" size={24} color="#FFF" />
+                    </TouchableOpacity>
+                    <Text style={s.headerTitle}>Hocalarımız</Text>
+                    <View style={{ width: 40 }} />
+                </View>
             </LinearGradient>
 
-            <ScrollView 
+            <Animated.ScrollView 
+                style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}
                 contentContainerStyle={[s.scrollContent, { paddingBottom: insets.bottom + 40 }]}
                 showsVerticalScrollIndicator={false}
             >
-                {/* 🌟 Premium Advisor Card SECTION 🌟 */}
-                <Text style={s.sectionTitle}>Danışman Hoca</Text>
-                <View style={s.advisorCardWrapper}>
-                    <LinearGradient
-                        colors={['#1E293B', '#0F172A']}
-                        style={s.advisorCard}
-                    >
-                        <View style={s.goldGlow} />
-                        <View style={s.advisorHeaderInfo}>
-                            <View style={s.advisorAvatarContainer}>
-                                <LinearGradient colors={['#F59E0B', '#FCD34D']} style={s.advisorAvatarBorder}>
-                                    <View style={s.advisorAvatar}>
-                                        <Text style={s.advisorAvatarText}>{MY_ADVISOR.avatarLetter}</Text>
-                                    </View>
-                                </LinearGradient>
-                                <View style={s.starBadge}>
-                                    <Icon name="star" size={12} color="#FFF" />
-                                </View>
-                            </View>
-                            <View style={s.advisorTextInfo}>
-                                <Text style={s.advisorName}>{MY_ADVISOR.name}</Text>
-                                <Text style={s.advisorTitle}>{MY_ADVISOR.title}</Text>
-                                <View style={s.advisorDeptBadge}>
-                                    <Text style={s.advisorDeptText}>{MY_ADVISOR.department}</Text>
-                                </View>
-                            </View>
-                        </View>
-                        <View style={s.advisorDivider} />
-                        <View style={s.advisorContactSection}>
-                            <View style={s.contactRow}>
-                                <View style={s.contactIconCircle}>
-                                    <Icon name="location" size={16} color="#FCD34D" />
-                                </View>
-                                <Text style={s.contactText}>{MY_ADVISOR.office}</Text>
-                            </View>
-                            <TouchableOpacity 
-                                style={s.contactRowBtn}
-                                activeOpacity={0.7}
-                                onPress={() => handleEmailPress(MY_ADVISOR.email)}
-                            >
-                                <View style={s.contactIconCircle}>
-                                    <Icon name="mail" size={16} color="#38BDF8" />
-                                </View>
-                                <Text style={[s.contactText, s.contactEmail]}>{MY_ADVISOR.email}</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </LinearGradient>
+                {/* 1. Danışman Hoca */}
+                <Text style={s.sectionHeader}>Akademik Danışman</Text>
+                {renderFeaturedCard(ACADEMIC_PROFILES.ADVISOR, 'DANIŞMANIM')}
+
+                {/* 2. Bölüm Başkanı */}
+                <Text style={s.sectionHeader}>Bölüm Yönetimi</Text>
+                {renderFeaturedCard(ACADEMIC_PROFILES.DEPT_HEAD, 'BÖLÜM BAŞKANI')}
+
+                {/* 3. Dönem Hocalarım */}
+                <View style={s.sectionTitleRow}>
+                    <Text style={s.sectionHeader}>Dönem Hocalarım</Text>
+                    <View style={s.termBadge}>
+                        <Text style={s.termBadgeText}>2024-2025 Bahar</Text>
+                    </View>
+                </View>
+                <View style={s.termList}>
+                    {termInstructors.map(item => renderFacultyCard(item, true))}
                 </View>
 
-                {/* Other Faculty Members List */}
-                <Text style={[s.sectionTitle, { marginTop: spacing.xl }]}>Akademik Kadro</Text>
-                
-                <View style={s.facultyList}>
-                    {FACULTY_MEMBERS.map((member) => (
-                        <View key={member.id} style={s.facultyCard}>
-                            <View style={s.memberBasicInfo}>
-                                <View style={[s.memberAvatar, { backgroundColor: member.color + '15', borderColor: member.color + '30' }]}>
-                                    <Text style={[s.memberAvatarText, { color: member.color }]}>{member.avatar}</Text>
-                                </View>
-                                <View style={s.memberTextDetails}>
-                                    <Text style={[s.memberName, { color: theme.colors.text }]}>{member.name}</Text>
-                                    <Text style={[s.memberTitle, { color: theme.colors.textSecondary }]}>{member.title}</Text>
-                                    <Text style={s.memberDept}>{member.dept}</Text>
-                                </View>
-                            </View>
-
-                            <TouchableOpacity 
-                                style={[s.emailActionBtn, { backgroundColor: theme.colors.primary + '10' }]}
-                                onPress={() => handleEmailPress(member.email)}
-                            >
-                                <Icon name="mail-outline" size={20} color={theme.colors.primary} />
-                            </TouchableOpacity>
+                {/* 4. Tüm Akademik Kadro */}
+                <Text style={s.sectionHeader}>Akademik Kadro</Text>
+                <View style={s.facultyGrid}>
+                    {filteredFaculty.map(item => renderFacultyCard(item))}
+                    {filteredFaculty.length === 0 && (
+                        <View style={s.emptyState}>
+                            <Icon name="person-remove" size={48} color="rgba(0,0,0,0.1)" />
+                            <Text style={[s.emptyText, { color: theme.colors.textSecondary }]}>Hoca bulunamadı</Text>
                         </View>
-                    ))}
+                    )}
                 </View>
 
-            </ScrollView>
+            </Animated.ScrollView>
         </View>
     );
 };
@@ -156,224 +204,247 @@ export const FacultyScreen: React.FC = () => {
 const styles = (theme: Theme) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: theme.colors.background,
+        backgroundColor: '#F8FAFC',
     },
     header: {
+        paddingBottom: spacing.lg,
+        borderBottomLeftRadius: 32,
+        borderBottomRightRadius: 32,
+        elevation: 8,
+    },
+    headerRow: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: spacing.md,
-        paddingBottom: spacing.md,
-        ...theme.shadows.medium,
-        zIndex: 10,
+        marginBottom: spacing.md,
     },
-    backButton: {
-        padding: spacing.sm,
+    backBtn: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: 'rgba(255,255,255,0.1)',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     headerTitle: {
         fontSize: moderateScale(18),
-        fontWeight: '700',
+        fontWeight: '900',
         color: '#FFFFFF',
-        letterSpacing: 0.5,
+        letterSpacing: -0.5,
+    },
+    searchContainer: {
+        paddingHorizontal: spacing.lg,
+    },
+    searchBar: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'rgba(255,255,255,0.08)',
+        borderRadius: 20,
+        paddingHorizontal: spacing.md,
+        height: 48,
+        borderWidth: 1,
+        borderColor: 'rgba(255,255,255,0.1)',
+    },
+    searchInput: {
+        flex: 1,
+        marginLeft: spacing.sm,
+        color: '#FFFFFF',
+        fontSize: moderateScale(14),
+        fontWeight: '500',
     },
     scrollContent: {
         padding: spacing.lg,
     },
-    sectionTitle: {
-        fontSize: moderateScale(16),
-        fontWeight: '800',
-        color: theme.colors.text,
+    sectionHeader: {
+        fontSize: moderateScale(14),
+        fontWeight: '900',
+        color: '#64748B',
+        textTransform: 'uppercase',
+        letterSpacing: 1.2,
         marginBottom: spacing.md,
-        marginLeft: spacing.xs,
-        letterSpacing: 0.5,
+        marginTop: spacing.xl,
+        marginLeft: 4,
     },
-    
-    // Premium Advisor Card Styles
-    advisorCardWrapper: {
-        shadowColor: '#F59E0B',
-        shadowOffset: { width: 0, height: 10 },
+    sectionTitleRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginTop: spacing.xl,
+        marginBottom: spacing.md,
+    },
+    termBadge: {
+        backgroundColor: theme.colors.primary + '15',
+        paddingHorizontal: 10,
+        paddingVertical: 4,
+        borderRadius: 12,
+        marginTop: 10,
+    },
+    termBadgeText: {
+        color: theme.colors.primary,
+        fontSize: moderateScale(10),
+        fontWeight: '800',
+    },
+    featuredWrapper: {
+        marginBottom: spacing.sm,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 12 },
         shadowOpacity: 0.15,
-        shadowRadius: 15,
-        elevation: 8,
+        shadowRadius: 16,
+        elevation: 10,
     },
-    advisorCard: {
-        borderRadius: moderateScale(24),
+    featuredCard: {
+        borderRadius: 28,
         padding: spacing.xl,
-        borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.1)',
         overflow: 'hidden',
+        borderWidth: 1,
+        borderColor: 'rgba(255,255,255,0.08)',
     },
-    goldGlow: {
+    featuredGlow: {
         position: 'absolute',
-        top: -50,
-        right: -50,
-        width: 150,
-        height: 150,
-        borderRadius: 75,
-        backgroundColor: '#F59E0B',
-        opacity: 0.1,
+        top: -40,
+        right: -40,
+        width: 120,
+        height: 120,
+        borderRadius: 60,
+        opacity: 0.2,
     },
-    advisorHeaderInfo: {
+    featuredHeader: {
         flexDirection: 'row',
         alignItems: 'center',
         gap: spacing.lg,
     },
-    advisorAvatarContainer: {
-        position: 'relative',
-    },
-    advisorAvatarBorder: {
+    featuredAvatarBorder: {
         padding: 3,
-        borderRadius: moderateScale(40),
+        borderRadius: 36,
+        borderWidth: 2,
     },
-    advisorAvatar: {
-        width: moderateScale(60),
-        height: moderateScale(60),
-        borderRadius: moderateScale(30),
-        backgroundColor: '#1E293B',
+    featuredAvatar: {
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        backgroundColor: 'rgba(255,255,255,0.1)',
         justifyContent: 'center',
         alignItems: 'center',
-        borderWidth: 2,
-        borderColor: '#0F172A',
     },
-    advisorAvatarText: {
-        fontSize: moderateScale(22),
-        fontWeight: 'bold',
+    featuredAvatarText: {
         color: '#FFF',
+        fontSize: moderateScale(22),
+        fontWeight: '900',
     },
-    starBadge: {
-        position: 'absolute',
-        bottom: -2,
-        right: -2,
-        backgroundColor: '#F59E0B',
-        width: moderateScale(22),
-        height: moderateScale(22),
-        borderRadius: moderateScale(11),
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderWidth: 2,
-        borderColor: '#1E293B',
-    },
-    advisorTextInfo: {
+    featuredText: {
         flex: 1,
-        justifyContent: 'center',
     },
-    advisorName: {
-        fontSize: moderateScale(18),
-        fontWeight: 'bold',
-        color: '#FFFFFF',
-        marginBottom: 2,
-    },
-    advisorTitle: {
-        fontSize: moderateScale(13),
-        color: '#CBD5E1',
-        fontWeight: '500',
-        marginBottom: 8,
-    },
-    advisorDeptBadge: {
+    labelBadge: {
+        paddingHorizontal: 8,
+        paddingVertical: 2,
+        borderRadius: 6,
+        backgroundColor: 'rgba(0,0,0,0.2)',
         alignSelf: 'flex-start',
-        backgroundColor: 'rgba(255, 255, 255, 0.1)',
-        paddingHorizontal: spacing.sm,
-        paddingVertical: 4,
-        borderRadius: 8,
+        marginBottom: 6,
     },
-    advisorDeptText: {
-        color: '#F8FAFC',
-        fontSize: moderateScale(10),
-        fontWeight: '600',
+    labelText: {
+        fontSize: moderateScale(9),
+        fontWeight: '900',
     },
-    advisorDivider: {
-        height: 1,
-        backgroundColor: 'rgba(255, 255, 255, 0.1)',
-        marginVertical: spacing.lg,
+    featuredName: {
+        color: '#FFF',
+        fontSize: moderateScale(18),
+        fontWeight: '900',
+        letterSpacing: -0.5,
     },
-    advisorContactSection: {
-        gap: spacing.md,
-    },
-    contactRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: spacing.sm,
-    },
-    contactRowBtn: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: spacing.sm,
-    },
-    contactIconCircle: {
-        width: moderateScale(32),
-        height: moderateScale(32),
-        borderRadius: moderateScale(16),
-        backgroundColor: 'rgba(255, 255, 255, 0.05)',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    contactText: {
-        fontSize: moderateScale(13),
-        color: '#E2E8F0',
-        fontWeight: '500',
-    },
-    contactEmail: {
-        color: '#38BDF8', // Light blue for links
-    },
-
-    // Regular Faculty List Styles
-    facultyList: {
-        gap: spacing.md,
-    },
-    facultyCard: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        backgroundColor: theme.colors.card,
-        padding: spacing.md,
-        borderRadius: moderateScale(20),
-        borderWidth: 1.5,
-        borderColor: 'rgba(0,0,0,0.04)',
-        ...theme.shadows.small,
-        elevation: 3,
-    },
-    memberBasicInfo: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: spacing.md,
-        flex: 1,
-    },
-    memberAvatar: {
-        width: moderateScale(48),
-        height: moderateScale(48),
-        borderRadius: moderateScale(18),
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderWidth: 1,
-    },
-    memberAvatarText: {
-        fontSize: moderateScale(16),
-        fontWeight: 'bold',
-    },
-    memberTextDetails: {
-        flex: 1,
-        gap: 2,
-    },
-    memberName: {
-        fontSize: moderateScale(15),
-        fontWeight: '700',
-    },
-    memberTitle: {
+    featuredTitle: {
+        color: 'rgba(255,255,255,0.6)',
         fontSize: moderateScale(12),
-        fontWeight: '500',
-    },
-    memberDept: {
-        fontSize: moderateScale(11),
-        color: theme.colors.primary,
         fontWeight: '600',
         marginTop: 2,
     },
-    emailActionBtn: {
-        width: moderateScale(40),
-        height: moderateScale(40),
-        borderRadius: moderateScale(20),
+    featuredDivider: {
+        height: 1,
+        backgroundColor: 'rgba(255,255,255,0.08)',
+        marginVertical: spacing.lg,
+    },
+    featuredActions: {
+        gap: spacing.sm,
+    },
+    featuredActionItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: spacing.sm,
+    },
+    featuredActionText: {
+        color: 'rgba(255,255,255,0.8)',
+        fontSize: moderateScale(13),
+        fontWeight: '600',
+    },
+    memberCard: {
+        backgroundColor: '#FFF',
+        borderRadius: 24,
+        marginBottom: spacing.md,
+        padding: spacing.md,
+        borderWidth: 1,
+        borderColor: 'rgba(0,0,0,0.03)',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.02,
+        shadowRadius: 8,
+        elevation: 2,
+    },
+    premiumMemberCard: {
+        borderLeftWidth: 4,
+        borderLeftColor: theme.colors.primary,
+    },
+    memberCardInner: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: spacing.md,
+    },
+    avatarCircle: {
+        width: 48,
+        height: 48,
+        borderRadius: 18,
+        borderWidth: 1.5,
         justifyContent: 'center',
         alignItems: 'center',
-        marginLeft: spacing.sm,
+    },
+    avatarInitial: {
+        fontSize: moderateScale(16),
+        fontWeight: '900',
+    },
+    memberInfo: {
+        flex: 1,
+    },
+    memberName: {
+        fontSize: moderateScale(15),
+        fontWeight: '800',
+        letterSpacing: -0.3,
+    },
+    memberDept: {
+        fontSize: moderateScale(12),
+        fontWeight: '600',
+        marginTop: 2,
+    },
+    cardActionBtn: {
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    facultyGrid: {
+        gap: 0,
+    },
+    termList: {
+        marginBottom: spacing.md,
+    },
+    emptyState: {
+        alignItems: 'center',
+        paddingVertical: spacing.xxl,
+        opacity: 0.5,
+    },
+    emptyText: {
+        fontSize: moderateScale(14),
+        fontWeight: '600',
+        marginTop: spacing.md,
     },
 });
