@@ -172,10 +172,10 @@ const styles = StyleSheet.create({
         zIndex: 1,
     },
     logoContainer: {
-        padding: 6,
+        padding: 4,
         backgroundColor: 'rgba(255, 255, 255, 0.1)',
         borderRadius: moderateScale(60),
-        marginBottom: 15,
+        marginBottom: 12,
     },
     logoWrapper: {
         width: moderateScale(90),
@@ -197,8 +197,8 @@ const styles = StyleSheet.create({
         }),
     },
     logo: {
-        width: moderateScale(75),
-        height: moderateScale(75),
+        width: moderateScale(88),
+        height: moderateScale(88),
     },
     headerTextContainer: {
         alignItems: 'center',
