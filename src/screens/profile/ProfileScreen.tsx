@@ -201,6 +201,8 @@ export const ProfileScreen: React.FC = () => {
                                                 navigation.navigate('ExamResults');
                                             } else if (item.id === '6') {
                                                 Linking.openURL('https://kluposta.klu.edu.tr/');
+                                            } else if (item.id === '8') {
+                                                navigation.navigate('Faculty');
                                             }
                                         }}
                                     >
