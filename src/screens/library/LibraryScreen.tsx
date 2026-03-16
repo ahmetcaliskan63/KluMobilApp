@@ -10,6 +10,7 @@ import {
     StatusBar,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import LinearGradient from 'react-native-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Theme } from '../../config/theme';
 import { useAppTheme } from '../../hooks/useAppTheme';
@@ -46,14 +47,19 @@ export const LibraryScreen: React.FC = () => {
             {/* Header Hero Image */}
             <View style={s.heroContainer}>
                 <ImageBackground 
-                    source={{ uri: 'https://kutuphane.klu.edu.tr/dosyalar/kutuphane/resimler/KLU_Kutuphane.jpg' }} // Optional real background or fallback color
+                    source={{ uri: 'https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80' }} // Premium Library Stock
                     style={s.heroBackground}
                     imageStyle={s.heroImage}
                 >
-                    <View style={s.heroOverlay}>
-                        <Text style={s.heroTitle}>Kütüphane Tanıtımı</Text>
-                        <Text style={s.heroSubtitle}>Bilgiye Açılan Kapınız</Text>
-                    </View>
+                    <LinearGradient
+                        colors={['rgba(16, 29, 66, 0.1)', 'rgba(16, 29, 66, 0.95)']}
+                        style={s.heroOverlay}
+                    >
+                        <View style={s.heroTextContainer}>
+                            <Text style={s.heroTitle}>Kütüphane</Text>
+                            <Text style={s.heroSubtitle}>Sınırları aşan bilgi ağınız</Text>
+                        </View>
+                    </LinearGradient>
                 </ImageBackground>
             </View>
 
@@ -62,20 +68,23 @@ export const LibraryScreen: React.FC = () => {
                 contentContainerStyle={[s.scrollContent, { paddingBottom: insets.bottom + 100 }]} 
                 showsVerticalScrollIndicator={false}
             >
-                <View style={s.servicesGrid}>
-                    {LIBRARY_SERVICES.map((service) => (
-                        <TouchableOpacity 
-                            key={service.id} 
-                            style={s.serviceCard}
-                            activeOpacity={0.7}
-                            onPress={() => handlePress(service.link)}
-                        >
-                            <View style={[s.iconWrapper, { backgroundColor: `${service.color}15` }]}>
-                                <Icon name={service.icon} size={28} color={service.color} />
-                            </View>
-                            <Text style={s.serviceTitle}>{service.title}</Text>
-                        </TouchableOpacity>
-                    ))}
+                <View style={s.servicesContainer}>
+                    <Text style={s.sectionHeader}>Hızlı İşlemler</Text>
+                    <View style={s.servicesGrid}>
+                        {LIBRARY_SERVICES.map((service) => (
+                            <TouchableOpacity 
+                                key={service.id} 
+                                style={s.serviceCard}
+                                activeOpacity={0.8}
+                                onPress={() => handlePress(service.link)}
+                            >
+                                <View style={[s.iconWrapper, { backgroundColor: `${service.color}15` }]}>
+                                    <Icon name={service.icon} size={28} color={service.color} />
+                                </View>
+                                <Text style={s.serviceTitle}>{service.title}</Text>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
                 </View>
             </ScrollView>
         </View>
@@ -89,68 +98,88 @@ const styles = (theme: Theme) => StyleSheet.create({
     },
     heroContainer: {
         width: '100%',
-        height: 200,
+        height: 240,
         backgroundColor: '#101D42',
     },
     heroBackground: {
         width: '100%',
         height: '100%',
-        justifyContent: 'flex-end',
     },
     heroImage: {
-        opacity: 0.6,
+        opacity: 0.8,
     },
     heroOverlay: {
-        padding: 20,
-        backgroundColor: 'rgba(16, 29, 66, 0.4)',
+        flex: 1,
+        justifyContent: 'flex-end',
+        padding: 24,
+    },
+    heroTextContainer: {
+        marginBottom: 8,
     },
     heroTitle: {
-        fontSize: 24,
-        fontWeight: 'bold',
+        fontSize: 32,
+        fontWeight: '900',
         color: '#FFFFFF',
-        textShadowColor: 'rgba(0, 0, 0, 0.75)',
-        textShadowOffset: { width: -1, height: 1 },
-        textShadowRadius: 10,
+        letterSpacing: 0.5,
+        marginBottom: 4,
     },
     heroSubtitle: {
-        fontSize: 14,
-        color: 'rgba(255, 255, 255, 0.8)',
-        marginTop: 4,
+        fontSize: 15,
+        color: 'rgba(255, 255, 255, 0.85)',
+        fontWeight: '500',
+        letterSpacing: 0.2,
     },
     scrollContent: {
-        padding: 16,
+        paddingTop: 24,
+        paddingHorizontal: 20,
+    },
+    servicesContainer: {
+        marginTop: 0,
+    },
+    sectionHeader: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: theme.colors.text,
+        marginBottom: 20,
+        marginLeft: 4,
     },
     servicesGrid: {
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'space-between',
-        paddingTop: 8,
     },
     serviceCard: {
-        width: '31%', // 3 columns
+        width: '31%', // Fits 3 comfortably
         aspectRatio: 0.85,
         backgroundColor: theme.colors.card,
-        borderRadius: 16,
+        borderRadius: 20,
         padding: 12,
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 16,
-        ...theme.shadows.small,
         borderWidth: 1,
-        borderColor: theme.colors.border,
+        borderColor: 'rgba(0,0,0,0.03)',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 6,
+        },
+        shadowOpacity: 0.08,
+        shadowRadius: 8,
+        elevation: 6,
     },
     iconWrapper: {
-        width: 56,
-        height: 56,
-        borderRadius: 28,
+        width: 54,
+        height: 54,
+        borderRadius: 22,
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 12,
+        marginBottom: 14,
     },
     serviceTitle: {
         fontSize: 12,
         fontWeight: '600',
-        color: theme.colors.text,
+        color: theme.colors.textSecondary,
         textAlign: 'center',
         lineHeight: 16,
     },
