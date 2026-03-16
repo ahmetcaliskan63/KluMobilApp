@@ -69,7 +69,6 @@ export const LibraryScreen: React.FC = () => {
                 showsVerticalScrollIndicator={false}
             >
                 <View style={s.servicesContainer}>
-                    <Text style={s.sectionHeader}>Hızlı İşlemler</Text>
                     <View style={s.servicesGrid}>
                         {LIBRARY_SERVICES.map((service) => (
                             <TouchableOpacity 
@@ -136,13 +135,6 @@ const styles = (theme: Theme) => StyleSheet.create({
     servicesContainer: {
         marginTop: 0,
     },
-    sectionHeader: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: theme.colors.text,
-        marginBottom: 20,
-        marginLeft: 4,
-    },
     servicesGrid: {
         flexDirection: 'row',
         flexWrap: 'wrap',
@@ -157,16 +149,16 @@ const styles = (theme: Theme) => StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 16,
-        borderWidth: 1,
-        borderColor: 'rgba(0,0,0,0.03)',
+        borderWidth: 1.5,
+        borderColor: 'rgba(0,0,0,0.12)',
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
-            height: 6,
+            height: 4,
         },
-        shadowOpacity: 0.08,
-        shadowRadius: 8,
-        elevation: 6,
+        shadowOpacity: 0.15,
+        shadowRadius: 6,
+        elevation: 8,
     },
     iconWrapper: {
         width: 54,
