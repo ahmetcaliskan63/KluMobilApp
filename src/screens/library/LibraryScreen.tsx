@@ -5,96 +5,77 @@ import {
     StyleSheet,
     ScrollView,
     TouchableOpacity,
-    TextInput,
+    Linking,
+    ImageBackground,
     StatusBar,
-    Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Card } from '../../components/common';
-import { theme as defaultTheme, Theme } from '../../config/theme';
+import { Theme } from '../../config/theme';
 import { useAppTheme } from '../../hooks/useAppTheme';
-import { MOCK_BORROWED_BOOKS } from '../../data/mockData';
+
+// The items defined from the old web design screenshot
+const LIBRARY_SERVICES = [
+    { id: '1', title: 'Ödünç Verme', icon: 'book', color: '#1976D2', link: 'https://kutuphane.klu.edu.tr' },
+    { id: '2', title: 'Veri Tabanı\nUzaktan Erişim', icon: 'cloud-done', color: '#388E3C', link: 'https://kutuphane.klu.edu.tr' },
+    { id: '3', title: 'Merkez Kütüphane\nKataloğu', icon: 'library', color: '#F57C00', link: 'https://kutuphane.klu.edu.tr' },
+    { id: '4', title: 'Kütüphane\nÜye Girişi', icon: 'person', color: '#D32F2F', link: 'https://kutuphane.klu.edu.tr' },
+    { id: '5', title: 'Formlar', icon: 'document-text', color: '#7B1FA2', link: 'https://kutuphane.klu.edu.tr' },
+    { id: '6', title: 'Kurumsal Arşiv\nAçık Erişim', icon: 'folder-open', color: '#0288D1', link: 'https://kutuphane.klu.edu.tr' },
+    { id: '7', title: 'Cep\nKütüphanem', icon: 'phone-portrait', color: '#00796B', link: 'https://kutuphane.klu.edu.tr' },
+    { id: '8', title: 'Duyurular', icon: 'megaphone', color: '#C2185B', link: 'https://kutuphane.klu.edu.tr' },
+    { id: '9', title: 'Soru, İstek\nve Önerileriniz', icon: 'chatbubbles', color: '#455A64', link: 'https://kutuphane.klu.edu.tr' },
+];
 
 export const LibraryScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
-    const { theme, isDarkMode } = useAppTheme();
+    const { theme } = useAppTheme();
     const s = styles(theme);
+
+    const handlePress = async (url: string) => {
+        const supported = await Linking.canOpenURL(url);
+        if (supported) {
+            await Linking.openURL(url);
+        }
+    };
 
     return (
         <View style={s.container}>
             <StatusBar barStyle="light-content" backgroundColor="#101D42" />
 
-            {/* Search integrated into content */}
-            <View style={s.searchWrapper}>
-                <View style={s.searchContainer}>
-                    <Icon name="search" size={20} color={theme.colors.textLight} />
-                    <TextInput
-                        placeholder="Kitap, yazar veya konu ara..."
-                        placeholderTextColor={theme.colors.textLight}
-                        style={s.searchInput}
-                    />
-                </View>
+            {/* Header Hero Image */}
+            <View style={s.heroContainer}>
+                <ImageBackground 
+                    source={{ uri: 'https://kutuphane.klu.edu.tr/dosyalar/kutuphane/resimler/KLU_Kutuphane.jpg' }} // Optional real background or fallback color
+                    style={s.heroBackground}
+                    imageStyle={s.heroImage}
+                >
+                    <View style={s.heroOverlay}>
+                        <Text style={s.heroTitle}>Kütüphane Tanıtımı</Text>
+                        <Text style={s.heroSubtitle}>Bilgiye Açılan Kapınız</Text>
+                    </View>
+                </ImageBackground>
             </View>
 
-            <ScrollView contentContainerStyle={s.scrollContent} showsVerticalScrollIndicator={false}>
-                {/* Stats */}
-                <View style={s.statsGrid}>
-                    <TouchableOpacity style={s.statBox}>
-                        <Icon name="book" size={24} color={theme.colors.primary} />
-                        <Text style={s.statCount}>2</Text>
-                        <Text style={s.statLabel}>Ödünç</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={s.statBox}>
-                        <Icon name="time" size={24} color={theme.colors.warning} />
-                        <Text style={s.statCount}>0</Text>
-                        <Text style={s.statLabel}>Geciken</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={s.statBox}>
-                        <Icon name="bookmark" size={24} color={theme.colors.info} />
-                        <Text style={s.statCount}>5</Text>
-                        <Text style={s.statLabel}>Kaydedilen</Text>
-                    </TouchableOpacity>
-                </View>
-
-                {/* Borrowed Books */}
-                <Text style={s.sectionTitle}>Üzerimdeki Kitaplar</Text>
-                {MOCK_BORROWED_BOOKS.map((book) => (
-                    <Card key={book.id} style={s.bookCard} elevation="small">
-                        <View style={s.bookInfo}>
-                            <View style={s.bookIcon}>
-                                <Icon name="journal" size={24} color={theme.colors.primary} />
+            {/* Grid Services */}
+            <ScrollView 
+                contentContainerStyle={[s.scrollContent, { paddingBottom: insets.bottom + 100 }]} 
+                showsVerticalScrollIndicator={false}
+            >
+                <View style={s.servicesGrid}>
+                    {LIBRARY_SERVICES.map((service) => (
+                        <TouchableOpacity 
+                            key={service.id} 
+                            style={s.serviceCard}
+                            activeOpacity={0.7}
+                            onPress={() => handlePress(service.link)}
+                        >
+                            <View style={[s.iconWrapper, { backgroundColor: `${service.color}15` }]}>
+                                <Icon name={service.icon} size={28} color={service.color} />
                             </View>
-                            <View style={s.bookDetails}>
-                                <Text style={s.bookTitle}>{book.title}</Text>
-                                <Text style={s.bookAuthor}>{book.author}</Text>
-                                <View style={s.dueDateRow}>
-                                    <Icon name="calendar-outline" size={14} color={theme.colors.textLight} />
-                                    <Text style={s.dueDateText}>İade: {book.dueDate}</Text>
-                                </View>
-                            </View>
-                        </View>
-                        <TouchableOpacity style={s.extendButton}>
-                            <Text style={s.extendText}>Süre Uzat</Text>
+                            <Text style={s.serviceTitle}>{service.title}</Text>
                         </TouchableOpacity>
-                    </Card>
-                ))}
-
-                {/* Quick Actions */}
-                <Text style={s.sectionTitle}>Hızlı İşlemler</Text>
-                <View style={s.actionsGrid}>
-                    <TouchableOpacity style={s.actionCard}>
-                        <View style={[s.actionIcon, { backgroundColor: isDarkMode ? 'rgba(25, 118, 210, 0.1)' : '#E3F2FD' }]}>
-                            <Icon name="calendar-outline" size={24} color="#1976D2" />
-                        </View>
-                        <Text style={s.actionLabel}>Çalışma Odası Rezervasyonu</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={s.actionCard}>
-                        <View style={[s.actionIcon, { backgroundColor: isDarkMode ? 'rgba(123, 31, 162, 0.1)' : '#F3E5F5' }]}>
-                            <Icon name="print-outline" size={24} color="#7B1FA2" />
-                        </View>
-                        <Text style={s.actionLabel}>E-Yayın Talebi</Text>
-                    </TouchableOpacity>
+                    ))}
                 </View>
             </ScrollView>
         </View>
@@ -106,145 +87,71 @@ const styles = (theme: Theme) => StyleSheet.create({
         flex: 1,
         backgroundColor: theme.colors.surface,
     },
-    searchWrapper: {
-        padding: theme.spacing.md,
-        backgroundColor: theme.colors.surface,
+    heroContainer: {
+        width: '100%',
+        height: 200,
+        backgroundColor: '#101D42',
     },
-    searchContainer: {
-        flexDirection: 'row',
-        backgroundColor: theme.colors.card,
-        borderRadius: 15,
-        paddingHorizontal: 16,
-        alignItems: 'center',
-        height: 50,
-        borderWidth: 1,
-        borderColor: theme.colors.border,
-        ...theme.shadows.small,
+    heroBackground: {
+        width: '100%',
+        height: '100%',
+        justifyContent: 'flex-end',
     },
-    searchInput: {
-        flex: 1,
-        marginLeft: 10,
-        fontSize: 15,
-        color: theme.colors.text,
+    heroImage: {
+        opacity: 0.6,
+    },
+    heroOverlay: {
+        padding: 20,
+        backgroundColor: 'rgba(16, 29, 66, 0.4)',
+    },
+    heroTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#FFFFFF',
+        textShadowColor: 'rgba(0, 0, 0, 0.75)',
+        textShadowOffset: { width: -1, height: 1 },
+        textShadowRadius: 10,
+    },
+    heroSubtitle: {
+        fontSize: 14,
+        color: 'rgba(255, 255, 255, 0.8)',
+        marginTop: 4,
     },
     scrollContent: {
-        padding: theme.spacing.md,
-    },
-    statsGrid: {
-        flexDirection: 'row',
-        gap: 12,
-        marginTop: 16,
-        marginBottom: 24,
-    },
-    statBox: {
-        flex: 1,
-        backgroundColor: theme.colors.card,
-        borderRadius: 20,
         padding: 16,
+    },
+    servicesGrid: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+        paddingTop: 8,
+    },
+    serviceCard: {
+        width: '31%', // 3 columns
+        aspectRatio: 0.85,
+        backgroundColor: theme.colors.card,
+        borderRadius: 16,
+        padding: 12,
         alignItems: 'center',
-        borderWidth: 1,
-        borderColor: theme.colors.border,
-        ...theme.shadows.small,
-    },
-    statCount: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: theme.colors.text,
-        marginTop: 8,
-    },
-    statLabel: {
-        fontSize: 11,
-        color: theme.colors.textLight,
-        textTransform: 'uppercase',
-        marginTop: 2,
-    },
-    sectionTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: theme.colors.text,
-        marginBottom: 16,
-        paddingHorizontal: 4,
-    },
-    bookCard: {
-        marginBottom: 16,
-        padding: 16,
-        borderRadius: 20,
-        backgroundColor: theme.colors.card,
-        borderWidth: 1,
-        borderColor: theme.colors.border,
-    },
-    bookInfo: {
-        flexDirection: 'row',
-        gap: 16,
-        marginBottom: 16,
-    },
-    bookIcon: {
-        width: 50,
-        height: 50,
-        borderRadius: 12,
-        backgroundColor: theme.colors.primary + '15',
         justifyContent: 'center',
-        alignItems: 'center',
-    },
-    bookDetails: {
-        flex: 1,
-    },
-    bookTitle: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: theme.colors.text,
-    },
-    bookAuthor: {
-        fontSize: 14,
-        color: theme.colors.textSecondary,
-        marginTop: 2,
-    },
-    dueDateRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 6,
-        marginTop: 8,
-    },
-    dueDateText: {
-        fontSize: 12,
-        color: theme.colors.textLight,
-    },
-    extendButton: {
-        borderTopWidth: 1,
-        borderTopColor: theme.colors.border,
-        paddingTop: 12,
-        alignItems: 'center',
-    },
-    extendText: {
-        color: theme.colors.primary,
-        fontWeight: 'bold',
-        fontSize: 14,
-    },
-    actionsGrid: {
-        flexDirection: 'row',
-        gap: 12,
-    },
-    actionCard: {
-        flex: 1,
-        backgroundColor: theme.colors.card,
-        borderRadius: 20,
-        padding: 16,
+        marginBottom: 16,
+        ...theme.shadows.small,
         borderWidth: 1,
         borderColor: theme.colors.border,
-        ...theme.shadows.small,
     },
-    actionIcon: {
-        width: 44,
-        height: 44,
-        borderRadius: 12,
+    iconWrapper: {
+        width: 56,
+        height: 56,
+        borderRadius: 28,
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 12,
     },
-    actionLabel: {
-        fontSize: 13,
+    serviceTitle: {
+        fontSize: 12,
         fontWeight: '600',
         color: theme.colors.text,
-        lineHeight: 18,
+        textAlign: 'center',
+        lineHeight: 16,
     },
 });
