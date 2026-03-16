@@ -17,6 +17,7 @@ export type RootStackParamList = {
     AcademicCalendar: undefined;
     ExamSchedule: undefined;
     ExamResults: undefined;
+    Faculty: undefined;
 };
 
 export type DrawerParamList = {
