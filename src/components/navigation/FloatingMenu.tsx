@@ -7,18 +7,61 @@ import Animated, {
     useSharedValue, 
     interpolate, 
     Extrapolate, 
-    runOnJS 
+    runOnJS,
+    SharedValue
 } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 
 
 const MENU_ITEMS = [
-    { id: 'obs', icon: 'school', label: 'Öğrenci Bilgi Sistemi', screen: 'OBS', type: 'HomeStack', color: '#4CAF50' },
-    { id: 'announcements', icon: 'megaphone', label: 'Duyurular', screen: 'Announcements', type: 'Root', color: '#FF9800' },
     { id: 'calendar', icon: 'calendar', label: 'Akademik Takvim', screen: 'AcademicCalendar', type: 'Root', color: '#2196F3' },
-    { id: 'notifications', icon: 'notifications', label: 'Bildirimler', screen: 'Notifications', type: 'Root', color: '#E91E63' },
+    { id: 'email', icon: 'mail', label: 'E-Posta Şifre İşlemleri', screen: 'EmailSettings', type: 'Root', color: '#E91E63' },
+    { id: 'wifi', icon: 'wifi', label: 'Wifi İşlemleri', screen: 'WifiSettings', type: 'Root', color: '#4CAF50' },
 ];
+
+interface MenuItemComponentProps {
+    item: typeof MENU_ITEMS[0];
+    index: number;
+    animation: SharedValue<number>;
+    onPress: (item: typeof MENU_ITEMS[0]) => void;
+}
+
+const MenuItemComponent: React.FC<MenuItemComponentProps> = ({ item, index, animation, onPress }) => {
+    const animatedItemStyle = useAnimatedStyle(() => {
+        const translateY = interpolate(
+            animation.value,
+            [0, 1],
+            [30 + Number(index) * 15, 0],
+            Extrapolate.CLAMP
+        );
+        const scale = interpolate(
+            animation.value,
+            [0, 1],
+            [0.6, 1],
+            Extrapolate.CLAMP
+        );
+        return {
+            opacity: animation.value,
+            transform: [{ translateY }, { scale }],
+        };
+    });
+
+    return (
+        <Animated.View style={[styles.menuItemWrapper, animatedItemStyle]}>
+            <TouchableOpacity 
+                style={styles.menuItem} 
+                activeOpacity={0.8}
+                onPress={() => onPress(item)}
+            >
+                <Text style={styles.menuItemLabel}>{item.label}</Text>
+                <View style={[styles.iconContainer, { backgroundColor: item.color }]}>
+                    <Icon name={item.icon} size={20} color="#FFFFFF" />
+                </View>
+            </TouchableOpacity>
+        </Animated.View>
+    );
+};
 
 export const FloatingMenu: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -72,37 +115,15 @@ export const FloatingMenu: React.FC = () => {
                         <View style={styles.overlayBackground} />
                         
                         <View style={styles.menuItemsContainer} pointerEvents="box-none">
-                            <Text style={styles.menuTitle}>Hızlı Erişim</Text>
-                            
-                            {MENU_ITEMS.map((item, index) => {
-                                const animatedItemStyle = useAnimatedStyle(() => {
-                                    const translateY = interpolate(
-                                        animation.value,
-                                        [0, 1],
-                                        [20 + Number(index) * 10, 0],
-                                        Extrapolate.CLAMP
-                                    );
-                                    return {
-                                        opacity: animation.value,
-                                        transform: [{ translateY }],
-                                    };
-                                });
-
-                                return (
-                                    <Animated.View key={item.id} style={[styles.menuItemWrapper, animatedItemStyle]}>
-                                        <TouchableOpacity 
-                                            style={styles.menuItem} 
-                                            activeOpacity={0.8}
-                                            onPress={() => handlePress(item)}
-                                        >
-                                            <View style={[styles.iconContainer, { backgroundColor: `${item.color}30` }]}>
-                                                <Icon name={item.icon} size={24} color={item.color} />
-                                            </View>
-                                            <Text style={styles.menuItemLabel}>{item.label}</Text>
-                                        </TouchableOpacity>
-                                    </Animated.View>
-                                );
-                            })}
+                            {MENU_ITEMS.map((item, index) => (
+                                <MenuItemComponent
+                                    key={item.id}
+                                    item={item}
+                                    index={index}
+                                    animation={animation}
+                                    onPress={handlePress}
+                                />
+                            ))}
                         </View>
                     </Animated.View>
                 </TouchableWithoutFeedback>
@@ -141,42 +162,43 @@ const styles = StyleSheet.create({
     },
     menuItemsContainer: {
         position: 'absolute',
-        bottom: Platform.OS === 'ios' ? 140 : 120,
-        left: 20,
-        right: 90,
-    },
-    menuTitle: {
-        color: 'rgba(255, 255, 255, 0.7)',
-        fontSize: 14,
-        fontWeight: '600',
-        marginBottom: 16,
-        marginLeft: 8,
-        letterSpacing: 0.5,
+        bottom: Platform.OS === 'ios' ? 180 : 155,
+        right: 28,
+        alignItems: 'flex-end',
     },
     menuItemWrapper: {
-        marginBottom: 16,
+        marginBottom: 20,
     },
     menuItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: 'rgba(255, 255, 255, 0.12)',
-        padding: 12,
-        borderRadius: 16,
-        borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.2)',
+        justifyContent: 'flex-end',
     },
     iconContainer: {
         width: 44,
         height: 44,
-        borderRadius: 12,
+        borderRadius: 22,
         justifyContent: 'center',
         alignItems: 'center',
-        marginRight: 16,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 3,
+        elevation: 5,
     },
     menuItemLabel: {
         color: '#FFFFFF',
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: '600',
+        marginRight: 16,
+        backgroundColor: 'rgba(255, 255, 255, 0.15)',
+        paddingVertical: 6,
+        paddingHorizontal: 12,
+        borderRadius: 8,
+        overflow: 'hidden',
     },
     mainFabContainer: {
         position: 'absolute',
