@@ -11,10 +11,11 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { HomeStackParamList } from '../../types/navigation';
-import { theme as defaultTheme, Theme } from '../../config/theme';
-import { MOCK_SCHEDULE } from '../../data/mockData';
+import { Course } from '../../types/models';
 import { Card } from '../../components/common';
 import { useAppTheme } from '../../hooks/useAppTheme';
+import { useFetch } from '../../hooks/useFetch';
+import { Theme } from '../../config/theme';
 
 type CourseDetailRouteProp = RouteProp<HomeStackParamList, 'CourseDetail'>;
 
@@ -26,14 +27,22 @@ export const CourseDetailScreen: React.FC = () => {
     const s = styles(theme);
     const { courseId } = route.params;
 
-    const course = MOCK_SCHEDULE.find(c => c.id === courseId);
+    const { data: course, loading, error } = useFetch<Course>(`/courses/${courseId}`);
 
-    if (!course) {
+    if (loading && !course) {
+        return (
+            <View style={[s.errorContainer, { backgroundColor: theme.colors.background }]}>
+                <Text style={{ color: theme.colors.primary }}>Yükleniyor...</Text>
+            </View>
+        );
+    }
+
+    if (error || !course) {
         return (
             <View style={s.errorContainer}>
                 <Text style={{ color: theme.colors.text }}>Ders bulunamadı.</Text>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Text style={{ color: theme.colors.primary, marginTop: 10 }}>Geri Dön</Text>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginTop: 20 }}>
+                    <Text style={{ color: theme.colors.primary }}>Geri Dön</Text>
                 </TouchableOpacity>
             </View>
         );
