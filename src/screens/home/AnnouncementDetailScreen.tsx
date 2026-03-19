@@ -15,7 +15,8 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { HomeStackParamList } from '../../types/navigation';
 import { useAppTheme } from '../../hooks/useAppTheme';
 import { Theme } from '../../config/theme';
-import { MOCK_ANNOUNCEMENTS } from '../../data/mockData';
+import { Announcement } from '../../types/models';
+import { useFetch } from '../../hooks/useFetch';
 import { moderateScale, scale, verticalScale } from '../../utils/responsive';
 
 type AnnouncementDetailRouteProp = RouteProp<HomeStackParamList, 'AnnouncementDetail'>;
@@ -34,7 +35,7 @@ export const AnnouncementDetailScreen: React.FC = () => {
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const scrollY = useRef(new Animated.Value(0)).current;
 
-    const announcement = MOCK_ANNOUNCEMENTS.find(a => a.id === announcementId);
+    const { data: announcement, loading, error } = useFetch<Announcement>(`/announcements/${announcementId}`);
     const [imageError, setImageError] = React.useState(false);
 
     useEffect(() => {
@@ -45,11 +46,27 @@ export const AnnouncementDetailScreen: React.FC = () => {
         }).start();
     }, []);
 
-    if (!announcement) return null;
-
     const corporateColor = '#182958'; // KLU Kurumsal Lacivert
-
     const s = styles(theme, corporateColor);
+
+    if (loading && !announcement) {
+        return (
+            <View style={[s.loadingContainer, { paddingTop: insets.top }]}>
+                <Text style={{ color: theme.colors.primary }}>Yükleniyor...</Text>
+            </View>
+        );
+    }
+
+    if (error || !announcement) {
+        return (
+            <View style={[s.loadingContainer, { paddingTop: insets.top }]}>
+                <Text style={{ color: theme.colors.error }}>Duyuru bulunamadı.</Text>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginTop: 20 }}>
+                    <Text style={{ color: theme.colors.primary }}>Geri Dön</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    }
 
     return (
         <View style={s.container}>
@@ -164,6 +181,12 @@ export const AnnouncementDetailScreen: React.FC = () => {
 const styles = (theme: Theme, corporateColor: string) => StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#FFFFFF',
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
         backgroundColor: '#FFFFFF',
     },
     header: {
