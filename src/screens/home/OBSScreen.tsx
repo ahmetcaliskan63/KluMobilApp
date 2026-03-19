@@ -9,11 +9,11 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { theme as defaultTheme, Theme } from '../../config/theme';
-import { MOCK_GRADES, MOCK_STATS, Grade } from '../../data/mockData';
+import { Grade, AcademicStats } from '../../types/models';
 import { Card } from '../../components/common';
 import { useNavigation } from '@react-navigation/native';
 import { useAppTheme } from '../../hooks/useAppTheme';
+import { useFetch } from '../../hooks/useFetch';
 import { viewport, moderateScale, scale, verticalScale } from '../../utils/responsive';
 
 export const OBSScreen: React.FC = () => {
@@ -21,6 +21,19 @@ export const OBSScreen: React.FC = () => {
     const navigation = useNavigation();
     const { theme, isDarkMode } = useAppTheme();
     const s = styles(theme);
+
+    const { data: grades, loading: loadingGrades } = useFetch<Grade[]>('/grades');
+    const { data: stats, loading: loadingStats } = useFetch<AcademicStats>('/academic-stats');
+
+    const isLoading = loadingGrades || loadingStats;
+
+    if (isLoading && !grades) {
+        return (
+            <View style={[s.container, { justifyContent: 'center', alignItems: 'center' }]}>
+                <Text style={{ color: theme.colors.primary }}>Yükleniyor...</Text>
+            </View>
+        );
+    }
 
     const getCourseIcon = (courseName: string) => {
         const name = courseName.toLowerCase();
@@ -102,19 +115,19 @@ export const OBSScreen: React.FC = () => {
                 <View style={s.summaryGrid}>
                     <View style={s.summaryBox}>
                         <View style={s.gpaCircle}>
-                            <Text style={s.summaryValue}>{MOCK_STATS.gpa}</Text>
+                            <Text style={s.summaryValue}>{stats?.gpa || '0.00'}</Text>
                             <Text style={s.gpaMax}>/ 4.0</Text>
                         </View>
                         <Text style={s.summaryLabel}>GNO</Text>
                     </View>
                     <View style={s.summaryBox}>
                         <Icon name="ribbon-outline" size={moderateScale(24)} color="#FFFFFF" style={{ marginBottom: verticalScale(4) }} />
-                        <Text style={s.summaryValue}>{MOCK_STATS.totalCredits}</Text>
+                        <Text style={s.summaryValue}>{stats?.totalCredits || 0}</Text>
                         <Text style={s.summaryLabel}>TAM. KREDİ</Text>
                     </View>
                     <View style={s.summaryBox}>
                         <Icon name="calendar-outline" size={moderateScale(24)} color="#FFFFFF" style={{ marginBottom: verticalScale(4) }} />
-                        <Text style={s.summaryValue}>Güz 2025</Text>
+                        <Text style={s.summaryValue}>{stats?.currentSemester || 'Güz 2025'}</Text>
                         <Text style={s.summaryLabel}>DÖNEM</Text>
                     </View>
                 </View>
@@ -125,10 +138,10 @@ export const OBSScreen: React.FC = () => {
                 <Card style={s.progressCard}>
                     <Text style={s.progressTitle}>Mezuniyet İlerlemesi</Text>
                     <View style={s.progressBarBg}>
-                        <View style={[s.progressBarFill, { width: '75%' }]} />
+                        <View style={[s.progressBarFill, { width: `${Math.min(100, ((stats?.totalCredits || 0) / 240) * 100)}%` }]} />
                     </View>
                     <View style={s.progressDetails}>
-                        <Text style={s.progressText}>Tamamlanan: {MOCK_STATS.totalCredits} AKTS</Text>
+                        <Text style={s.progressText}>Tamamlanan: {stats?.totalCredits || 0} AKTS</Text>
                         <Text style={s.progressText}>Hedef: 240 AKTS</Text>
                     </View>
                 </Card>
@@ -139,13 +152,15 @@ export const OBSScreen: React.FC = () => {
                     </TouchableOpacity>
                 </View>
 
-                {MOCK_GRADES.map(renderGradeRow)}
+                {grades?.map(renderGradeRow)}
 
                 <View style={{ height: 20 }} />
             </ScrollView>
         </View>
     );
 };
+
+import { Theme } from '../../config/theme';
 
 const styles = (theme: Theme) => StyleSheet.create({
     container: {
