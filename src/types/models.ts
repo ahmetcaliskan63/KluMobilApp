@@ -66,7 +66,10 @@ export interface Course {
     startTime: string;
     endTime: string;
     location: string;
+    room?: string;
     color?: string;
+    syllabus?: string[];
+    attendance?: number;
 }
 
 export interface Exam {
@@ -76,26 +79,89 @@ export interface Exam {
     date: string;
     time: string;
     location: string;
-    type: 'midterm' | 'final' | 'quiz';
+    type: 'midterm' | 'final' | 'quiz' | string;
+    day?: string;
+    status?: string;
+    color?: string;
 }
 
 export interface Announcement {
     id: string;
     title: string;
     content: string;
-    category: 'academic' | 'administrative' | 'social' | 'event';
+    category: 'academic' | 'administrative' | 'social' | 'event' | string;
     date: string;
     isRead: boolean;
+    snippet?: string;
+    views?: string;
+    image?: string;
 }
 
-export interface MenuItem {
+export interface News {
     id: string;
+    title: string;
     date: string;
-    soup: string;
-    mainCourse: string;
-    sideDish: string;
-    dessert: string;
-    calories?: number;
+    image: string;
+    location: string;
+    views: string;
+    content: string;
+}
+
+export interface Event {
+    id: string;
+    title: string;
+    date: string;
+    time: string;
+    location: string;
+    organizer: string;
+    image: string;
+    type: 'Kulüp' | 'Üniversite' | 'Konferans' | string;
+}
+
+export interface DailyMenu {
+    day: string;
+    date: string;
+    items: string[];
+}
+
+export interface Grade {
+    id: string;
+    courseName: string;
+    midterm: number | null;
+    final: number | null;
+    letterGrade: string;
+    credits: number;
+    status: 'Passed' | 'Failed' | 'Pending';
+    stats?: {
+        average: number;
+        high: number;
+        low: number;
+    };
+}
+
+export interface AcademicStats {
+    gpa: string;
+    totalCredits: number;
+    completedCourses: number;
+    currentSemester: string;
+    activeSemester?: string;
+}
+
+export interface TranscriptCourse {
+    id: string;
+    code: string;
+    name: string;
+    grade: string;
+    credit: string;
+    akts: string;
+}
+
+export interface SemesterData {
+    semester: string;
+    subTitle: string;
+    gpa: string;
+    totalAkts: string;
+    courses: TranscriptCourse[];
 }
 
 export interface Book {
@@ -105,6 +171,7 @@ export interface Book {
     isbn: string;
     dueDate?: string;
     coverImage?: string;
+    status?: 'On Time' | 'Warning' | 'Overdue';
 }
 
 export interface DashboardModule {
@@ -113,4 +180,38 @@ export interface DashboardModule {
     icon: string;
     route: string;
     color: string;
+}
+
+export interface FacultyMember {
+    id: string;
+    name: string;
+    email: string;
+    office: string;
+    dept: string;
+    avatar: string;
+    color: string;
+}
+
+export interface FacultyProfile {
+    id: string;
+    name: string;
+    title: string;
+    role: string;
+    department: string;
+    email: string;
+    office: string;
+    avatar: string;
+    color: string[];
+    accent: string;
+}
+
+export interface ExamResult {
+    id: string;
+    courseName: string;
+    type: string;
+    grade: string;
+    letterGrade: string;
+    date: string;
+    status: string;
+    color?: string;
 }
