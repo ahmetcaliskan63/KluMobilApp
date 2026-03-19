@@ -6,6 +6,8 @@ import { theme } from '@/config/theme';
 import { useAuthStore } from '@/store/authStore';
 import { setApiCallbacks } from '@/services/apiClient';
 
+import { ErrorBoundary } from '@/components/common/ErrorBoundary';
+
 function App(): React.JSX.Element {
   useEffect(() => {
     // Break circular dependency by injecting store callbacks into apiClient
@@ -19,11 +21,13 @@ function App(): React.JSX.Element {
 
   return (
     <SafeAreaProvider>
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor={theme.colors.primary}
-      />
-      <AppNavigator />
+      <ErrorBoundary>
+        <StatusBar
+          barStyle="light-content"
+          backgroundColor={theme.colors.primary}
+        />
+        <AppNavigator />
+      </ErrorBoundary>
     </SafeAreaProvider>
   );
 }
