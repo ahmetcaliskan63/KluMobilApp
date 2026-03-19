@@ -15,6 +15,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useAppTheme } from '../../hooks/useAppTheme';
+import { useAuth } from '../../hooks/useAuth';
 import { useThemeStore } from '../../store/themeStore';
 import { Theme, spacing } from '../../config/theme';
 import { moderateScale, scale, verticalScale } from '../../utils/responsive';
@@ -23,6 +24,7 @@ export const SettingsScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
     const { theme } = useAppTheme();
+    const { logout } = useAuth();
     const { isDarkMode, toggleDarkMode } = useThemeStore();
     const s = styles(theme);
 
@@ -98,7 +100,10 @@ export const SettingsScreen: React.FC = () => {
                     {renderSettingItem("mail-outline", "Geri Bildirim", "Bize ulaşın")}
                     {renderSettingItem("information-circle-outline", "Hakkında", "Sürüm 1.0.0")}
 
-                    <TouchableOpacity style={s.logoutBtnContainer}>
+                    <TouchableOpacity 
+                        style={s.logoutBtnContainer}
+                        onPress={logout}
+                    >
                         <LinearGradient
                             colors={['#FFF1F1', '#FFF']}
                             style={s.logoutGradient}
