@@ -1,10 +1,12 @@
 import React from 'react';
-import { View, ScrollView, StatusBar } from 'react-native';
+import { View, ScrollView, StatusBar, Text } from 'react-native';
 import { useAppTheme } from '../../hooks/useAppTheme';
 import { styles } from './TranscriptScreen.styles';
-import { TRANSCRIPT_DATA, ACADEMIC_SUMMARY } from './constants';
+// Removed: import { TRANSCRIPT_DATA, ACADEMIC_SUMMARY } from './constants';
 
 // Sub-components
+import { useFetch } from '../../hooks/useFetch';
+import { SemesterData, AcademicStats } from '../../types/models';
 import { TranscriptHeader } from './components/TranscriptHeader';
 import { AcademicSummary } from './components/AcademicSummary';
 import { SemesterCard } from './components/SemesterCard';
@@ -15,7 +17,28 @@ import { SemesterCard } from './components/SemesterCard';
  */
 export const TranscriptScreen: React.FC = () => {
     const { theme } = useAppTheme();
+    const { data: summary, loading: summaryLoading, error: summaryError } = useFetch<AcademicStats>('/transcript/summary');
+    const { data: transcript, loading: transcriptLoading, error: transcriptError } = useFetch<SemesterData[]>('/transcript/details');
     const s = styles(theme);
+
+    if (summaryLoading || transcriptLoading) {
+        return (
+            <View style={[s.container, { justifyContent: 'center', alignItems: 'center' }]}>
+                <Text style={{ color: theme.colors.text }}>Transkript yükleniyor...</Text>
+            </View>
+        );
+    }
+
+    if (summaryError || transcriptError) {
+        return (
+            <View style={[s.container, { justifyContent: 'center', alignItems: 'center' }]}>
+                <Text style={{ color: theme.colors.error }}>Hata: {summaryError || transcriptError}</Text>
+            </View>
+        );
+    }
+
+    const academicSummary = summary || { gpa: '0.00', totalCredits: 0, currentSemester: '1' };
+    const transcriptData = transcript || [];
 
     return (
         <View style={s.container}>
@@ -31,9 +54,13 @@ export const TranscriptScreen: React.FC = () => {
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={s.scrollContent}
             >
-                <AcademicSummary data={ACADEMIC_SUMMARY} />
+                <AcademicSummary data={{
+                    overallGpa: academicSummary.gpa,
+                    totalCompletedAkts: academicSummary.totalCredits.toString(),
+                    activeSemester: academicSummary.currentSemester
+                }} />
 
-                {TRANSCRIPT_DATA.map((semester, index) => (
+                {transcriptData.map((semester, index) => (
                     <SemesterCard key={index} semester={semester} />
                 ))}
             </ScrollView>
