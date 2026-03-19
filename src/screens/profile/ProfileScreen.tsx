@@ -16,14 +16,17 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Theme, spacing } from '../../config/theme';
 import LinearGradient from 'react-native-linear-gradient';
-import { useAuthStore } from '../../store/authStore';
+import { useAuth } from '../../hooks/useAuth';
+import { useFetch } from '../../hooks/useFetch';
 import { useAppTheme } from '../../hooks/useAppTheme';
+import { AcademicStats } from '../../types/models';
 import { viewport, moderateScale, scale, verticalScale } from '../../utils/responsive';
 import { DigitalPassportCard } from '../../components/profile/DigitalPassportCard';
 
 export const ProfileScreen: React.FC = () => {
     const navigation = useNavigation<any>();
-    const { user } = useAuthStore();
+    const { user } = useAuth();
+    const { data: stats, loading: statsLoading } = useFetch<AcademicStats>('/profile/stats');
     const { theme } = useAppTheme();
     const insets = useSafeAreaInsets();
     const [showIdModal, setShowIdModal] = useState(false);
@@ -99,15 +102,15 @@ export const ProfileScreen: React.FC = () => {
                                     style={s.personaStatCard}
                                 >
                                     <Text style={s.personaStatLabel}>GANO</Text>
-                                    <Text style={s.personaStatValue}>3.52</Text>
+                                    <Text style={s.personaStatValue}>{stats?.gpa || '0.00'}</Text>
                                 </LinearGradient>
-
+ 
                                 <LinearGradient
                                     colors={['rgba(255, 255, 255, 1)', 'rgba(248, 250, 252, 1)']}
                                     style={s.personaStatCard}
                                 >
                                     <Text style={s.personaStatLabel}>AKTS</Text>
-                                    <Text style={s.personaStatValue}>120</Text>
+                                    <Text style={s.personaStatValue}>{stats?.totalCredits || '0'}</Text>
                                 </LinearGradient>
 
                                 <LinearGradient
@@ -115,7 +118,7 @@ export const ProfileScreen: React.FC = () => {
                                     style={s.personaStatCard}
                                 >
                                     <Text style={s.personaStatLabel}>YARIYIL</Text>
-                                    <Text style={s.personaStatValue}>5</Text>
+                                    <Text style={s.personaStatValue}>{stats?.currentSemester || '-'}</Text>
                                 </LinearGradient>
                             </View>
                         </View>
