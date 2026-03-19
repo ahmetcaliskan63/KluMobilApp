@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
@@ -15,55 +15,35 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Theme, spacing } from '../../config/theme';
 import { useAppTheme } from '../../hooks/useAppTheme';
 import { moderateScale } from '../../utils/responsive';
-import { MOCK_SCHEDULE } from '../../data/mockData';
-
-
-// 🎩 Mock Data for Featured Faculty
-const ACADEMIC_PROFILES = {
-    ADVISOR: {
-        id: 'adv_1',
-        name: 'Prof. Dr. Ayşe Yılmaz',
-        title: 'Akademik Danışman',
-        role: 'Bölüm Başkanı',
-        department: 'Yazılım Mühendisliği',
-        email: 'ayse.yilmaz@klu.edu.tr',
-        office: 'A Blok, Kat 3, No: 312',
-        avatar: 'AY',
-        color: ['#1E293B', '#0F172A'], // Premium Navy/Slate
-        accent: '#F59E0B', // Gold
-    },
-    DEPT_HEAD: {
-        id: 'dept_1',
-        name: 'Prof. Dr. Ahmet Demir',
-        title: 'Bölüm Başkanı',
-        role: 'Yazılım Mühendisliği Bölüm Başkanı',
-        department: 'Yazılım Mühendisliği',
-        email: 'ahmet.demir@klu.edu.tr',
-        office: 'B Blok, Kat 2, No: 205',
-        avatar: 'AD',
-        color: ['#334155', '#1E293B'], // Slate
-        accent: '#94A3B8', // Silver
-    }
-};
-
-// 👩‍🏫 Mock database for detailed faculty info (to bridge names from schedule)
-const FACULTY_DIRECTORY = [
-    { id: 'f1', name: 'Doç. Dr. M. Kaya', email: 'm.kaya@klu.edu.tr', office: 'C-201', dept: 'Yazılım Mühendisliği', avatar: 'MK', color: '#3B82F6' },
-    { id: 'f2', name: 'Dr. Öğr. Üyesi A. Demir', email: 'a.demir@klu.edu.tr', office: 'Lab-2', dept: 'Yazılım Mühendisliği', avatar: 'AD', color: '#8B5CF6' },
-    { id: 'f3', name: 'Dr. Öğr. Üyesi S. Demir', email: 's.demir@klu.edu.tr', office: 'Lab-1', dept: 'Yazılım Mühendisliği', avatar: 'SD', color: '#10B981' },
-    { id: 'f4', name: 'Prof. Dr. L. Aksoy', email: 'l.aksoy@klu.edu.tr', office: 'HB-202', dept: 'Matematik Bölümü', avatar: 'LA', color: '#F59E0B' },
-    { id: 'f5', name: 'Okutman M. Yılmaz', email: 'm.yilmaz@klu.edu.tr', office: 'HB-305', dept: 'Yabancı Diller', avatar: 'MY', color: '#6366F1' },
-    { id: 'f6', name: 'Prof. Dr. A. Yılmaz', email: 'a.yilmaz@klu.edu.tr', office: 'HB-202', dept: 'Matematik Bölümü', avatar: 'AY', color: '#4A90E2' },
-    { id: 'f7', name: 'Dr. Öğr. Üyesi C. Can', email: 'c.can@klu.edu.tr', office: 'Lab-1', dept: 'Yazılım Mühendisliği', avatar: 'CC', color: '#F43F5E' },
-    { id: 'f8', name: 'Öğr. Gör. H. Arslan', email: 'h.arslan@klu.edu.tr', office: 'HB-301', dept: 'Türk Dili', avatar: 'HA', color: '#D0021B' },
-    { id: 'f9', name: 'Doç. Dr. V. Şahin', email: 'v.sahin@klu.edu.tr', office: 'HB-204', dept: 'Yazılım Mühendisliği', avatar: 'VŞ', color: '#8B5CF6' },
-];
+import { useFetch } from '../../hooks/useFetch';
+import { FacultyMember, FacultyProfile } from '../../types/models';
 
 export const FacultyScreen: React.FC = () => {
     const navigation = useNavigation();
     const { theme } = useAppTheme();
     const insets = useSafeAreaInsets();
+    const { data: profiles, loading: profilesLoading, error: profilesError } = useFetch<Record<string, FacultyProfile>>('/faculty/profiles');
+    const { data: members, loading: membersLoading, error: membersError } = useFetch<FacultyMember[]>('/faculty/members');
     const s = styles(theme);
+
+    if (profilesLoading || membersLoading) {
+        return (
+            <View style={[s.container, { justifyContent: 'center', alignItems: 'center' }]}>
+                <Text style={{ color: theme.colors.text }}>Hocalarımız yükleniyor...</Text>
+            </View>
+        );
+    }
+
+    if (profilesError || membersError) {
+        return (
+            <View style={[s.container, { justifyContent: 'center', alignItems: 'center' }]}>
+                <Text style={{ color: theme.colors.error }}>Hata: {profilesError || membersError}</Text>
+            </View>
+        );
+    }
+
+    const academicProfiles = profiles || {};
+    const facultyList = members || [];
 
     // Animations
     const fadeAnim = useState(new Animated.Value(0))[0];
@@ -75,11 +55,6 @@ export const FacultyScreen: React.FC = () => {
         ]).start();
     }, []);
 
-    // 🧠 Extract "Term Instructors" from Schedule
-    const termInstructors = useMemo(() => {
-        const names = [...new Set(MOCK_SCHEDULE.map(course => course.instructor))];
-        return FACULTY_DIRECTORY.filter(f => names.includes(f.name));
-    }, []);
 
     const handleEmailPress = async (email: string) => {
         const url = `mailto:${email}`;
@@ -164,11 +139,11 @@ export const FacultyScreen: React.FC = () => {
                 showsVerticalScrollIndicator={false}
             >
                 <Text style={[s.sectionHeader, { marginTop: 0 }]}>Akademik Danışman</Text>
-                {renderFeaturedCard(ACADEMIC_PROFILES.ADVISOR, 'DANIŞMANIM')}
+                {academicProfiles.ADVISOR && renderFeaturedCard(academicProfiles.ADVISOR, 'DANIŞMANIM')}
 
                 {/* 2. Bölüm Başkanı */}
                 <Text style={[s.sectionHeader, { marginTop: spacing.md }]}>Bölüm Yönetimi</Text>
-                {renderFeaturedCard(ACADEMIC_PROFILES.DEPT_HEAD, 'BÖLÜM BAŞKANI')}
+                {academicProfiles.DEPT_HEAD && renderFeaturedCard(academicProfiles.DEPT_HEAD, 'BÖLÜM BAŞKANI')}
 
                 {/* 3. Dönem Hocalarım */}
                 <View style={[s.sectionTitleRow, { marginTop: spacing.md }]}>
@@ -178,7 +153,7 @@ export const FacultyScreen: React.FC = () => {
                     </View>
                 </View>
                 <View style={s.termList}>
-                    {termInstructors.map(item => renderFacultyCard(item, true))}
+                    {facultyList.map(item => renderFacultyCard(item, true))}
                 </View>
             </Animated.ScrollView>
         </View>
