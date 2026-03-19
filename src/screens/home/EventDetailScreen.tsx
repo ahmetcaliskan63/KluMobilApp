@@ -11,11 +11,12 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { HomeStackParamList } from '@/types/navigation';
-import { useAppTheme } from '@/hooks/useAppTheme';
-import { MOCK_EVENTS } from '@/data/mockData';
-import { viewport, moderateScale, scale, verticalScale } from '@/utils/responsive';
-import { Theme } from '@/config/theme';
+import { HomeStackParamList } from '../../types/navigation';
+import { useAppTheme } from '../../hooks/useAppTheme';
+import { Event as EventType } from '../../types/models';
+import { useFetch } from '../../hooks/useFetch';
+import { viewport, moderateScale, scale, verticalScale } from '../../utils/responsive';
+import { Theme } from '../../config/theme';
 
 type EventDetailRouteProp = RouteProp<HomeStackParamList, 'EventDetail'>;
 
@@ -33,7 +34,7 @@ export const EventDetailScreen: React.FC = () => {
     const scrollY = useRef(new Animated.Value(0)).current;
     const fadeAnim = useRef(new Animated.Value(0)).current;
 
-    const event = MOCK_EVENTS.find(e => e.id === eventId);
+    const { data: event, loading, error } = useFetch<EventType>(`/events/${eventId}`);
     const [imageError, setImageError] = React.useState(false);
 
     useEffect(() => {
@@ -44,10 +45,28 @@ export const EventDetailScreen: React.FC = () => {
         }).start();
     }, []);
 
-    if (!event) return null;
-
     const headerHeight = viewport.height * 0.45;
     const corporateColor = '#182958';
+    const s = styles(theme, corporateColor, headerHeight);
+
+    if (loading && !event) {
+        return (
+            <View style={[s.loadingContainer, { paddingTop: insets.top }]}>
+                <Text style={{ color: theme.colors.primary }}>Yükleniyor...</Text>
+            </View>
+        );
+    }
+
+    if (error || !event) {
+        return (
+            <View style={[s.loadingContainer, { paddingTop: insets.top }]}>
+                <Text style={{ color: theme.colors.error }}>Etkinlik bulunamadı.</Text>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginTop: 20 }}>
+                    <Text style={{ color: theme.colors.primary }}>Geri Dön</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    }
 
     // Animations
     const imageTranslate = scrollY.interpolate({
@@ -73,8 +92,6 @@ export const EventDetailScreen: React.FC = () => {
         outputRange: ['rgba(0,0,0,0.35)', corporateColor],
         extrapolate: 'clamp',
     });
-
-    const s = styles(theme, corporateColor, headerHeight);
 
     return (
         <View style={s.container}>
@@ -211,6 +228,12 @@ export const EventDetailScreen: React.FC = () => {
 const styles = (_theme: Theme, corporateColor: string, headerHeight: number) => StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#FFFFFF',
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
         backgroundColor: '#FFFFFF',
     },
     stickyHeader: {
