@@ -11,11 +11,12 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { HomeStackParamList } from '../../types/navigation';
-import { theme as defaultTheme, Theme } from '../../config/theme';
-import { MOCK_GRADES } from '../../data/mockData';
+import { Grade } from '../../types/models';
 import { Card } from '../../components/common';
 import { useAppTheme } from '../../hooks/useAppTheme';
+import { useFetch } from '../../hooks/useFetch';
 import { viewport, moderateScale, scale, verticalScale } from '../../utils/responsive';
+import { Theme } from '../../config/theme';
 
 type ExamDetailRouteProp = RouteProp<HomeStackParamList, 'ExamDetail'>;
 
@@ -27,14 +28,22 @@ export const ExamDetailScreen: React.FC = () => {
     const s = styles(theme);
     const { examId } = route.params;
 
-    const grade = MOCK_GRADES.find(g => g.id === examId);
+    const { data: grade, loading, error } = useFetch<Grade>(`/grades/${examId}`);
 
-    if (!grade) {
+    if (loading && !grade) {
+        return (
+            <View style={[s.errorContainer, { backgroundColor: theme.colors.background }]}>
+                <Text style={{ color: theme.colors.primary }}>Yükleniyor...</Text>
+            </View>
+        );
+    }
+
+    if (error || !grade) {
         return (
             <View style={s.errorContainer}>
                 <Text style={{ color: theme.colors.text }}>Not bilgisi bulunamadı.</Text>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Text style={{ color: theme.colors.primary, marginTop: 10 }}>Geri Dön</Text>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginTop: 20 }}>
+                    <Text style={{ color: theme.colors.primary }}>Geri Dön</Text>
                 </TouchableOpacity>
             </View>
         );
@@ -201,7 +210,7 @@ const styles = (theme: Theme) => StyleSheet.create({
     letterGrade: {
         fontSize: moderateScale(32),
         fontWeight: '900',
-        color: defaultTheme.colors.primary,
+        color: theme.colors.primary,
     },
     scrollView: {
         flex: 1,
