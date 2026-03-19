@@ -10,10 +10,11 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { theme as defaultTheme, Theme } from '../../config/theme';
-import { MOCK_SCHEDULE, Course } from '../../data/mockData';
 import { Card } from '../../components/common';
 import { useNavigation } from '@react-navigation/native';
+import { theme as defaultTheme, Theme } from '../../config/theme';
+import { useFetch } from '../../hooks/useFetch';
+import { Course } from '../../types/models';
 import { useAppTheme } from '../../hooks/useAppTheme';
 import { moderateScale, scale, verticalScale } from '../../utils/responsive';
 import LinearGradient from 'react-native-linear-gradient';
@@ -24,10 +25,27 @@ export const ScheduleScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
     const { theme } = useAppTheme();
+    const { data: schedule, loading, error } = useFetch<Course[]>('/schedule');
     const s = styles(theme);
     const [selectedDay, setSelectedDay] = useState('Pazartesi');
 
-    const filteredSchedule = MOCK_SCHEDULE.filter(course => course.day === selectedDay);
+    if (loading) {
+        return (
+            <View style={[s.container, { justifyContent: 'center', alignItems: 'center' }]}>
+                <Text style={{ color: theme.colors.text }}>Program yükleniyor...</Text>
+            </View>
+        );
+    }
+
+    if (error) {
+        return (
+            <View style={[s.container, { justifyContent: 'center', alignItems: 'center' }]}>
+                <Text style={{ color: theme.colors.error }}>Hata: {error}</Text>
+            </View>
+        );
+    }
+
+    const filteredSchedule = (schedule || []).filter(course => course.day === selectedDay);
 
     return (
         <View style={s.container}>
