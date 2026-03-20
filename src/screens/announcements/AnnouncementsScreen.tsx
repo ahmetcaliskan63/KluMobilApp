@@ -6,20 +6,20 @@ import {
     FlatList,
     TouchableOpacity,
     StatusBar,
-    Platform,
     ScrollView,
     Pressable,
     Animated,
+    Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Card } from '../../components/common';
-import { theme as defaultTheme, Theme } from '../../config/theme';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { HomeStackParamList } from '../../types/navigation';
 import { useAppTheme } from '../../hooks/useAppTheme';
-import { MOCK_ANNOUNCEMENTS, Announcement } from '../../data/mockData';
-import { viewport, moderateScale, scale, verticalScale } from '../../utils/responsive';
+import { useFetch } from '../../hooks/useFetch';
+import { Announcement } from '../../types/models';
+import { Theme } from '../../config/theme';
+import { moderateScale, scale, verticalScale } from '../../utils/responsive';
 
 const CATEGORIES = ['Tümü', 'Genel', 'Akademik', 'Etkinlik'];
 
@@ -27,12 +27,29 @@ export const AnnouncementsScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
     const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
     const { theme, isDarkMode } = useAppTheme();
+    const { data: announcements, loading, error } = useFetch<Announcement[]>('/announcements');
     const s = styles(theme, isDarkMode);
     const [activeCategory, setActiveCategory] = useState('Tümü');
 
+    if (loading) {
+        return (
+            <View style={[s.container, { justifyContent: 'center', alignItems: 'center' }]}>
+                <Text style={{ color: theme.colors.text }}>Duyurular yükleniyor...</Text>
+            </View>
+        );
+    }
+
+    if (error) {
+        return (
+            <View style={[s.container, { justifyContent: 'center', alignItems: 'center' }]}>
+                <Text style={{ color: theme.colors.error }}>Hata: {error}</Text>
+            </View>
+        );
+    }
+
     const filteredAnnouncements = activeCategory === 'Tümü'
-        ? MOCK_ANNOUNCEMENTS
-        : MOCK_ANNOUNCEMENTS.filter(a => a.category === activeCategory);
+        ? (announcements || [])
+        : (announcements || []).filter(a => a.category === activeCategory);
 
     // Manual header removed to use global glassmorphic header
 
