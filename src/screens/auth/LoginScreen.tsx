@@ -21,8 +21,8 @@ import { viewport, moderateScale, scale, verticalScale } from '../../utils/respo
 
 export const LoginScreen: React.FC = () => {
     const navigation = useNavigation();
-    const [email, setEmail] = useState('1220404025@ogr.klu.edu.tr');
-    const [password, setPassword] = useState('123456');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [fadeAnim] = useState(new Animated.Value(0));
