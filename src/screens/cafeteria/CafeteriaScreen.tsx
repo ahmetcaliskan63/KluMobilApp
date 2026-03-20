@@ -3,19 +3,18 @@ import {
     View,
     Text,
     StyleSheet,
-    ScrollView,
     TouchableOpacity,
     StatusBar,
     Dimensions,
     Platform,
-    Animated,
     FlatList
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Theme } from '../../config/theme';
 import { useAppTheme } from '../../hooks/useAppTheme';
-import { MOCK_WEEKLY_MENU } from '../../data/mockData';
+import { useFetch } from '../../hooks/useFetch';
+import { DailyMenu } from '../../types/models';
 import { moderateScale } from '../../utils/responsive';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -25,21 +24,25 @@ export const CafeteriaScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
     const { theme } = useAppTheme();
     const s = styles(theme, insets);
+    const dayOfWeek = new Date().getDay();
+    
+    // Using the professional useFetch hook instead of direct mock import
+    // In a real app, this would be '/cafeteria/menu'
+    const { data: menu, loading, error } = useFetch<DailyMenu[]>('/cafeteria/menu');
 
-    // Get current day (0=Sun, 1=Mon, ..., 5=Fri, 6=Sat)
-    const today = new Date();
-    const dayOfWeek = today.getDay(); // Sunday=0, Monday=1, etc.
-
-    // Logic: 
-    // - If Mon-Fri (1-5), show that day (index 0-4)
-    // - If Sat/Sun (6/0), show Friday (index 4)
     const initialIndex = dayOfWeek === 0 || dayOfWeek === 6 ? 4 : dayOfWeek - 1;
-
     const [selectedIndex, setSelectedIndex] = useState(initialIndex);
     const flatListRef = useRef<FlatList>(null);
 
+    // Sync selectedIndex when data loads
+    useEffect(() => {
+        if (menu) {
+            setSelectedIndex(initialIndex);
+        }
+    }, [menu, initialIndex]);
+
     const transitionTo = (nextIndex: number) => {
-        if (nextIndex < 0 || nextIndex >= MOCK_WEEKLY_MENU.length) return;
+        if (!menu || nextIndex < 0 || nextIndex >= menu.length) return;
         setSelectedIndex(nextIndex);
         flatListRef.current?.scrollToIndex({
             index: nextIndex,
@@ -47,15 +50,10 @@ export const CafeteriaScreen: React.FC = () => {
         });
     };
 
-    const navigate = (direction: 'prev' | 'next') => {
-        const nextIndex = direction === 'prev' ? selectedIndex - 1 : selectedIndex + 1;
-        transitionTo(nextIndex);
-    };
 
-    const renderMealItem = ({ item, index }: { item: typeof MOCK_WEEKLY_MENU[0], index: number }) => {
+    const renderMealItem = ({ item, index }: { item: DailyMenu, index: number }) => {
         const icons = ['restaurant', 'pizza', 'nutrition', 'ice-cream'];
-        const isItemActualToday = (dayOfWeek !== 0 && dayOfWeek !== 6) && (index === dayOfWeek - 1);
-        const isItemToday = isItemActualToday;
+        const isItemToday = (dayOfWeek !== 0 && dayOfWeek !== 6) && (index === dayOfWeek - 1);
 
         const CardContainer = LinearGradient;
         const cardProps = isItemToday ? {
@@ -80,7 +78,7 @@ export const CafeteriaScreen: React.FC = () => {
                     <View style={s.cardHeader}>
                         <View>
                             <Text style={isItemToday ? s.todayDayTitle : s.otherDayTitle}>{item.day}</Text>
-                            <Text style={isItemToday ? s.todayDateSub : s.otherDateSub}>{item.date}</Text>
+                            <Text style={isItemToday ? s.todayDateSub : s.otherDayTitle}>{item.date}</Text>
                         </View>
                         {isItemToday && (
                             <View style={s.premiumBadge}>
@@ -93,7 +91,7 @@ export const CafeteriaScreen: React.FC = () => {
                     <View style={isItemToday ? s.glassDivider : s.lightDivider} />
 
                     <View style={s.menuList}>
-                        {item.items.map((menuItem, idx) => (
+                        {item.items.map((menuItem: string, idx: number) => (
                             <View key={idx} style={isItemToday ? s.glassPill : s.lightPill}>
                                 <View style={isItemToday ? s.todayIconContainer : s.otherIconContainer}>
                                     <Icon
@@ -131,21 +129,21 @@ export const CafeteriaScreen: React.FC = () => {
                             </TouchableOpacity>
 
                             <TouchableOpacity
-                                disabled={index === MOCK_WEEKLY_MENU.length - 1}
+                                disabled={index === (menu?.length || 0) - 1}
                                 onPress={() => transitionTo(index + 1)}
-                                style={[s.navBtn, isItemToday ? s.glassNavBtn : s.lightNavBtn, index === MOCK_WEEKLY_MENU.length - 1 && s.navBtnDisabled]}
+                                style={[s.navBtn, isItemToday ? s.glassNavBtn : s.lightNavBtn, index === (menu?.length || 0) - 1 && s.navBtnDisabled]}
                             >
                                 <Text style={[
                                     s.navBtnText,
                                     isItemToday ? s.glassNavBtnText : s.lightNavBtnText,
-                                    index === MOCK_WEEKLY_MENU.length - 1 && { opacity: 0.3 }
+                                    index === (menu?.length || 0) - 1 && { opacity: 0.3 }
                                 ]}>Sonraki</Text>
                                 <Icon
                                     name="chevron-forward"
                                     size={24}
                                     color={isItemToday
-                                        ? (index === MOCK_WEEKLY_MENU.length - 1 ? 'rgba(255,255,255,0.2)' : '#FFFFFF')
-                                        : (index === MOCK_WEEKLY_MENU.length - 1 ? 'rgba(24, 41, 88, 0.2)' : '#182958')
+                                        ? (index === (menu?.length || 0) - 1 ? 'rgba(255,255,255,0.2)' : '#FFFFFF')
+                                        : (index === (menu?.length || 0) - 1 ? 'rgba(24, 41, 88, 0.2)' : '#182958')
                                     }
                                 />
                             </TouchableOpacity>
@@ -155,6 +153,22 @@ export const CafeteriaScreen: React.FC = () => {
             </View>
         );
     };
+
+    if (loading && !menu) {
+        return (
+            <View style={[s.container, { justifyContent: 'center', alignItems: 'center' }]}>
+                <Text style={{ color: theme.colors.primary }}>Yükleniyor...</Text>
+            </View>
+        );
+    }
+
+    if (error) {
+        return (
+            <View style={[s.container, { justifyContent: 'center', alignItems: 'center' }]}>
+                <Text style={{ color: theme.colors.error }}>Hata: {error}</Text>
+            </View>
+        );
+    }
 
     return (
         <View style={s.container}>
@@ -167,13 +181,13 @@ export const CafeteriaScreen: React.FC = () => {
             <View style={s.mainContent}>
                 <FlatList
                     ref={flatListRef}
-                    data={MOCK_WEEKLY_MENU}
+                    data={menu}
                     renderItem={renderMealItem}
                     horizontal
                     pagingEnabled={true}
                     showsHorizontalScrollIndicator={false}
                     initialScrollIndex={initialIndex}
-                    getItemLayout={(data, index) => ({
+                    getItemLayout={(_, index) => ({
                         length: SCREEN_WIDTH - 40,
                         offset: (SCREEN_WIDTH - 40) * index,
                         index,
@@ -190,7 +204,7 @@ export const CafeteriaScreen: React.FC = () => {
                 />
 
                 <View style={s.bottomInfo}>
-                    <Icon name="information-circle-outline" size={20} color="#64748B" />
+                    <Icon name="alert-circle-outline" size={20} color={theme.colors.error} />
                     <Text style={s.infoText}>
                         Menüler haftalık olarak güncellenmektedir. Kampüs yemekhanesi hafta içi 08:30 - 18:00 saatleri arasında hizmet vermektedir.
                     </Text>
@@ -207,7 +221,6 @@ export const CafeteriaScreen: React.FC = () => {
                         colors={['#182958', '#101D42']}
                         style={s.fabGradient}
                     >
-                        {/* Standardized high-contrast white icons for state-of-the-art look */}
                         <Icon name="calendar-outline" size={24} color="#FFFFFF" />
                         <Text style={s.todayFabText}>Bugün</Text>
                     </LinearGradient>
