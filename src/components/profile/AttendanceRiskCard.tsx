@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Theme } from '../../config/theme';
 import { moderateScale, scale, verticalScale } from '../../utils/responsive';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { Attendance } from '../../types/data';
+import { Attendance } from '../../types/models';
 
 interface AttendanceRiskCardProps {
     data: Attendance[];
