@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { View, Text, Image, Pressable, Animated, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { News } from '../../types/data';
+import { News } from '../../types/models';
 import { Theme } from '../../config/theme';
 import { moderateScale } from '../../utils/responsive';
 
