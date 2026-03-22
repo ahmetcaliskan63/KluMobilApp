@@ -1,8 +1,9 @@
 import React, { memo } from 'react';
 import { View, Text, Pressable, Animated, StyleSheet, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { Announcement } from '../../types/data';
-import { Theme } from '../../config/theme';
+import { Theme, spacing, borderRadius, shadows } from '../../config/theme';
+import { Announcement } from '../../types/models';
+import LinearGradient from 'react-native-linear-gradient';
 
 interface AnnouncementCardProps {
     item: Announcement;
