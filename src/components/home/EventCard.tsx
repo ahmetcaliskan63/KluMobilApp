@@ -1,12 +1,12 @@
 import React, { memo } from 'react';
 import { View, Text, Image, Pressable, Animated, StyleSheet, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { Event } from '../../types/data';
+import { Event as EventType } from '../../types/models';
 import { Theme } from '../../config/theme';
 import { moderateScale } from '../../utils/responsive';
 
 interface EventCardProps {
-    item: Event;
+    item: EventType;
     theme: Theme;
     onPress: () => void;
 }
