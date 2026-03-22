@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Theme } from '../../config/theme';
 import { moderateScale, scale, verticalScale } from '../../utils/responsive';
-import { GraduationProgress } from '../../types/data';
+import { GraduationProgress } from '../../types/models';
 
 interface GraduationStatusBarProps {
     progress: GraduationProgress;
