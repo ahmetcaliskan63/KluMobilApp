@@ -2,15 +2,18 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, Platform } from 'react-native';
 import { moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTranslation } from 'react-i18next';
 
 interface DigitalPassportCardProps {
     user: any;
 }
 
 export const DigitalPassportCard: React.FC<DigitalPassportCardProps> = ({ user }) => {
+    const { t } = useTranslation();
+
     return (
         <View style={styles.container}>
-            {/* ??? Core Card Structure with Metallic Edge */}
+            {/* 💎 Core Card Structure with Metallic Edge */}
             <View style={styles.cardFrame}>
                 {/* Metallic Border Gradient */}
                 <LinearGradient
@@ -22,16 +25,16 @@ export const DigitalPassportCard: React.FC<DigitalPassportCardProps> = ({ user }
 
                 {/* Internal Card Surface */}
                 <View style={styles.cardContentWrapper}>
-                    {/* ?? Deep Mesh Gradient Background */}
+                    {/* 🕵️ Deep Mesh Gradient Background */}
                     <LinearGradient
                         colors={['#0F172A', '#1E293B', '#0F172A']}
                         style={StyleSheet.absoluteFill}
                     />
 
-                    {/* ??? Fine Noise Texture Overlay */}
+                    {/* 🌫️ Fine Noise Texture Overlay */}
                     <View style={[StyleSheet.absoluteFill, { opacity: 0.05, backgroundColor: '#000' }]} />
 
-                    {/* ??? University Seal Watermark */}
+                    {/* 🏛️ University Seal Watermark */}
                     <View style={styles.sealContainer}>
                         <Image
                             source={require('@/shared/assets/logo.png')}
@@ -40,7 +43,7 @@ export const DigitalPassportCard: React.FC<DigitalPassportCardProps> = ({ user }
                         />
                     </View>
 
-                    {/* ? Advanced Multi-Layer Hologram */}
+                    {/* ✨ Advanced Multi-Layer Hologram */}
                     <LinearGradient
                         colors={['transparent', 'rgba(120, 150, 255, 0.15)', 'rgba(255, 120, 255, 0.15)', 'transparent']}
                         start={{ x: 0, y: 0 }}
@@ -48,7 +51,7 @@ export const DigitalPassportCard: React.FC<DigitalPassportCardProps> = ({ user }
                         style={styles.hologramLayer}
                     />
 
-                    {/* ?? Card Content Layout */}
+                    {/* 📄 Card Content Layout */}
                     <View style={styles.mainLayout}>
                         {/* Header Section */}
                         <View style={styles.header}>
@@ -61,13 +64,13 @@ export const DigitalPassportCard: React.FC<DigitalPassportCardProps> = ({ user }
                                     />
                                 </View>
                                 <View>
-                                    <Text style={styles.uniTitle}>KIRKLAREL NVERSTES</Text>
-                                    <Text style={styles.brandSubtitle}>RENC PASAPORTU</Text>
+                                    <Text style={styles.uniTitle}>{t('profile.universityName')}</Text>
+                                    <Text style={styles.brandSubtitle}>{t('profile.idVerification').toUpperCase()}</Text>
                                 </View>
                             </View>
                             <View style={styles.activePulseContainer}>
                                 <View style={styles.activePulse} />
-                                <Text style={styles.activeLabel}>AKTF</Text>
+                                <Text style={styles.activeLabel}>{t('profile.active')}</Text>
                             </View>
                         </View>
 
@@ -90,28 +93,28 @@ export const DigitalPassportCard: React.FC<DigitalPassportCardProps> = ({ user }
                                 </View>
                                 {/* Validity moved under photo per user request */}
                                 <View style={styles.validityInfo}>
-                                    <Text style={styles.dateLabel}>GEERLLK TARH</Text>
+                                    <Text style={styles.dateLabel}>{t('profile.validUntil')}</Text>
                                     <Text style={styles.dateValue}>06 / 2026</Text>
                                 </View>
                             </View>
 
                             <View style={styles.detailsArea}>
                                 <View style={styles.infoRow}>
-                                    <Text style={styles.fieldLabel}>AD SOYAD</Text>
+                                    <Text style={styles.fieldLabel}>{t('profile.personalInfo').toUpperCase()}</Text>
                                     <Text style={styles.fieldValue}>{user?.firstName} {user?.lastName}</Text>
                                 </View>
                                 <View style={styles.infoRow}>
-                                    <Text style={styles.fieldLabel}>BLM</Text>
+                                    <Text style={styles.fieldLabel}>{t('profile.department').toUpperCase()}</Text>
                                     <Text style={styles.fieldValueSmall} numberOfLines={1}>{user?.department}</Text>
                                 </View>
                                 <View style={styles.gridInfo}>
                                     <View style={{ flex: 1 }}>
-                                        <Text style={styles.fieldLabel}>RENC NO</Text>
+                                        <Text style={styles.fieldLabel}>{t('profile.studentNo').toUpperCase()}</Text>
                                         <Text style={styles.fieldValueSmall}>{user?.studentNumber?.split('@')[0]}</Text>
                                     </View>
                                     <View style={{ flex: 1 }}>
-                                        <Text style={styles.fieldLabel}>DNEM</Text>
-                                        <Text style={styles.fieldValueSmall}>2025 - Bahar</Text>
+                                        <Text style={styles.fieldLabel}>{t('exams.term').toUpperCase()}</Text>
+                                        <Text style={styles.fieldValueSmall}>2025 - {t('common.terms.spring')}</Text>
                                     </View>
                                 </View>
                             </View>
