@@ -48,29 +48,31 @@ apiClient.interceptors.response.use(
         
         if (__DEV__) {
             try {
-                // Import mock data dynamically
+                // Import mock data and i18n
                 const MOCK = await import('./mockData');
+                const { default: i18n } = await import('../i18n/i18n');
+                const t = i18n.t.bind(i18n);
                 
                 const routes: Record<string, any> = {
-                    '/announcements': MOCK.MOCK_ANNOUNCEMENTS,
+                    '/announcements': MOCK.MOCK_ANNOUNCEMENTS(t),
                     '/faculty/profiles': MOCK.MOCK_FACULTY_PROFILES,
                     '/faculty/members': MOCK.MOCK_FACULTY_MEMBERS,
-                    '/schedule': MOCK.MOCK_SCHEDULE,
-                    '/exams/schedule': MOCK.MOCK_EXAM_SCHEDULE,
-                    '/exams/results': MOCK.MOCK_EXAM_RESULTS,
-                    '/transcript': MOCK.MOCK_TRANSCRIPT,
-                    '/transcript/summary': MOCK.MOCK_ACADEMIC_STATS,
+                    '/schedule': MOCK.MOCK_SCHEDULE(t),
+                    '/exams/schedule': MOCK.MOCK_EXAM_SCHEDULE(t),
+                    '/exams/results': MOCK.MOCK_EXAM_RESULTS(t),
+                    '/transcript': MOCK.MOCK_TRANSCRIPT(t),
+                    '/transcript/summary': MOCK.MOCK_ACADEMIC_STATS(t),
                     '/transcript/details': MOCK.MOCK_SEMESTER_DATA,
                     '/faculty/units': MOCK.MOCK_UNITS,
-                    '/profile/stats': MOCK.MOCK_ACADEMIC_STATS,
-                    '/cafeteria/menu': MOCK.MOCK_CAFETERIA,
-                    '/library/books': MOCK.MOCK_BOOKS,
-                    '/news': MOCK.MOCK_NEWS,
-                    '/events': MOCK.MOCK_EVENTS,
+                    '/profile/stats': MOCK.MOCK_ACADEMIC_STATS(t),
+                    '/cafeteria/menu': MOCK.MOCK_CAFETERIA(t),
+                    '/library/books': MOCK.MOCK_BOOKS(t),
+                    '/news': MOCK.MOCK_NEWS(t),
+                    '/events': MOCK.MOCK_EVENTS(t),
                     '/university/news': MOCK.MOCK_UNIVERSITY_NEWS,
                     '/university/info': MOCK.MOCK_UNIVERSITY_INFO,
                     '/profile/setup-status': { completed: true },
-                    '/obs/courses': MOCK.MOCK_SCHEDULE,
+                    '/obs/courses': MOCK.MOCK_SCHEDULE(t),
                 };
 
                 if (url && routes[url]) {
@@ -93,11 +95,11 @@ apiClient.interceptors.response.use(
                     let detailData = null;
 
                     if (url.startsWith('/announcements/')) {
-                        detailData = MOCK.MOCK_ANNOUNCEMENTS.find(a => a.id === id);
+                        detailData = MOCK.MOCK_ANNOUNCEMENTS(t).find((a: any) => a.id === id);
                     } else if (url.startsWith('/news/')) {
-                        detailData = MOCK.MOCK_NEWS.find(n => n.id === id);
+                        detailData = MOCK.MOCK_NEWS(t).find((n: any) => n.id === id);
                     } else if (url.startsWith('/events/')) {
-                        detailData = MOCK.MOCK_EVENTS.find(e => e.id === id);
+                        detailData = MOCK.MOCK_EVENTS(t).find((e: any) => e.id === id);
                     } else if (url.startsWith('/faculty/units/')) {
                         detailData = MOCK.MOCK_UNIT_DETAILS[id];
                     }
