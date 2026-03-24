@@ -1,5 +1,4 @@
 import { LoginCredentials, AuthResponse } from '@/shared/types/models';
-import { MOCK_USER_IMAGE } from './mockData';
 
 export const authService = {
     login: async (credentials: LoginCredentials): Promise<AuthResponse> => {
@@ -27,6 +26,10 @@ export const authService = {
                     email = `${credentials.studentId}@ogr.klu.edu.tr`;
                 }
 
+                // Profile Image Selection
+                const avatarId = Math.floor(Math.random() * 70) + 1;
+                const profileImage = `https://i.pravatar.cc/150?u=${avatarId}`;
+
                 resolve({
                     user: {
                         id: '1',
@@ -37,46 +40,46 @@ export const authService = {
                         department,
                         grade: role === 'student' ? 3 : 0,
                         role: role as 'student' | 'academic' | 'staff',
-                        title: role === 'academic' ? 'Öğretim Görevlisi' : undefined,
-                        profileImage: MOCK_USER_IMAGE,
+                        title: role === 'academic' ? 'Prof. Dr.' : undefined,
+                        profileImage,
                         faculty: role === 'academic' ? 'Rektörlük' : 'Mühendislik Fakültesi',
                         attendance: role === 'student' ? [
                             { courseName: 'Calculus I', courseCode: 'MAT101', attended: 24, total: 28, limit: 8, risk: 'low' },
                             { courseName: 'Physics I', courseCode: 'FIZ101', attended: 18, total: 28, limit: 8, risk: 'medium' },
-                            { courseName: 'Literature', courseCode: 'TUR101', attended: 24, total: 28, limit: 8, risk: 'high' },
+                            { courseName: 'Algorithms', courseCode: 'BIL201', attended: 26, total: 28, limit: 8, risk: 'low' },
                         ] : [],
                         graduationProgress: role === 'student' ? {
-                            completedCredits: 180,
+                            completedCredits: 185,
                             totalRequiredCredits: 240,
-                            completedCourses: 32,
+                            completedCourses: 34,
                             totalRequiredCourses: 40,
                             gpaTarget: 3.50,
                         } : undefined,
                         gpaHistory: role === 'student' ? [
                             { semester: '1. Güz', gpa: 3.20 },
+                            { semester: '1. Bahar', gpa: 3.35 },
+                            { semester: '2. Güz', gpa: 3.28 },
+                            { semester: '2. Bahar', gpa: 3.45 },
+                            { semester: '3. Güz', gpa: 3.42 },
                         ] : [],
-                        tcNo: role === 'academic' ? '21565349724' : 'XXXXXXXXXXX',
-                        majorBranch: role === 'academic' ? '-' : department,
+                        tcNo: 'XXXXXXXXXXX',
+                        majorBranch: department,
                         birthPlace: 'Kırklareli',
                         birthDate: '01.01.2000',
-                        phone: role === 'academic' ? '(506) 270-7616' : '5XX XXX XX XX',
-                        address: role === 'academic'
-                            ? 'KARAKAŞ MAH. SELEN SK. İNCİ EVER B BLOK NO: 16B İÇ KAPI NO: 15 MERKEZ / KIRKLARELİ'
-                            : 'Kırklareli Üniversitesi Merkez Kampüsü',
-                        registrationDate: '01.01.2023',
-                        gpa: role === 'student' ? '3.00' : undefined,
+                        phone: '0 (5XX) XXX XX XX',
+                        address: 'Kırklareli Üniversitesi Kayalı Kampüsü, Mühendislik Fakültesi Binası, Merkez / KIRKLARELİ',
+                        registrationDate: '15.08.2023',
+                        gpa: role === 'student' ? '3.52' : undefined,
                         staffNumber: role === 'academic' ? '1187' : undefined,
-                        workPhone: role === 'academic' ? '-' : undefined,
-                        internalPhone: role === 'academic' ? '-' : undefined,
                         leaveBalances: role === 'academic' ? [
-                            { type: 'Yıllık', total: 30, used: 10, remaining: 20, color: '#10B981' },
-                            { type: 'Sağlık', total: 10, used: 2, remaining: 8, color: '#EF4444' },
-                            { type: 'Mazeret', total: 5, used: 0, remaining: 5, color: '#3B82F6' },
+                            { type: 'annual', total: 30, used: 10, remaining: 20, color: '#10B981' },
+                            { type: 'sick', total: 10, used: 2, remaining: 8, color: '#EF4444' },
+                            { type: 'excuse', total: 5, used: 0, remaining: 5, color: '#3B82F6' },
                         ] : undefined,
                         leaveRequests: role === 'academic' ? [
-                            { id: 'lr1', startDate: '01.07.2023', endDate: '15.07.2023', days: 14, type: 'Yıllık', status: 'Onaylandı', reason: 'Yaz Tatili' },
-                            { id: 'lr2', startDate: '10.05.2024', endDate: '12.05.2024', days: 2, type: 'Mazeret', status: 'Onayland\u0131', reason: 'Ailevi Nedenler' },
-                            { id: 'lr3', startDate: '01.09.2024', endDate: '05.09.2024', days: 4, type: 'Y\u0131ll\u0131k', status: 'Beklemede', reason: 'Kurum D\u0131\u015f\u0131 Toplant\u0131' },
+                            { id: 'lr1', startDate: '2023-07-01', endDate: '2023-07-15', days: 14, type: 'annual', status: 'approved', reason: 'Yaz Tatili' },
+                            { id: 'lr2', startDate: '2024-05-10', endDate: '2024-05-12', days: 2, type: 'excuse', status: 'approved', reason: 'Ailevi Nedenler' },
+                            { id: 'lr3', startDate: '2024-09-01', endDate: '2024-09-05', days: 4, type: 'annual', status: 'pending', reason: 'Kurum Dışı Toplantı' },
                         ] : undefined,
                     },
                     token: 'mock-jwt-token-' + Date.now(),
