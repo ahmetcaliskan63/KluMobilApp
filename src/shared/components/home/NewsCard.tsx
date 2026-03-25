@@ -5,6 +5,7 @@ import { News } from '@/shared/types/models';
 import { moderateScale } from '@/shared/utils/responsive';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { Theme } from '@/core/theme/theme';
+import { useTranslation } from 'react-i18next';
 
 interface NewsCardProps {
     item: News;
@@ -13,6 +14,7 @@ interface NewsCardProps {
 
 const NewsCardComponent: React.FC<NewsCardProps> = ({ item, onPress }) => {
     const { theme, isDarkMode } = useAppTheme();
+    const { t } = useTranslation();
     const s = styles(theme, isDarkMode);
     const scale = React.useRef(new Animated.Value(1)).current;
 
@@ -49,7 +51,7 @@ const NewsCardComponent: React.FC<NewsCardProps> = ({ item, onPress }) => {
                         <View style={s.metaRow}>
                             <View style={s.metaItem}>
                                 <Icon name="eye-outline" size={14} color="rgba(255,255,255,0.8)" />
-                                <Text style={s.metaText}>{item.views}</Text>
+                                <Text style={s.metaText}>{item.views} {t('dashboard.views')}</Text>
                             </View>
                             <View style={s.divider} />
                             <View style={s.metaItem}>
