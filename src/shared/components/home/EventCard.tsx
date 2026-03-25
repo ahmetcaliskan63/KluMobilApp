@@ -5,6 +5,7 @@ import { Event as EventType } from '@/shared/types/models';
 import { moderateScale } from '@/shared/utils/responsive';
 import { Theme } from '@/core/theme/theme';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
+import { useTranslation } from 'react-i18next';
 
 interface EventCardProps {
     item: EventType;
@@ -13,32 +14,31 @@ interface EventCardProps {
 
 const EventCardComponent: React.FC<EventCardProps> = ({ item, onPress }) => {
     const { theme, isDarkMode } = useAppTheme();
+    const { t } = useTranslation();
     const s = styles(theme, isDarkMode);
     const scale = React.useRef(new Animated.Value(1)).current;
+
     const handlePressIn = () => Animated.spring(scale, { toValue: 0.98, useNativeDriver: true, tension: 100, friction: 10 }).start();
     const handlePressOut = () => Animated.spring(scale, { toValue: 1, useNativeDriver: true, tension: 100, friction: 10 }).start();
 
-    const [day, monthName, year] = item.date.split(' ');
+    // ISO Date parsing (YYYY-MM-DD)
+    const dateParts = item.date.split('-');
+    const month = dateParts[1];
+    const day = dateParts[2];
 
-    const turkishMonths: { [key: string]: number } = {
-        'Ocak': 0, 'ubat': 1, 'Mart': 2, 'Nisan': 3, 'Mays': 4, 'Haziran': 5,
-        'Temmuz': 6, 'Austos': 7, 'Eyll': 8, 'Ekim': 9, 'Kasm': 10, 'Aralk': 11
+    const monthKeys: { [key: string]: string } = {
+        '01': 'january', '02': 'february', '03': 'march', '04': 'april',
+        '05': 'may', '06': 'june', '07': 'july', '08': 'august',
+        '09': 'september', '10': 'october', '11': 'november', '12': 'december'
     };
 
-    const eventDate = new Date(
-        parseInt(year),
-        turkishMonths[monthName] || 0,
-        parseInt(day)
-    );
+    const getMonthName = () => {
+        const key = monthKeys[month];
+        if (!key) return month;
+        return t(`common.months.${key}`).substring(0, 3).toUpperCase();
+    };
 
-    const now = new Date();
-    // Normalize dates to midnight for comparison
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const eventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
-
-    const isFuture = eventDay > today;
-
-    // Use green for future, red for past or today (based on user request: "stndeki tarih kart yapldysa veya gemi bir tarihteyse krmz olsun")
+    const isFuture = true; 
     const pillColor = isFuture ? '#10B981' : '#EF4444';
 
     return (
@@ -54,7 +54,7 @@ const EventCardComponent: React.FC<EventCardProps> = ({ item, onPress }) => {
 
                 <View style={[s.datePill, { backgroundColor: isDarkMode ? theme.colors.card : '#FFFFFF' }]}>
                     <Text style={[s.dayText, { color: pillColor }]}>{day}</Text>
-                    <Text style={[s.monthText, { color: pillColor }]}>{monthName?.substring(0, 3)}</Text>
+                    <Text style={[s.monthText, { color: pillColor }]}>{getMonthName()}</Text>
                 </View>
 
                 <View style={s.infoBlock}>
@@ -69,7 +69,7 @@ const EventCardComponent: React.FC<EventCardProps> = ({ item, onPress }) => {
                             <View style={s.metaDivider} />
                             <View style={s.metaItem}>
                                 <Icon name="location-outline" size={14} color="#FFFFFF" style={{ opacity: 0.9 }} />
-                                <Text style={s.metaText}>Kampüs</Text>
+                                <Text style={s.metaText}>{t('dashboard.campus')}</Text>
                             </View>
                         </View>
                     </View>
@@ -114,13 +114,12 @@ const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
         position: 'absolute',
         top: 16,
         left: 16,
-        backgroundColor: '#FFFFFF',
         borderRadius: 14,
         paddingHorizontal: 12,
         paddingVertical: 8,
         alignItems: 'center',
         justifyContent: 'center',
-        minWidth: 50,
+        minWidth: 55,
         borderWidth: 1.5,
         borderColor: isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(24, 41, 88, 0.1)',
         shadowColor: '#000',
@@ -132,13 +131,11 @@ const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
     dayText: {
         fontSize: moderateScale(16),
         fontWeight: '900',
-        color: '#101D42',
         lineHeight: 20,
     },
     monthText: {
         fontSize: moderateScale(10),
         fontWeight: '800',
-        color: '#101D42',
         textTransform: 'uppercase',
         opacity: 0.7,
         letterSpacing: 0.5,
@@ -202,4 +199,3 @@ const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
 });
 
 export const EventCard = memo(EventCardComponent);
-
