@@ -1,7 +1,9 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, StatusBar, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, StatusBar } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons as Icon } from '@expo/vector-icons';
 import { theme } from '@/core/theme/theme';
+import i18n from '@/shared/i18n/i18n';
 
 interface Props {
   children: ReactNode;
@@ -24,7 +26,6 @@ export class ErrorBoundary extends Component<Props, State> {
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('Uncaught error:', error, errorInfo);
-    // In a real app, send to Sentry/Crashlytics here
   }
 
   private handleReset = () => {
@@ -40,9 +41,9 @@ export class ErrorBoundary extends Component<Props, State> {
             <View style={styles.iconContainer}>
               <Icon name="alert-circle" size={80} color={theme.colors.error} />
             </View>
-            <Text style={styles.title}>Eyvah!</Text>
+            <Text style={styles.title}>{i18n.t('common.errorTitle')}</Text>
             <Text style={styles.subtitle}>
-              Beklenmedik bir hata olutu. Uygulamay yeniden balatmay deneyebilirsiniz.
+              {i18n.t('common.errorMessage')}
             </Text>
 
             {__DEV__ && (
@@ -52,7 +53,7 @@ export class ErrorBoundary extends Component<Props, State> {
             )}
 
             <TouchableOpacity style={styles.button} onPress={this.handleReset}>
-              <Text style={styles.buttonText}>Tekrar Dene</Text>
+              <Text style={styles.buttonText}>{i18n.t('common.retry')}</Text>
             </TouchableOpacity>
           </View>
         </SafeAreaView>
@@ -119,4 +120,3 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
-
