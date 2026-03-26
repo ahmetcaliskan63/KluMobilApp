@@ -10,6 +10,9 @@ import {
     DailyMenu,
     Book,
     News,
+    SemesterData,
+    Unit,
+    UnitDetail,
     Event as EventType
 } from '../types/models';
 
@@ -104,6 +107,35 @@ export const MOCK_TRANSCRIPT: TranscriptCourse[] = [
     { id: 't3', code: 'MAT101', name: 'Matematik I', grade: 'CB', credit: '5', akts: '5' }
 ];
 
+export const MOCK_SEMESTER_DATA: SemesterData[] = [
+    {
+        semester: '2023-2024 Güz',
+        subTitle: '5. Yarıyıl',
+        gpa: '3.50',
+        totalAkts: '30',
+        courses: [
+            { id: 't1', code: 'BM301', name: 'Mobil Uygulama Geliştirme', grade: 'AA', credit: '3', akts: '6' },
+            { id: 't2', code: 'BM302', name: 'Yazılım Mühendisliği', grade: 'BA', credit: '3', akts: '6' },
+            { id: 't3', code: 'BM303', name: 'Veri Madenciliği', grade: 'BB', credit: '3', akts: '6' },
+            { id: 't4', code: 'BM304', name: 'Algoritma Analizi', grade: 'AA', credit: '3', akts: '6' },
+            { id: 't5', code: 'ISL101', name: 'İşletme Yönetimi', grade: 'AA', credit: '2', akts: '6' },
+        ]
+    },
+    {
+        semester: '2022-2023 Bahar',
+        subTitle: '4. Yarıyıl',
+        gpa: '3.25',
+        totalAkts: '30',
+        courses: [
+            { id: 't6', code: 'BM202', name: 'Nesne Yönelimli Programlama', grade: 'BA', credit: '3', akts: '6' },
+            { id: 't7', code: 'BM204', name: 'Veri Yapıları', grade: 'AA', credit: '3', akts: '6' },
+            { id: 't8', code: 'BM206', name: 'Sinyaller ve Sistemler', grade: 'CB', credit: '3', akts: '6' },
+            { id: 't9', code: 'BM208', name: 'Bilgisayar Mimarisi', grade: 'BA', credit: '3', akts: '6' },
+            { id: 't10', code: 'MAT202', name: 'Olasılık ve İstatistik', grade: 'BB', credit: '3', akts: '6' },
+        ]
+    }
+];
+
 export const MOCK_ACADEMIC_STATS: AcademicStats = {
     gpa: '3.42',
     totalCredits: 124,
@@ -168,3 +200,175 @@ export const MOCK_EVENTS: EventType[] = [
         type: 'Üniversite'
     }
 ];
+
+export const MOCK_UNITS: Unit[] = [
+    { id: 'u1', name: 'İç Denetim Birimi', type: 'Birim' },
+    { id: 'u2', name: 'Hukuk Müşavirliği', type: 'Birim' },
+    { id: 'u3', name: 'Fen Bilimleri Enstitüsü', type: 'Enstitü' },
+    { id: 'u4', name: 'Sosyal Bilimler Enstitüsü', type: 'Enstitü' },
+    { id: 'u5', name: 'Sağlık Bilimleri Enstitüsü', type: 'Enstitü' },
+    { id: 'u6', name: 'Tıp Fakültesi', type: 'Fakülte' },
+    { id: 'u7', name: 'Mühendislik Fakültesi', type: 'Fakülte' },
+    { id: 'u8', name: 'Teknoloji Fakültesi', type: 'Fakülte' },
+    { id: 'u9', name: 'Hukuk Fakültesi', type: 'Fakülte' },
+    { id: 'u10', name: 'İlahiyat Fakültesi', type: 'Fakülte' },
+    { id: 'u11', name: 'Uygulamalı Bilimler Yüksekokulu', type: 'Yüksekokul' },
+    { id: 'u12', name: 'Yabancı Diller Yüksekokulu', type: 'Yüksekokul' },
+    { id: 'u13', name: 'Teknik Bilimler Meslek Yüksekokulu', type: 'Meslek Yüksekokulu' },
+    { id: 'u14', name: 'Sosyal Bilimler Meslek Yüksekokulu', type: 'Meslek Yüksekokulu' },
+    { id: 'u15', name: 'Sağlık Hizmetleri Meslek Yüksekokulu', type: 'Meslek Yüksekokulu' },
+];
+
+export const MOCK_UNIT_DETAILS: Record<string, UnitDetail> = {
+    u1: {
+        id: 'u1',
+        name: 'İç Denetim Birimi',
+        type: 'Birim',
+        phones: ['0 (288) 214 05 10'],
+        email: 'icdenetim@klu.edu.tr',
+        website: 'https://icdenetim.klu.edu.tr/',
+        address: 'Rektörlük Binası 1. Kat - Merkez / Kırklareli',
+        location: { latitude: 41.735, longitude: 27.225 }
+    },
+    u2: {
+        id: 'u2',
+        name: 'Hukuk Müşavirliği',
+        type: 'Birim',
+        phones: ['0 (288) 214 05 11'],
+        email: 'hukuk@klu.edu.tr',
+        website: 'https://hukukmus.klu.edu.tr/',
+        address: 'Rektörlük Binası 2. Kat - Merkez / Kırklareli',
+        location: { latitude: 41.735, longitude: 27.225 }
+    },
+    u3: {
+        id: 'u3',
+        name: 'Fen Bilimleri Enstitüsü',
+        type: 'Enstitü',
+        phones: ['0 (288) 214 05 17'],
+        email: 'fenbilimleri@klu.edu.tr',
+        website: 'https://fenbilimleri.klu.edu.tr/',
+        address: 'Kayalı Kampüsü Enstitüler Binası - Merkez / Kırklareli',
+        location: { latitude: 41.7483, longitude: 27.2217 }
+    },
+    u4: {
+        id: 'u4',
+        name: 'Sosyal Bilimler Enstitüsü',
+        type: 'Enstitü',
+        phones: ['0 (288) 214 05 18'],
+        email: 'sosyalbilimler@klu.edu.tr',
+        website: 'https://sosyalbilimler.klu.edu.tr/',
+        address: 'Kayalı Kampüsü Enstitüler Binası - Merkez / Kırklareli',
+        location: { latitude: 41.7483, longitude: 27.2217 }
+    },
+    u5: {
+        id: 'u5',
+        name: 'Sağlık Bilimleri Enstitüsü',
+        type: 'Enstitü',
+        phones: ['0 (288) 214 05 19'],
+        email: 'saglikbilimleri@klu.edu.tr',
+        website: 'https://saglikbilimleri.klu.edu.tr/',
+        address: 'Kayalı Kampüsü Enstitüler Binası - Merkez / Kırklareli',
+        location: { latitude: 41.7483, longitude: 27.2217 }
+    },
+    u6: {
+        id: 'u6',
+        name: 'Tıp Fakültesi',
+        type: 'Fakülte',
+        phones: ['0 (288) 214 05 12'],
+        email: 'tip@klu.edu.tr',
+        website: 'https://tip.klu.edu.tr/',
+        address: 'Kayalı Kampüsü Tıp Binası - Merkez / Kırklareli',
+        location: { latitude: 41.7483, longitude: 27.2217 }
+    },
+    u7: {
+        id: 'u7',
+        name: 'Mühendislik Fakültesi',
+        type: 'Fakülte',
+        phones: ['0 (288) 214 05 14', '0 (288) 214 05 15'],
+        fax: '0 (288) 214 05 16',
+        email: 'muh@klu.edu.tr',
+        website: 'https://muh.kirklareli.edu.tr/',
+        address: 'Kayalı Kampüsü Merkezi Derslikler 2 No:39/L - Merkez / Kırklareli',
+        location: { latitude: 41.7483, longitude: 27.2217 }
+    },
+    u8: {
+        id: 'u8',
+        name: 'Teknoloji Fakültesi',
+        type: 'Fakülte',
+        phones: ['0 (288) 214 05 20'],
+        email: 'teknoloji@klu.edu.tr',
+        website: 'https://teknoloji.klu.edu.tr/',
+        address: 'Kayalı Kampüsü Teknoloji Binası - Merkez / Kırklareli',
+        location: { latitude: 41.7483, longitude: 27.2217 }
+    },
+    u9: {
+        id: 'u9',
+        name: 'Hukuk Fakültesi',
+        type: 'Fakülte',
+        phones: ['0 (288) 214 05 21'],
+        email: 'hukukfak@klu.edu.tr',
+        website: 'https://hukuk.klu.edu.tr/',
+        address: 'Kayalı Kampüsü Hukuk Binası - Merkez / Kırklareli',
+        location: { latitude: 41.7483, longitude: 27.2217 }
+    },
+    u10: {
+        id: 'u10',
+        name: 'İlahiyat Fakültesi',
+        type: 'Fakülte',
+        phones: ['0 (288) 214 05 22'],
+        email: 'ilahiyat@klu.edu.tr',
+        website: 'https://ilahiyat.klu.edu.tr/',
+        address: 'Kayalı Kampüsü İlahiyat Binası - Merkez / Kırklareli',
+        location: { latitude: 41.7483, longitude: 27.2217 }
+    },
+    u11: {
+        id: 'u11',
+        name: 'Uygulamalı Bilimler Yüksekokulu',
+        type: 'Yüksekokul',
+        phones: ['0 (288) 246 17 34'],
+        email: 'ubyo@klu.edu.tr',
+        website: 'https://ubyo.klu.edu.tr/',
+        address: 'Kayalı Kampüsü - Merkez / Kırklareli',
+        location: { latitude: 41.7483, longitude: 27.2217 }
+    },
+    u12: {
+        id: 'u12',
+        name: 'Yabancı Diller Yüksekokulu',
+        type: 'Yüksekokul',
+        phones: ['0 (288) 214 05 25'],
+        email: 'yabancidiller@klu.edu.tr',
+        website: 'https://yabancidiller.klu.edu.tr/',
+        address: 'Kayalı Kampüsü - Merkez / Kırklareli',
+        location: { latitude: 41.7483, longitude: 27.2217 }
+    },
+    u13: {
+        id: 'u13',
+        name: 'Teknik Bilimler Meslek Yüksekokulu',
+        type: 'Meslek Yüksekokulu',
+        phones: ['0 (288) 214 05 28'],
+        email: 'tbmyo@klu.edu.tr',
+        website: 'https://tbmyo.klu.edu.tr/',
+        address: 'Kavaklı Yerleşkesi - Kırklareli',
+        location: { latitude: 41.6521, longitude: 27.1812 }
+    },
+    u14: {
+        id: 'u14',
+        name: 'Sosyal Bilimler Meslek Yüksekokulu',
+        type: 'Meslek Yüksekokulu',
+        phones: ['0 (288) 246 17 35'],
+        email: 'sbmyo@klu.edu.tr',
+        website: 'https://sbmyo.klu.edu.tr/',
+        address: 'Kavaklı Yerleşkesi - Kırklareli',
+        location: { latitude: 41.6521, longitude: 27.1812 }
+    },
+    u15: {
+        id: 'u15',
+        name: 'Sağlık Hizmetleri Meslek Yüksekokulu',
+        type: 'Meslek Yüksekokulu',
+        phones: ['0 (288) 214 05 29'],
+        email: 'shmyo@klu.edu.tr',
+        website: 'https://shmyo.klu.edu.tr/',
+        address: 'Merkez Yerleşke - Kırklareli',
+        location: { latitude: 41.735, longitude: 27.225 }
+    }
+};
