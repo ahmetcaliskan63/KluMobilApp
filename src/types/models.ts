@@ -215,3 +215,21 @@ export interface ExamResult {
     status: string;
     color?: string;
 }
+
+export interface Unit {
+    id: string;
+    name: string;
+    type: 'Birim' | 'Enstitü' | 'Fakülte' | 'Yüksekokul' | 'Meslek Yüksekokulu';
+}
+
+export interface UnitDetail extends Unit {
+    phones: string[];
+    fax?: string;
+    email: string;
+    website: string;
+    address: string;
+    location: {
+        latitude: number;
+        longitude: number;
+    };
+}
