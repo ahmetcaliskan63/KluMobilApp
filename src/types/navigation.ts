@@ -18,6 +18,8 @@ export type RootStackParamList = {
     ExamSchedule: undefined;
     ExamResults: undefined;
     Faculty: undefined;
+    Units: undefined;
+    UnitDetail: { unitId: string };
 };
 
 export type DrawerParamList = {
