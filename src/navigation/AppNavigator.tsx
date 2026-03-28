@@ -26,6 +26,8 @@ import AcademicCalendarScreen from '../screens/academic-calendar/AcademicCalenda
 import { ExamScheduleScreen } from '../screens/exam-schedule/ExamScheduleScreen';
 import { ExamResultsScreen } from '../screens/exam-results/ExamResultsScreen';
 import { FacultyScreen } from '../screens/faculty/FacultyScreen';
+import { UnitsScreen } from '../screens/units/UnitsScreen';
+import { UnitDetailScreen } from '../screens/units/UnitDetailScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Drawer = createDrawerNavigator<DrawerParamList>();
@@ -111,6 +113,22 @@ export const AppNavigator: React.FC = () => {
                 <Stack.Screen
                     name="Faculty"
                     component={FacultyScreen}
+                    options={{
+                        headerShown: false,
+                        animation: 'slide_from_right'
+                    }}
+                />
+                <Stack.Screen
+                    name="Units"
+                    component={UnitsScreen}
+                    options={{
+                        headerShown: false,
+                        animation: 'slide_from_right'
+                    }}
+                />
+                <Stack.Screen
+                    name="UnitDetail"
+                    component={UnitDetailScreen}
                     options={{
                         headerShown: false,
                         animation: 'slide_from_right'
