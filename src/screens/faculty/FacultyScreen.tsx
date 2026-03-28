@@ -26,6 +26,19 @@ export const FacultyScreen: React.FC = () => {
     const { data: members, loading: membersLoading, error: membersError } = useFetch<FacultyMember[]>('/faculty/members');
     const s = styles(theme);
 
+    // Animations - Moved to top level to satisfy Rules of Hooks
+    const fadeAnim = useState(new Animated.Value(0))[0];
+    const slideAnim = useState(new Animated.Value(20))[0];
+    
+    useEffect(() => {
+        if (!profilesLoading && !membersLoading && !profilesError && !membersError) {
+            Animated.parallel([
+                Animated.timing(fadeAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
+                Animated.timing(slideAnim, { toValue: 0, duration: 600, useNativeDriver: true }),
+            ]).start();
+        }
+    }, [profilesLoading, membersLoading, profilesError, membersError]);
+
     if (profilesLoading || membersLoading) {
         return (
             <View style={[s.container, { justifyContent: 'center', alignItems: 'center' }]}>
@@ -44,21 +57,16 @@ export const FacultyScreen: React.FC = () => {
 
     const academicProfiles = profiles || {};
     const facultyList = members || [];
-
-    // Animations
-    const fadeAnim = useState(new Animated.Value(0))[0];
-    const slideAnim = useState(new Animated.Value(20))[0];
-    useEffect(() => {
-        Animated.parallel([
-            Animated.timing(fadeAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
-            Animated.timing(slideAnim, { toValue: 0, duration: 600, useNativeDriver: true }),
-        ]).start();
-    }, []);
-
-
+    
     const handleEmailPress = async (email: string) => {
         const url = `mailto:${email}`;
-        if (await Linking.canOpenURL(url)) await Linking.openURL(url);
+        try {
+            if (await Linking.canOpenURL(url)) {
+                await Linking.openURL(url);
+            }
+        } catch (error) {
+            console.error('Could not open email', error);
+        }
     };
 
     const renderFacultyCard = (item: any, isPremium = false) => (
@@ -120,10 +128,9 @@ export const FacultyScreen: React.FC = () => {
 
     return (
         <View style={s.container}>
-            <StatusBar barStyle="light-content" backgroundColor="#0f172a" />
+            <StatusBar barStyle="light-content" backgroundColor="#182958" />
 
-            {/* 👑 Senior Designer Header */}
-            <LinearGradient colors={['#0f172a', '#1e293b']} style={[s.header, { paddingTop: insets.top + spacing.sm }]}>
+            <LinearGradient colors={['#182958', '#2A3F7A']} style={[s.header, { paddingTop: insets.top + spacing.sm }]}>
                 <View style={s.headerRow}>
                     <TouchableOpacity style={s.backBtn} onPress={() => navigation.goBack()}>
                         <Icon name="chevron-back" size={24} color="#FFF" />
@@ -141,11 +148,9 @@ export const FacultyScreen: React.FC = () => {
                 <Text style={[s.sectionHeader, { marginTop: 0 }]}>Akademik Danışman</Text>
                 {academicProfiles.ADVISOR && renderFeaturedCard(academicProfiles.ADVISOR, 'DANIŞMANIM')}
 
-                {/* 2. Bölüm Başkanı */}
                 <Text style={[s.sectionHeader, { marginTop: spacing.md }]}>Bölüm Yönetimi</Text>
                 {academicProfiles.DEPT_HEAD && renderFeaturedCard(academicProfiles.DEPT_HEAD, 'BÖLÜM BAŞKANI')}
 
-                {/* 3. Dönem Hocalarım */}
                 <View style={[s.sectionTitleRow, { marginTop: spacing.md }]}>
                     <Text style={s.sectionHeader}>Dönem Hocalarım</Text>
                     <View style={s.termBadge}>
@@ -191,26 +196,6 @@ const styles = (theme: Theme) => StyleSheet.create({
         fontWeight: '900',
         color: '#FFFFFF',
         letterSpacing: -0.5,
-    },
-    searchContainer: {
-        paddingHorizontal: spacing.lg,
-    },
-    searchBar: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: 'rgba(255,255,255,0.08)',
-        borderRadius: 20,
-        paddingHorizontal: spacing.md,
-        height: 48,
-        borderWidth: 1,
-        borderColor: 'rgba(255,255,255,0.1)',
-    },
-    searchInput: {
-        flex: 1,
-        marginLeft: spacing.sm,
-        color: '#FFFFFF',
-        fontSize: moderateScale(14),
-        fontWeight: '500',
     },
     scrollContent: {
         padding: spacing.md,
@@ -342,7 +327,7 @@ const styles = (theme: Theme) => StyleSheet.create({
         marginBottom: spacing.md,
         padding: spacing.md,
         borderWidth: 1.5,
-        borderColor: '#CBD5E1', // Darker grey border
+        borderColor: '#CBD5E1', 
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.02,
@@ -390,20 +375,7 @@ const styles = (theme: Theme) => StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    facultyGrid: {
-        gap: 0,
-    },
     termList: {
         marginBottom: spacing.md,
-    },
-    emptyState: {
-        alignItems: 'center',
-        paddingVertical: spacing.xxl,
-        opacity: 0.5,
-    },
-    emptyText: {
-        fontSize: moderateScale(14),
-        fontWeight: '600',
-        marginTop: spacing.md,
     },
 });
