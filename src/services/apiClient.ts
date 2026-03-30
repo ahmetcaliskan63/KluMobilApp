@@ -59,6 +59,9 @@ apiClient.interceptors.response.use(
                     '/exams/schedule': MOCK.MOCK_EXAM_SCHEDULE,
                     '/exams/results': MOCK.MOCK_EXAM_RESULTS,
                     '/transcript': MOCK.MOCK_TRANSCRIPT,
+                    '/transcript/summary': MOCK.MOCK_ACADEMIC_STATS,
+                    '/transcript/details': MOCK.MOCK_SEMESTER_DATA,
+                    '/faculty/units': MOCK.MOCK_UNITS,
                     '/profile/stats': MOCK.MOCK_ACADEMIC_STATS,
                     '/cafeteria/menu': MOCK.MOCK_CAFETERIA,
                     '/library/books': MOCK.MOCK_BOOKS,
@@ -82,7 +85,7 @@ apiClient.interceptors.response.use(
                 }
 
                 // 🔍 Dynamic Detail Route Handling (e.g., /announcements/1)
-                if (url?.startsWith('/announcements/') || url?.startsWith('/news/') || url?.startsWith('/events/')) {
+                if (url?.startsWith('/announcements/') || url?.startsWith('/news/') || url?.startsWith('/events/') || url?.startsWith('/faculty/units/')) {
                     const parts = url.split('/');
                     const id = parts[parts.length - 1];
                     let detailData = null;
@@ -93,6 +96,8 @@ apiClient.interceptors.response.use(
                         detailData = MOCK.MOCK_NEWS.find(n => n.id === id);
                     } else if (url.startsWith('/events/')) {
                         detailData = MOCK.MOCK_EVENTS.find(e => e.id === id);
+                    } else if (url.startsWith('/faculty/units/')) {
+                        detailData = MOCK.MOCK_UNIT_DETAILS[id];
                     }
 
                     if (detailData) {
