@@ -5,6 +5,7 @@
 
 export type RootStackParamList = {
     Splash: undefined;
+    Onboarding: undefined;
     Auth: undefined;
     MainDrawer: undefined;
     Main: undefined;
