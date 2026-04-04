@@ -11,6 +11,7 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { theme } from '../../config/theme';
 import { useAuthStore } from '../../store/authStore';
+import { useAppStore } from '../../store/appStore';
 import { RootStackParamList } from '../../types/navigation';
 import { moderateScale, verticalScale } from '../../utils/responsive';
 
@@ -18,6 +19,7 @@ export const SplashScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const { isAuthenticated } = useAuthStore();
+    const { hasCompletedOnboarding } = useAppStore();
     const [fadeAnim] = useState(new Animated.Value(0));
     const [scaleAnim] = useState(new Animated.Value(0.8));
 
@@ -39,9 +41,11 @@ export const SplashScreen: React.FC = () => {
         // 2 saniye sonra yönlendirme yap
         const timer = setTimeout(() => {
             if (isAuthenticated) {
-                navigation.navigate('Main');
+                navigation.navigate('Main' as any);
+            } else if (!hasCompletedOnboarding) {
+                navigation.navigate('Onboarding' as any);
             } else {
-                navigation.navigate('Auth');
+                navigation.navigate('Auth' as any);
             }
         }, 2000);
 
