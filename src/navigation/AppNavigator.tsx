@@ -13,6 +13,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { CustomDrawerContent } from '../components/navigation/CustomDrawerContent';
 import { RootStackParamList, DrawerParamList } from '../types/navigation';
 import { viewport } from '../utils/responsive';
+import { OnboardingScreen } from '../screens/common/OnboardingScreen';
 
 import {
     ProfileScreen,
@@ -57,6 +58,7 @@ export const AppNavigator: React.FC = () => {
                     animation: 'fade',
                 }}>
                 <Stack.Screen name="Splash" component={SplashScreen} />
+                <Stack.Screen name="Onboarding" component={OnboardingScreen} />
                 <Stack.Screen name="Auth" component={AuthNavigator} />
                 <Stack.Screen name="Main" component={MainDrawerNavigator} />
                 <Stack.Screen name="Profile" component={ProfileScreen} />
