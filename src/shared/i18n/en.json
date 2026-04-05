@@ -1,0 +1,33 @@
+﻿{
+    "common": {
+        "ok": "OK",
+        "cancel": "Cancel",
+        "save": "Save",
+        "error": "Error",
+        "loading": "Loading...",
+        "retry": "Retry",
+        "apiError": "An error occurred. Please try again."
+    },
+    "dashboard": {
+        "title": "Panel",
+        "announcements": "Announcements",
+        "news": "News",
+        "events": "Events"
+    },
+    "news": {
+        "detail": "News Detail",
+        "views": "Views",
+        "date": "Date",
+        "back": "Back",
+        "placeholder_snippet": "This important development organized by our university is of great importance for academic and local communities.",
+        "placeholder_body": "Within the scope of the visit, academic cooperation, joint projects and regional development-oriented strategic studies between the two universities were discussed. Our Rector expressed his thanks to the guest delegation for their kind visit and stated that they will continue to work in solidarity to increase the quality of education in our region.\n\nDuring the meeting, ideas were also exchanged on issues such as the development of university campuses, expanding the scope of student exchange programs and sharing technological infrastructure. The visit ended with the presentation of mutual gifts and a souvenir photo taken in memory of the day."
+    },
+    "transcript": {
+        "title": "Academic Transcript",
+        "loadError": "Failed to load transcript.",
+        "summary": "Academic Summary",
+        "gpa": "Overall GPA",
+        "totalAkts": "Completed ECTS",
+        "activeSemester": "Active Semester"
+    }
+}
