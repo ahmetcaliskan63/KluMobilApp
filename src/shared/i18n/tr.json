@@ -1,0 +1,33 @@
+﻿{
+    "common": {
+        "ok": "Tamam",
+        "cancel": "İptal",
+        "save": "Kaydet",
+        "error": "Hata",
+        "loading": "Yükleniyor...",
+        "retry": "Tekrar Dene",
+        "apiError": "Bir hata oluştu. Lütfen tekrar deneyin."
+    },
+    "dashboard": {
+        "title": "Panel",
+        "announcements": "Duyurular",
+        "news": "Haberler",
+        "events": "Etkinlikler"
+    },
+    "news": {
+        "detail": "Haber Detayı",
+        "views": "Görüntülenme",
+        "date": "Tarih",
+        "back": "Geri",
+        "placeholder_snippet": "Üniversitemiz tarafından düzenlenen bu önemli gelişme, akademik ve yerel topluluklar için büyük önem taşımaktadır.",
+        "placeholder_body": "Ziyaret kapsamında iki üniversite arasında akademik iş birliği, ortak projeler ve bölgesel kalkınma odaklı stratejik çalışmalar ele alındı. Rektörümüz, nazik ziyaretlerinden dolayı konuk heyete teşekkürlerini ileterek, bölgemizin eğitim kalitesini artırmak için dayanışma içerisinde çalışmaya devam edeceklerini belirtti.\n\nGörüşmede ayrıca üniversite kampüslerinin geliştirilmesi, öğrenci değişim programlarının kapsamının genişletilmesi ve teknolojik altyapı paylaşımı gibi konular üzerinde fikir alışverişinde bulunuldu. Ziyaret, karşılıklı hediye takdimi ve günün anısına çekilen hatıra fotoğrafı ile sona erdi."
+    },
+    "transcript": {
+        "title": "Akademik Transkript",
+        "loadError": "Transkript yüklenemedi.",
+        "summary": "Akademik Özet",
+        "gpa": "Genel Ortalama",
+        "totalAkts": "Tamamlanan AKTS",
+        "activeSemester": "Aktif Dönem"
+    }
+}

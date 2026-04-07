@@ -1,0 +1,20 @@
+﻿{
+    "common": {
+        "error": "An error occurred. Please try again.",
+        "loading": "Loading...",
+        "retry": "Retry"
+    },
+    "dashboard": {
+        "announcements": "Announcements",
+        "news": "News",
+        "events": "Events"
+    },
+    "transcript": {
+        "title": "Academic Transcript",
+        "loadError": "Failed to load transcript.",
+        "summary": "Academic Summary",
+        "gpa": "Overall GPA",
+        "totalAkts": "Completed ECTS",
+        "activeSemester": "Active Semester"
+    }
+}
