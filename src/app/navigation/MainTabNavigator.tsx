@@ -1,26 +1,26 @@
-import React from 'react';
+﻿import React from 'react';
 import { Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { DashboardScreen } from '../screens/home/DashboardScreen';
-import { ScheduleScreen } from '../screens/schedule/ScheduleScreen';
-import { OBSScreen } from '../screens/home/OBSScreen';
-import { CourseDetailScreen } from '../screens/home/CourseDetailScreen';
-import { ExamDetailScreen } from '../screens/home/ExamDetailScreen';
-import { NewsDetailScreen } from '../screens/home/NewsDetailScreen';
-import { AnnouncementDetailScreen } from '../screens/home/AnnouncementDetailScreen';
-import { EventDetailScreen } from '../screens/home/EventDetailScreen';
-import { CafeteriaScreen } from '../screens/cafeteria/CafeteriaScreen';
-import { LibraryScreen } from '../screens/library/LibraryScreen';
-import { SettingsScreen } from '../screens/settings/SettingsScreen';
-import { ProfileScreen } from '../screens/profile/ProfileScreen';
+import { DashboardScreen } from '@/features/home/screens/DashboardScreen';
+import { ScheduleScreen } from '@/features/schedule/screens/ScheduleScreen';
+import { OBSScreen } from '@/features/home/screens/OBSScreen';
+import { CourseDetailScreen } from '@/features/home/screens/CourseDetailScreen';
+import { ExamDetailScreen } from '@/features/home/screens/ExamDetailScreen';
+import { NewsDetailScreen } from '@/features/home/screens/NewsDetailScreen';
+import { AnnouncementDetailScreen } from '@/features/home/screens/AnnouncementDetailScreen';
+import { EventDetailScreen } from '@/features/home/screens/EventDetailScreen';
+import { CafeteriaScreen } from '@/features/cafeteria/screens/CafeteriaScreen';
+import { LibraryScreen } from '@/features/library/screens/LibraryScreen';
+import { SettingsScreen } from '@/features/settings/screens/SettingsScreen';
+import { ProfileScreen } from '@/features/profile/screens/ProfileScreen';
 
-import { MainTabParamList, HomeStackParamList } from '../types/navigation';
-import { TabBarIcon } from '../components/navigation/TabBarIcon';
-import { NavigationHeaderLeft, NavigationHeaderRight } from '../components/navigation/NavigationHeader';
-import { FloatingMenu } from '../components/navigation/FloatingMenu';
+import { MainTabParamList, HomeStackParamList } from '@/shared/types/navigation';
+import { TabBarIcon } from '@/shared/components/navigation/TabBarIcon';
+import { NavigationHeaderLeft, NavigationHeaderRight } from '@/shared/components/navigation/NavigationHeader';
+import { FloatingMenu } from '@/shared/components/navigation/FloatingMenu';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 const HomeStack = createNativeStackNavigator<HomeStackParamList>();
@@ -137,7 +137,7 @@ export const MainTabNavigator: React.FC = () => {
                     listeners={({ navigation }) => ({
                         tabPress: (e) => {
                             e.preventDefault();
-                            navigation.navigate('HomeStack', { 
+                            navigation.navigate('HomeStack', {
                                 screen: 'Dashboard',
                                 params: { resetToNews: Date.now() }
                             });
@@ -197,3 +197,4 @@ export const MainTabNavigator: React.FC = () => {
         </>
     );
 };
+

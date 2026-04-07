@@ -1,34 +1,35 @@
 /**
  * App Navigator
- * Ana navigasyon yapısı
+ * Ana navigasyon yapÄ±sÄ±
  */
 
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { SplashScreen } from '../screens/common/SplashScreen';
+import { SplashScreen } from '@/features/splash/screens/SplashScreen';
 import { MainTabNavigator } from './MainTabNavigator';
 import { AuthNavigator } from './AuthNavigator';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { CustomDrawerContent } from '../components/navigation/CustomDrawerContent';
-import { RootStackParamList, DrawerParamList } from '../types/navigation';
-import { viewport } from '../utils/responsive';
-import { OnboardingScreen } from '../screens/common/OnboardingScreen';
+import { CustomDrawerContent } from '@/shared/components/navigation/CustomDrawerContent';
+import { RootStackParamList, DrawerParamList } from '@/shared/types/navigation';
+import { viewport } from '@/shared/utils/responsive';
+import { OnboardingScreen } from '@/features/onboarding/screens/OnboardingScreen';
 
 import {
     ProfileScreen,
     DigitalIDScreen,
-    ProfileDetailScreen
-} from '../screens/profile';
-import { TranscriptScreen } from '../screens/transcript';
-import { AnnouncementsScreen } from '../screens/announcements/AnnouncementsScreen';
-import { NotificationsScreen } from '../screens/notifications/NotificationsScreen';
-import AcademicCalendarScreen from '../screens/academic-calendar/AcademicCalendarScreen';
-import { ExamScheduleScreen } from '../screens/exam-schedule/ExamScheduleScreen';
-import { ExamResultsScreen } from '../screens/exam-results/ExamResultsScreen';
-import { FacultyScreen } from '../screens/faculty/FacultyScreen';
-import { UnitsScreen } from '../screens/units/UnitsScreen';
-import { UnitDetailScreen } from '../screens/units/UnitDetailScreen';
+    ProfileDetailScreen,
+    LeaveStatusScreen
+} from '@/features/profile/screens';
+import { TranscriptScreen } from '@/features/transcript/screens/TranscriptScreen';
+import { AnnouncementsScreen } from '@/features/announcements/screens/AnnouncementsScreen';
+import { NotificationsScreen } from '@/features/notifications/screens/NotificationsScreen';
+import AcademicCalendarScreen from '@/features/academic/screens/AcademicCalendarScreen';
+import { ExamScheduleScreen } from '@/features/exams/screens/ExamScheduleScreen';
+import { ExamResultsScreen } from '@/features/exams/screens/ExamResultsScreen';
+import { FacultyScreen } from '@/features/faculty/screens/FacultyScreen';
+import { UnitsScreen } from '@/features/university/screens/UnitsScreen';
+import { UnitDetailScreen } from '@/features/university/screens/UnitDetailScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Drawer = createDrawerNavigator<DrawerParamList>();
@@ -136,7 +137,16 @@ export const AppNavigator: React.FC = () => {
                         animation: 'slide_from_right'
                     }}
                 />
+                <Stack.Screen
+                    name="LeaveStatus"
+                    component={LeaveStatusScreen}
+                    options={{
+                        headerShown: false,
+                        animation: 'slide_from_right'
+                    }}
+                />
             </Stack.Navigator>
         </NavigationContainer>
     );
 };
+

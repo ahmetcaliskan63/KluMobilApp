@@ -1,8 +1,8 @@
-import React from 'react';
+﻿import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { LoginScreen } from '../screens/auth/LoginScreen';
-import { ForgotPasswordScreen } from '../screens/auth/ForgotPasswordScreen';
-import { AuthStackParamList } from '../types/navigation';
+import { LoginScreen } from '@/features/auth/screens/LoginScreen';
+import { ForgotPasswordScreen } from '@/features/auth/screens/ForgotPasswordScreen';
+import { AuthStackParamList } from '@/shared/types/navigation';
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
 
@@ -19,3 +19,4 @@ export const AuthNavigator: React.FC = () => {
         </Stack.Navigator>
     );
 };
+
