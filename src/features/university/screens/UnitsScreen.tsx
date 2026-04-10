@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, ComponentProps } from 'react';
 import {
     View,
     Text,
@@ -18,25 +18,25 @@ import { useFetch } from '@/shared/hooks/useFetch';
 import { Unit } from '@/shared/types/models';
 import { Theme, spacing } from '@/core/theme/theme';
 
-const CATEGORY_STYLES: Record<string, { color: string; icon: string; bg: string }> = {
+const CATEGORY_STYLES: Record<string, { color: string; icon: ComponentProps<typeof Icon>['name']; bg: string }> = {
     'Birim': { color: '#6366F1', icon: 'layers-outline', bg: '#EEF2FF' },
-    'Enstit': { color: '#F59E0B', icon: 'school-outline', bg: '#FFFBEB' },
-    'Faklte': { color: '#10B981', icon: 'business-outline', bg: '#ECFDF5' },
-    'Yksekokul': { color: '#EC4899', icon: 'ribbon-outline', bg: '#FDF2F8' },
-    'Meslek Yksekokulu': { color: '#8B5CF6', icon: 'construct-outline', bg: '#F5F3FF' },
+    'Enstitü': { color: '#F59E0B', icon: 'school-outline', bg: '#FFFBEB' },
+    'Fakülte': { color: '#10B981', icon: 'business-outline', bg: '#ECFDF5' },
+    'Yüksekokul': { color: '#EC4899', icon: 'ribbon-outline', bg: '#FDF2F8' },
+    'Meslek Yüksekokulu': { color: '#8B5CF6', icon: 'construct-outline', bg: '#F5F3FF' },
 };
 
 const CATEGORY_TITLES: Record<string, string> = {
-    'Birim': 'DAR BRMLER',
-    'Enstit': 'ENSTTLER',
-    'Faklte': 'FAKLTELER',
-    'Yksekokul': 'YKSEKOKULLAR',
-    'Meslek Yksekokulu': 'MESLEK YKSEKOKULLARI',
+    'Birim': 'İDARİ BİRİMLER',
+    'Enstitü': 'ENSTİTÜLER',
+    'Fakülte': 'FAKÜLTELER',
+    'Yüksekokul': 'YÜKSEKOKULLAR',
+    'Meslek Yüksekokulu': 'MESLEK YÜKSEKOKULLARI',
 };
 
-const UnitCard: React.FC<{ item: Unit; index: number; onPress: () => void; theme: Theme }> = ({ item, index, onPress, theme }) => {
-    const style = CATEGORY_STYLES[item.type] || CATEGORY_STYLES['Birim'];
-    const s = styles(theme);
+const UnitCard: React.FC<{ item: Unit; index: number; onPress: () => void; theme: Theme; isDarkMode: boolean }> = ({ item, index, onPress, theme, isDarkMode }) => {
+    const categoryStyle = CATEGORY_STYLES[item.type] || CATEGORY_STYLES['Birim'];
+    const s = styles(theme, isDarkMode);
     
     const translateY = useRef(new Animated.Value(20)).current;
     const opacity = useRef(new Animated.Value(0)).current;
@@ -65,11 +65,11 @@ const UnitCard: React.FC<{ item: Unit; index: number; onPress: () => void; theme
                 activeOpacity={0.9}
                 onPress={onPress}
             >
-                <View style={[s.typeIndicator, { backgroundColor: style.color }]} />
+                <View style={[s.typeIndicator, { backgroundColor: categoryStyle.color }]} />
                 
                 <View style={s.cardInner}>
-                    <View style={[s.iconBox, { backgroundColor: style.bg }]}>
-                        <Icon name={style.icon} size={20} color={style.color} />
+                    <View style={[s.iconBox, { backgroundColor: isDarkMode ? categoryStyle.color + '15' : categoryStyle.bg }]}>
+                        <Icon name={categoryStyle.icon} size={20} color={categoryStyle.color} />
                     </View>
                     
                     <View style={s.textContainer}>
@@ -77,7 +77,7 @@ const UnitCard: React.FC<{ item: Unit; index: number; onPress: () => void; theme
                     </View>
 
                     <View style={s.chevronBox}>
-                        <Icon name="chevron-forward" size={16} color="#475569" />
+                        <Icon name="chevron-forward" size={16} color={isDarkMode ? theme.colors.textSecondary : '#475569'} />
                     </View>
                 </View>
             </TouchableOpacity>
@@ -87,10 +87,10 @@ const UnitCard: React.FC<{ item: Unit; index: number; onPress: () => void; theme
 
 export const UnitsScreen: React.FC = () => {
     const navigation = useNavigation<any>();
-    const { theme } = useAppTheme();
+    const { theme, isDarkMode } = useAppTheme();
     const insets = useSafeAreaInsets();
     const { data: units, loading } = useFetch<Unit[]>('/faculty/units');
-    const s = styles(theme);
+    const s = styles(theme, isDarkMode);
 
     if (loading) {
         return (
@@ -104,7 +104,7 @@ export const UnitsScreen: React.FC = () => {
     const groupUnitsBySection = () => {
         if (!units) return [];
         const sections: { title: string; data: Unit[] }[] = [];
-        const order = ['Birim', 'Enstit', 'Faklte', 'Yksekokul', 'Meslek Yksekokulu'];
+        const order = ['Birim', 'Enstitü', 'Fakülte', 'Yüksekokul', 'Meslek Yüksekokulu'];
 
         order.forEach(type => {
             const items = units.filter(u => u.type === type);
@@ -127,7 +127,7 @@ export const UnitsScreen: React.FC = () => {
             {/* ?? Premium Minimal Header */}
             <View style={[s.header, { paddingTop: insets.top + spacing.sm }]}>
                 <LinearGradient
-                    colors={['#182958', '#2A3F7A']}
+                    colors={isDarkMode ? ['#0F172A', '#020617'] : ['#182958', '#2A3F7A']}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     style={StyleSheet.absoluteFill}
@@ -155,6 +155,7 @@ export const UnitsScreen: React.FC = () => {
                         item={item} 
                         index={index} 
                         theme={theme}
+                        isDarkMode={isDarkMode}
                         onPress={() => navigation.navigate('UnitDetail', { unitId: item.id })}
                     />
                 )}
@@ -171,10 +172,10 @@ export const UnitsScreen: React.FC = () => {
     );
 };
 
-const styles = (_theme: Theme) => StyleSheet.create({
+const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F8FAFC',
+        backgroundColor: theme.colors.background,
     },
     header: {
         borderBottomLeftRadius: 30,
@@ -222,27 +223,27 @@ const styles = (_theme: Theme) => StyleSheet.create({
     sectionTitleText: {
         fontSize: moderateScale(12),
         fontWeight: '900',
-        color: '#182958',
+        color: isDarkMode ? theme.colors.primary : '#182958',
         letterSpacing: 2,
     },
     sectionDivider: {
         flex: 1,
         height: 1.2,
-        backgroundColor: '#CBD5E1',
+        backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : '#CBD5E1',
     },
     cardContainer: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
         borderRadius: 20,
         marginBottom: moderateScale(10),
         flexDirection: 'row',
         overflow: 'hidden',
         elevation: 5,
-        shadowColor: '#182958',
+        shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.12,
+        shadowOpacity: isDarkMode ? 0.2 : 0.12,
         shadowRadius: 10,
         borderWidth: 1.2,
-        borderColor: '#94A3B8', 
+        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : '#E2E8F0', 
     },
     typeIndicator: {
         width: 4,
@@ -268,14 +269,14 @@ const styles = (_theme: Theme) => StyleSheet.create({
     unitNameText: {
         fontSize: moderateScale(14),
         fontWeight: '800',
-        color: '#0F172A',
+        color: theme.colors.text,
         lineHeight: 18,
     },
     chevronBox: {
         width: 28,
         height: 28,
         borderRadius: 8,
-        backgroundColor: '#F8FAFC',
+        backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.03)' : '#F8FAFC',
         justifyContent: 'center',
         alignItems: 'center',
     },

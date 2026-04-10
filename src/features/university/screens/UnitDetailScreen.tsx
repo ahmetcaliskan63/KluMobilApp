@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, ComponentProps } from 'react';
 import {
     View,
     Text,
@@ -7,6 +7,7 @@ import {
     StatusBar,
     Animated,
     Linking,
+    ActivityIndicator,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Ionicons as Icon } from '@expo/vector-icons';
@@ -16,27 +17,26 @@ import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { moderateScale, verticalScale } from '@/shared/utils/responsive';
 import { useFetch } from '@/shared/hooks/useFetch';
 import { UnitDetail } from '@/shared/types/models';
-import { theme as AppTheme } from '@/core/theme/theme';
 
-const ROW_CONFIG: Record<string, { icon: string; label: string; color: string; bg: string }> = {
+const ROW_CONFIG: Record<string, { icon: ComponentProps<typeof Icon>['name']; label: string; color: string; bg: string }> = {
     phone: { icon: 'call', label: 'TELEFON HATTI', color: '#6366F1', bg: '#EEF2FF' },
     fax: { icon: 'print', label: 'FAKS NUMARASI', color: '#64748B', bg: '#F1F5F9' },
-    mail: { icon: 'mail', label: 'E-POSTA ADRES', color: '#10B981', bg: '#ECFDF5' },
-    staff: { icon: 'people', label: 'AKADEMK & DAR KADRO', color: '#8B5CF6', bg: '#F5F3FF' },
-    web: { icon: 'globe', label: 'RESM WEB STES', color: '#06B6D4', bg: '#ECFEFF' },
-    address: { icon: 'location', label: 'YERLEKE BLGS', color: '#F43F5E', bg: '#FFF1F2' },
+    mail: { icon: 'mail', label: 'E-POSTA ADRESİ', color: '#10B981', bg: '#ECFDF5' },
+    staff: { icon: 'people', label: 'AKADEMİK & İDARİ KADRO', color: '#8B5CF6', bg: '#F5F3FF' },
+    web: { icon: 'globe', label: 'RESMİ WEB SİTESİ', color: '#06B6D4', bg: '#ECFEFF' },
+    address: { icon: 'location', label: 'YERLEŞKE BİLGİSİ', color: '#F43F5E', bg: '#FFF1F2' },
 };
 
 export const UnitDetailScreen: React.FC = () => {
     const navigation = useNavigation<any>();
     const route = useRoute<any>();
     const { unitId } = route.params;
-    const { theme } = useAppTheme();
+    const { theme, isDarkMode } = useAppTheme();
     const insets = useSafeAreaInsets();
 
     const { data: unit, loading } = useFetch<UnitDetail>(`/faculty/units/${unitId}`);
 
-    const s = styles(theme);
+    const s = styles(theme, isDarkMode);
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const slideAnim = useRef(new Animated.Value(40)).current;
 
@@ -55,8 +55,18 @@ export const UnitDetailScreen: React.FC = () => {
 
     if (loading) {
         return (
-            <View style={[s.container, { justifyContent: 'center', alignItems: 'center' }]}>
-                <Text style={{ color: '#182958', fontSize: 16, fontWeight: '700' }}>Bilgiler Hazrlanyor...</Text>
+            <View style={[s.container, { justifyContent: 'center', alignItems: 'center', gap: 15 }]}>
+                <Animated.View style={{ opacity: fadeAnim }}>
+                    <ActivityIndicator size="large" color={theme.colors.primary} />
+                </Animated.View>
+                <Text style={{
+                    color: isDarkMode ? theme.colors.textSecondary : '#1E293B',
+                    fontSize: moderateScale(15),
+                    fontWeight: '600',
+                    letterSpacing: 0.5
+                }}>
+                    Bilgiler Hazırlanıyor...
+                </Text>
             </View>
         );
     }
@@ -71,7 +81,7 @@ export const UnitDetailScreen: React.FC = () => {
                 onPress={onPress}
                 activeOpacity={onPress ? 0.7 : 1}
             >
-                <View style={[s.rowIconContainer, { backgroundColor: config.bg }]}>
+                <View style={[s.rowIconContainer, { backgroundColor: isDarkMode ? config.color + '20' : config.bg }]}>
                     <Icon name={config.icon} size={20} color={config.color} />
                 </View>
                 <View style={s.rowTextContent}>
@@ -80,7 +90,7 @@ export const UnitDetailScreen: React.FC = () => {
                         {value}
                     </Text>
                 </View>
-                {onPress && <Icon name="chevron-forward" size={18} color="#CBD5E1" />}
+                {onPress && <Icon name="chevron-forward" size={18} color={isDarkMode ? 'rgba(255, 255, 255, 0.2)' : '#CBD5E1'} />}
             </TouchableOpacity>
         );
     };
@@ -91,7 +101,7 @@ export const UnitDetailScreen: React.FC = () => {
 
             <View style={s.headerContainer}>
                 <LinearGradient
-                    colors={['#182958', '#4F46E5']}
+                    colors={isDarkMode ? ['#0F172A', '#020617'] : ['#182958', '#4F46E5']}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     style={[s.headerGradient, { paddingTop: insets.top + 20 }]}
@@ -113,8 +123,11 @@ export const UnitDetailScreen: React.FC = () => {
             >
                 <View style={s.identityCard}>
                     <View style={s.unitIconHousing}>
-                        <LinearGradient colors={['#F8FAFC', '#E2E8F0']} style={s.iconInner}>
-                            <Icon name="business" size={moderateScale(40)} color="#182958" />
+                        <LinearGradient
+                            colors={isDarkMode ? ['#1e293b', '#0f172a'] : ['#F8FAFC', '#E2E8F0']}
+                            style={s.iconInner}
+                        >
+                            <Icon name="business" size={moderateScale(40)} color={isDarkMode ? theme.colors.primary : '#182958'} />
                         </LinearGradient>
                     </View>
 
@@ -133,17 +146,17 @@ export const UnitDetailScreen: React.FC = () => {
                 </View>
 
                 <TouchableOpacity
-                    style={s.mapBtnShadow}
+                    style={[s.mapBtnShadow, { shadowColor: isDarkMode ? theme.colors.primary : '#182958' }]}
                     onPress={() => handleLink(`https://www.google.com/maps/search/?api=1&query=${unit.location.latitude},${unit.location.longitude}`)}
                 >
                     <LinearGradient
-                        colors={['#182958', '#3B82F6']}
+                        colors={isDarkMode ? [theme.colors.primary, '#4F46E5'] : ['#182958', '#3B82F6']}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 0 }}
                         style={s.mapBtnStyle}
                     >
                         <Icon name="map" size={22} color="#FFF" />
-                        <Text style={s.mapBtnTextStyle}>Haritada Konumu Grntle</Text>
+                        <Text style={s.mapBtnTextStyle}>Haritada Konumu Görüntüle</Text>
                         <Icon name="chevron-forward" size={18} color="rgba(255,255,255,0.5)" />
                     </LinearGradient>
                 </TouchableOpacity>
@@ -152,10 +165,10 @@ export const UnitDetailScreen: React.FC = () => {
     );
 };
 
-const styles = (theme: any) => StyleSheet.create({
+const styles = (theme: any, isDarkMode: boolean) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F8FAFC',
+        backgroundColor: theme.colors.background,
     },
     headerContainer: {
         height: verticalScale(110),
@@ -190,29 +203,29 @@ const styles = (theme: any) => StyleSheet.create({
         paddingHorizontal: 20,
     },
     identityCard: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
         borderRadius: 24,
         padding: 20,
         alignItems: 'center',
         elevation: 12,
-        shadowColor: '#182958',
+        shadowColor: '#000',
         shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: 0.15,
+        shadowOpacity: isDarkMode ? 0.3 : 0.15,
         shadowRadius: 15,
         marginBottom: 16,
         borderWidth: 1.2,
-        borderColor: '#94A3B8',
+        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.08)' : '#E2E8F0',
     },
     unitIconHousing: {
         width: moderateScale(70),
         height: moderateScale(70),
         borderRadius: 24,
         padding: 3,
-        backgroundColor: '#FFFFFF',
-        marginTop: verticalScale(-30),
+        backgroundColor: theme.colors.card,
+        marginTop: verticalScale(-35),
         elevation: 8,
         borderWidth: 1.5,
-        borderColor: '#94A3B8',
+        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.15)' : '#E2E8F0',
     },
     iconInner: {
         flex: 1,
@@ -222,33 +235,33 @@ const styles = (theme: any) => StyleSheet.create({
     },
     identityInfo: {
         alignItems: 'center',
-        marginTop: 10,
+        marginTop: 12,
     },
     unitFullName: {
         fontSize: moderateScale(19),
         fontWeight: '900',
-        color: '#0F172A',
+        color: theme.colors.text,
         textAlign: 'center',
-        lineHeight: 24,
+        lineHeight: 26,
     },
     dataBox: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
         borderRadius: 24,
         padding: 10,
         elevation: 6,
-        shadowColor: '#64748B',
-        shadowOpacity: 0.1,
+        shadowColor: '#000',
+        shadowOpacity: isDarkMode ? 0.2 : 0.1,
         shadowRadius: 12,
         borderWidth: 1.2,
-        borderColor: '#94A3B8',
+        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.08)' : '#E2E8F0',
     },
     infoRow: {
         flexDirection: 'row',
         alignItems: 'center',
         paddingVertical: 16,
-        paddingHorizontal: 10,
-        borderBottomWidth: 1.5,
-        borderBottomColor: '#CBD5E1',
+        paddingHorizontal: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : '#F1F5F9',
     },
     rowIconContainer: {
         width: 44,
@@ -263,27 +276,26 @@ const styles = (theme: any) => StyleSheet.create({
         gap: 2,
     },
     rowLabelText: {
-        fontSize: moderateScale(8),
+        fontSize: moderateScale(9),
         fontWeight: '800',
-        color: '#64748B',
-        letterSpacing: 0.8,
+        color: theme.colors.textSecondary,
+        letterSpacing: 1,
     },
     rowValueText: {
         fontSize: moderateScale(14),
         fontWeight: '700',
-        color: '#334155',
+        color: theme.colors.text,
         lineHeight: 20,
     },
     linkTextDecoration: {
-        color: '#182958',
+        color: isDarkMode ? theme.colors.primary : '#182958',
         textDecorationLine: 'underline',
     },
     mapBtnShadow: {
-        marginTop: 16,
+        marginTop: 20,
         borderRadius: 20,
         overflow: 'hidden',
         elevation: 8,
-        shadowColor: '#182958',
         shadowOffset: { width: 0, height: 8 },
         shadowOpacity: 0.3,
         shadowRadius: 12,
