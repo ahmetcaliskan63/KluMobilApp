@@ -11,25 +11,25 @@ interface Props {
 }
 
 export const AcademicSummary: React.FC<Props> = ({ data }) => {
-    const { theme } = useAppTheme();
-    const s = styles(theme);
+    const { theme, isDarkMode } = useAppTheme();
+    const s = styles(theme, isDarkMode);
 
     return (
         <View style={s.summarySection}>
             <View style={s.semesterCard}>
                 {/* Unified Header */}
                 <LinearGradient
-                    colors={['#F8FAFC', '#F1F5F9']}
+                    colors={isDarkMode ? ['rgba(255, 255, 255, 0.05)', 'rgba(255, 255, 255, 0.02)'] : ['#F8FAFC', '#F1F5F9']}
                     style={s.semesterHeader}
                 >
                     <View style={s.semesterTitleWrapper}>
-                        <View style={[s.semesterBlueIndicator, { backgroundColor: '#182958' }]} />
+                        <View style={[s.semesterBlueIndicator, { backgroundColor: isDarkMode ? theme.colors.primary : '#182958' }]} />
                         <View>
-                            <Text style={s.semesterTitleText}>GENEL AKADEMK BLGLER</Text>
-                            <Text style={s.semesterSubtitleText}>renim Durumu zeti</Text>
+                            <Text style={s.semesterTitleText}>GENEL AKADEMİK BİLGİLER</Text>
+                            <Text style={s.semesterSubtitleText}>Öğrenim Durumu Özeti</Text>
                         </View>
                     </View>
-                    <Icon name="stats-chart" size={20} color="#182958" />
+                    <Icon name="stats-chart" size={20} color={isDarkMode ? theme.colors.primary : '#182958'} />
                 </LinearGradient>
 
                 {/* Content Area */}
@@ -69,9 +69,7 @@ export const AcademicSummary: React.FC<Props> = ({ data }) => {
 const localStyles = StyleSheet.create({
     contentGrid: {
         flexDirection: 'row',
-        paddingVertical: 24,
-        paddingHorizontal: 16,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: 'transparent',
     }
 });
 

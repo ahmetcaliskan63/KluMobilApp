@@ -14,15 +14,14 @@ import { SemesterCard } from './components/SemesterCard';
  * Senior-level modularized screen for viewing academic performance.
  */
 export const TranscriptScreen: React.FC = () => {
-    const { theme } = useAppTheme();
-    const s = styles(theme);
+    const { theme, isDarkMode } = useAppTheme();
+    const s = styles(theme, isDarkMode);
 
     return (
         <View style={s.container}>
             <StatusBar
                 barStyle="light-content"
-                translucent
-                backgroundColor="transparent"
+                backgroundColor="#182958"
             />
 
             <TranscriptHeader />
