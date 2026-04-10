@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, ComponentProps } from 'react';
 import {
     View,
     Text,
@@ -8,114 +8,214 @@ import {
     Platform,
     Switch,
     StatusBar,
-    Animated
+    Animated,
+    Alert,
+    Modal,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons as Icon } from '@expo/vector-icons';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { useThemeStore } from '@/shared/store/themeStore';
-import { Theme, spacing } from '@/core/theme/theme';
-import { moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
+import { useAuthStore } from '@/shared/store/authStore';
+import { useAppSettingsStore } from '@/shared/store/appSettingsStore';
+import { Theme, spacing, borderRadius, shadows } from '@/core/theme/theme';
+import { moderateScale, verticalScale } from '@/shared/utils/responsive';
 
 export const SettingsScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
-    const navigation = useNavigation();
     const { theme } = useAppTheme();
     const { isDarkMode, toggleDarkMode } = useThemeStore();
+    const { logout } = useAuthStore();
+    const { language, setLanguage } = useAppSettingsStore();
     const s = styles(theme);
 
-    const [fadeAnim] = React.useState(new Animated.Value(0));
+    const [showLangModal, setShowLangModal] = useState(false);
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+    const translateY = useRef(new Animated.Value(20)).current;
 
-    React.useEffect(() => {
-        Animated.timing(fadeAnim, {
-            toValue: 1,
-            duration: 800,
-            useNativeDriver: true,
-        }).start();
+    useEffect(() => {
+        Animated.parallel([
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 600,
+                useNativeDriver: true,
+            }),
+            Animated.spring(translateY, {
+                toValue: 0,
+                friction: 8,
+                useNativeDriver: true,
+            })
+        ]).start();
     }, []);
 
+    const handleLogout = () => {
+        Alert.alert(
+            "Oturumu Kapat",
+            "Hesabınızdan çıkış yapmak istediğinize emin misiniz?",
+            [
+                { text: "Vazgeç", style: "cancel" },
+                {
+                    text: "Çıkış Yap",
+                    style: "destructive",
+                    onPress: () => {
+                        logout();
+                    }
+                }
+            ]
+        );
+    };
+
+
     const renderSettingItem = (
-        icon: string,
+        icon: ComponentProps<typeof Icon>['name'],
         title: string,
         subtitle: string,
+        iconColor?: string,
         rightElement?: React.ReactNode,
         onPress?: () => void
-    ) => (
-        <TouchableOpacity
-            style={s.settingCard}
-            onPress={onPress}
-            activeOpacity={0.7}
-        >
-            <View style={s.cardGlow} />
-            <View style={s.settingLeft}>
-                <View style={[s.iconWrapper, { backgroundColor: theme.colors.primary + '10' }]}>
-                    <Icon name={icon} size={22} color={theme.colors.primary} />
-                </View>
-                <View style={s.settingInfo}>
-                    <Text style={s.settingTitle}>{title}</Text>
-                    <Text style={s.settingSubtitle}>{subtitle}</Text>
-                </View>
-            </View>
-            <View style={s.settingRight}>
-                {rightElement || <Icon name="chevron-forward" size={18} color={theme.colors.primary} />}
-            </View>
-        </TouchableOpacity>
-    );
+    ) => {
+        // Press scale animation
+        const itemScale = useRef(new Animated.Value(1)).current;
+        const handlePressIn = () => Animated.spring(itemScale, { toValue: 0.97, useNativeDriver: true }).start();
+        const handlePressOut = () => Animated.spring(itemScale, { toValue: 1, useNativeDriver: true }).start();
+
+        return (
+            <Animated.View style={{ transform: [{ scale: itemScale }] }}>
+                <TouchableOpacity
+                    style={s.settingCard}
+                    onPress={onPress}
+                    onPressIn={handlePressIn}
+                    onPressOut={handlePressOut}
+                    activeOpacity={0.9}
+                >
+                    <View style={s.settingLeft}>
+                        <View style={[s.iconWrapper, { backgroundColor: (iconColor || theme.colors.primary) + '15' }]}>
+                            <Icon name={icon} size={22} color={iconColor || theme.colors.primary} />
+                        </View>
+                        <View style={s.settingInfo}>
+                            <Text style={[s.settingTitle, { color: theme.colors.text }]}>{title}</Text>
+                            <Text style={[s.settingSubtitle, { color: theme.colors.textSecondary }]}>{subtitle}</Text>
+                        </View>
+                    </View>
+                    <View style={s.settingRight}>
+                        {rightElement || <Icon name="chevron-forward" size={18} color={theme.colors.textLight} />}
+                    </View>
+                </TouchableOpacity>
+            </Animated.View>
+        );
+    };
 
     return (
         <View style={s.container}>
-            <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
+            <StatusBar barStyle="light-content" backgroundColor="#182958" />
 
-            <View style={s.meshBackground}>
-                <View style={[s.bgGlow, { top: '10%', right: '-10%', width: 300, height: 300, backgroundColor: 'rgba(59, 130, 246, 0.05)' }]} />
-                <View style={[s.bgGlow, { bottom: '20%', left: '-20%', width: 400, height: 400, backgroundColor: 'rgba(99, 102, 241, 0.03)' }]} />
-            </View>
+
 
             <ScrollView
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={[s.scrollContent, { paddingBottom: insets.bottom + 20 }]}
+                contentContainerStyle={[s.scrollContent, { paddingBottom: insets.bottom + 120 }]}
             >
-                <Animated.View style={{ opacity: fadeAnim }}>
-                    <Text style={s.sectionHeader}>UYGULAMA AYARLARI</Text>
+                <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY }] }}>
+                    {/* ACCOUNT SECTION */}
+                    <Text style={s.sectionHeader}>HESAP VE GÜVENLİK</Text>
+                    {renderSettingItem(
+                        "lock-closed-outline",
+                        "Şifre Değiştir",
+                        "Hesap güvenliğini artırın",
+                        undefined,
+                        undefined,
+                        () => Alert.alert("Bilgi", "Şifre değiştirme ekranı yakında eklenecek.")
+                    )}
+
+                    {/* APP SETTINGS SECTION */}
+                    <Text style={[s.sectionHeader, { marginTop: spacing.xl }]}>UYGULAMA TERCİHLERİ</Text>
                     {renderSettingItem(
                         "moon-outline",
                         "Koyu Tema",
-                        "Uygulama görünümünü değiştir",
+                        isDarkMode ? "Koyu mod aktif" : "Aydınlık mod aktif",
+                        "#8B5CF6",
                         <Switch
                             value={isDarkMode}
                             onValueChange={toggleDarkMode}
-                            trackColor={{ false: '#E0E0E0', true: theme.colors.primary }}
+                            trackColor={{ false: '#CBD5E1', true: theme.colors.primary }}
                             thumbColor={Platform.OS === 'android' ? '#FFFFFF' : undefined}
                         />
                     )}
-                    {renderSettingItem("notifications-outline", "Bildirimler", "Duyuru ve mesaj bildirimleri")}
-                    {renderSettingItem("language-outline", "Dil", "Türkçe (TR)")}
+                    {renderSettingItem(
+                        "notifications-outline",
+                        "Bildirimler",
+                        "Duyuru ve hatırlatıcıları yönet",
+                        "#F59E0B"
+                    )}
+                    {renderSettingItem(
+                        "language-outline",
+                        "Dil Seçimi",
+                        language === 'tr' ? "Türkçe (TR)" : "English (EN)",
+                        "#10B981",
+                        undefined,
+                        () => setShowLangModal(true)
+                    )}
 
-                    <Text style={[s.sectionHeader, { marginTop: spacing.xl }]}>DESTEK</Text>
-                    {renderSettingItem("help-circle-outline", "Yardım Merkezi", "Sıkça sorulan sorular")}
-                    {renderSettingItem("mail-outline", "Geri Bildirim", "Bize ulaşın")}
-                    {renderSettingItem("information-circle-outline", "Hakkında", "Sürüm 1.0.0")}
 
-                    <TouchableOpacity style={s.logoutBtnContainer}>
+                    {/* SUPPORT SECTION */}
+                    <Text style={[s.sectionHeader, { marginTop: spacing.xl }]}>BİLGİ VE DESTEK</Text>
+                    {renderSettingItem("help-circle-outline", "Yardım Merkezi", "Sıkça sorulan sorular", "#3B82F6")}
+                    {renderSettingItem("send-outline", "Geri Bildirim", "Bize önerilerinizi iletin", "#EC4899")}
+                    {renderSettingItem("document-text-outline", "Kullanım Koşulları", "Yasal bilgilendirmeler", isDarkMode ? "#94A3B8" : "#475569")}
+                    {renderSettingItem("shield-checkmark-outline", "Gizlilik Politikası", "KVKK ve veri güvenliği", "#10B981")}
+
+                    {/* LOGOUT */}
+                    <TouchableOpacity
+                        style={s.logoutBtn}
+                        onPress={handleLogout}
+                        activeOpacity={0.8}
+                    >
                         <LinearGradient
-                            colors={['#FFF1F1', '#FFF']}
+                            colors={['#EF4444', '#B91C1C']}
                             style={s.logoutGradient}
                         >
-                            <View style={s.logoutContent}>
-                                <View style={s.logoutIconWrapper}>
-                                    <Icon name="log-out-outline" size={20} color={theme.colors.error} />
-                                </View>
-                                <Text style={s.logoutText}>Hesaptan Çıkış Yap</Text>
-                            </View>
-                            <Icon name="chevron-forward" size={16} color={theme.colors.error + '40'} />
+                            <Icon name="log-out-outline" size={20} color="#FFFFFF" />
+                            <Text style={s.logoutText}>Oturumu Kapat</Text>
                         </LinearGradient>
                     </TouchableOpacity>
 
-                    <Text style={s.appVersion}>KLU Mobile - v1.0.0 (Build 2026)</Text>
+                    <Text style={s.appVersion}>KLU Mobile v1.0.5 (Build 2026)</Text>
+                    <Text style={s.copyright}>© 2026 Kırklareli Üniversitesi</Text>
                 </Animated.View>
             </ScrollView>
+
+            {/* Language Modal */}
+            <Modal
+                visible={showLangModal}
+                transparent={true}
+                animationType="fade"
+                onRequestClose={() => setShowLangModal(false)}
+            >
+                <TouchableOpacity
+                    style={s.modalOverlay}
+                    activeOpacity={1}
+                    onPress={() => setShowLangModal(false)}
+                >
+                    <View style={s.modalContent}>
+                        <Text style={s.modalTitle}>Dil Seçimi</Text>
+                        <TouchableOpacity
+                            style={[s.langOption, language === 'tr' && s.langOptionActive]}
+                            onPress={() => { setLanguage('tr'); setShowLangModal(false); }}
+                        >
+                            <Text style={[s.langText, language === 'tr' && s.langTextActive]}>Türkçe (TR)</Text>
+                            {language === 'tr' && <Icon name="checkmark-circle" size={20} color="#10B981" />}
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={[s.langOption, language === 'en' && s.langOptionActive]}
+                            onPress={() => { setLanguage('en'); setShowLangModal(false); }}
+                        >
+                            <Text style={[s.langText, language === 'en' && s.langTextActive]}>English (EN)</Text>
+                            {language === 'en' && <Icon name="checkmark-circle" size={20} color="#10B981" />}
+                        </TouchableOpacity>
+                    </View>
+                </TouchableOpacity>
+            </Modal>
         </View>
     );
 };
@@ -123,80 +223,33 @@ export const SettingsScreen: React.FC = () => {
 const styles = (theme: Theme) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F8F9FE',
-    },
-    header: {
-        paddingBottom: verticalScale(20),
-        borderBottomLeftRadius: 30,
-        borderBottomRightRadius: 30,
-        ...theme.shadows.medium,
-    },
-    headerContent: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: spacing.md,
-    },
-    headerIconButton: {
-        width: moderateScale(40),
-        height: moderateScale(40),
-        borderRadius: 20,
-        backgroundColor: 'rgba(255, 255, 255, 0.1)',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    headerTitle: {
-        fontSize: moderateScale(20),
-        fontWeight: '800',
-        color: '#FFFFFF',
-        letterSpacing: 0.5,
-    },
-    notifBadge: {
-        position: 'absolute',
-        top: 8,
-        right: 8,
-        width: 8,
-        height: 8,
-        borderRadius: 4,
-        backgroundColor: '#FF4D4D',
-        zIndex: 1,
-        borderWidth: 1.5,
-        borderColor: '#182958',
+        backgroundColor: theme.colors.background,
     },
     scrollContent: {
         paddingTop: spacing.xl,
         paddingHorizontal: spacing.md,
     },
     sectionHeader: {
-        fontSize: moderateScale(13),
+        fontSize: moderateScale(11),
         fontWeight: '900',
-        color: theme.colors.primary, // University Blue
-        letterSpacing: 2,
-        marginBottom: spacing.md,
+        color: theme.colors.textLight,
+        letterSpacing: 1.5,
+        marginBottom: spacing.sm,
+        marginTop: spacing.sm,
         paddingLeft: spacing.xs,
-        opacity: 0.9,
+        opacity: 0.8,
     },
     settingCard: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
         padding: spacing.md,
-        borderRadius: 20,
-        marginBottom: spacing.sm,
+        borderRadius: borderRadius.xl,
+        marginBottom: spacing.xs,
         ...theme.shadows.small,
-        borderWidth: 1.5,
-        borderColor: theme.colors.primary + '25', // Stronger university blue border
-        overflow: 'hidden',
-    },
-    cardGlow: {
-        position: 'absolute',
-        top: -20,
-        right: -20,
-        width: 60,
-        height: 60,
-        borderRadius: 30,
-        backgroundColor: theme.colors.primary + '03',
+        borderWidth: 1,
+        borderColor: theme.colors.border,
     },
     settingLeft: {
         flexDirection: 'row',
@@ -217,63 +270,93 @@ const styles = (theme: Theme) => StyleSheet.create({
     settingTitle: {
         fontSize: moderateScale(15),
         fontWeight: '700',
-        color: theme.colors.text,
         marginBottom: 2,
     },
     settingSubtitle: {
         fontSize: moderateScale(12),
-        color: theme.colors.textSecondary,
-        fontWeight: '400',
+        fontWeight: '500',
+        opacity: 0.7,
     },
     settingRight: {
         marginLeft: spacing.sm,
     },
-    logoutBtnContainer: {
-        marginTop: spacing.md,
-        borderRadius: 24,
+    logoutBtn: {
+        marginTop: spacing.xl,
+        borderRadius: borderRadius.xl,
         overflow: 'hidden',
-        ...theme.shadows.small,
-        borderWidth: 1.5,
-        borderColor: theme.colors.primary + '25', // Blue border for logout too
+        ...theme.shadows.medium,
     },
     logoutGradient: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: spacing.md,
-    },
-    logoutContent: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    logoutIconWrapper: {
-        width: moderateScale(36),
-        height: moderateScale(36),
-        borderRadius: 12,
-        backgroundColor: theme.colors.error + '10',
         justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: spacing.md,
+        paddingVertical: verticalScale(16),
+        gap: 10,
     },
     logoutText: {
-        fontSize: moderateScale(14),
-        fontWeight: '700',
-        color: theme.colors.error,
+        color: '#FFFFFF',
+        fontSize: moderateScale(16),
+        fontWeight: '800',
+        letterSpacing: 0.5,
     },
     appVersion: {
         textAlign: 'center',
-        fontSize: moderateScale(11),
+        fontSize: moderateScale(12),
         color: theme.colors.textLight,
         marginTop: spacing.xl,
+        fontWeight: '700',
+    },
+    copyright: {
+        textAlign: 'center',
+        fontSize: moderateScale(10),
+        color: theme.colors.textLight,
+        marginTop: 4,
         fontWeight: '500',
+        opacity: 0.6,
     },
-    meshBackground: {
-        ...StyleSheet.absoluteFillObject,
-        overflow: 'hidden',
-        zIndex: -1,
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: spacing.xl,
     },
-    bgGlow: {
-        position: 'absolute',
-        borderRadius: 200,
+    modalContent: {
+        width: '100%',
+        backgroundColor: theme.colors.card,
+        borderRadius: borderRadius.xxl,
+        padding: spacing.xl,
+        ...shadows.large,
+    },
+    modalTitle: {
+        fontSize: moderateScale(18),
+        fontWeight: '900',
+        color: theme.colors.text,
+        marginBottom: spacing.lg,
+        textAlign: 'center',
+    },
+    langOption: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingVertical: spacing.md,
+        paddingHorizontal: spacing.lg,
+        borderRadius: borderRadius.lg,
+        marginBottom: spacing.xs,
+        borderWidth: 1,
+        borderColor: 'transparent',
+    },
+    langOptionActive: {
+        backgroundColor: theme.colors.primary + '10',
+        borderColor: theme.colors.primary + '30',
+    },
+    langText: {
+        fontSize: moderateScale(15),
+        fontWeight: '600',
+        color: theme.colors.text,
+    },
+    langTextActive: {
+        color: theme.colors.primary,
+        fontWeight: '700',
     },
 });
