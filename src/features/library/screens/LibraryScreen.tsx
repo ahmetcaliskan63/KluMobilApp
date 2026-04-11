@@ -12,26 +12,49 @@ import {
 import { Ionicons as Icon } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Theme } from '@/core/theme/theme';
+import { Theme, spacing, borderRadius } from '@/core/theme/theme';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
+import { useThemeStore } from '@/shared/store/themeStore';
 
-// The items defined from the old web design screenshot
-const LIBRARY_SERVICES = [
-    { id: '1', title: 'Ödünç Verme', icon: 'book', color: '#1976D2', link: 'https://kutuphane.klu.edu.tr' },
-    { id: '2', title: 'Veri Tabanı\nUzaktan Erişim', icon: 'cloud-done', color: '#388E3C', link: 'https://kutuphane.klu.edu.tr' },
-    { id: '3', title: 'Merkez Kütüphane\nKataloğu', icon: 'library', color: '#F57C00', link: 'https://kutuphane.klu.edu.tr' },
-    { id: '4', title: 'Kütüphane\nÜye Girişi', icon: 'person', color: '#D32F2F', link: 'https://kutuphane.klu.edu.tr' },
-    { id: '5', title: 'Formlar', icon: 'document-text', color: '#7B1FA2', link: 'https://kutuphane.klu.edu.tr' },
-    { id: '6', title: 'Kurumsal Arşiv\nAçık Erişim', icon: 'folder-open', color: '#0288D1', link: 'https://kutuphane.klu.edu.tr' },
-    { id: '7', title: 'Cep\nKütüphanem', icon: 'phone-portrait', color: '#00796B', link: 'https://kutuphane.klu.edu.tr' },
-    { id: '8', title: 'Duyurular', icon: 'megaphone', color: '#C2185B', link: 'https://kutuphane.klu.edu.tr' },
-    { id: '9', title: 'Soru, İstek\nve Önerileriniz', icon: 'chatbubbles', color: '#455A64', link: 'https://kutuphane.klu.edu.tr' },
-];
+const LIBRARY_SERVICES: {
+    id: string;
+    title: string;
+    icon: React.ComponentProps<typeof Icon>['name'];
+    color: string;
+    link: string;
+}[] = [
+        { id: '1', title: 'Ödünç Verme', icon: 'book', color: '#1976D2', link: 'https://kutuphane.klu.edu.tr' },
+        { id: '2', title: 'Veri Tabanı\nUzaktan Erişim', icon: 'cloud-done', color: '#388E3C', link: 'https://kutuphane.klu.edu.tr' },
+        { id: '3', title: 'Merkez Kütüphane\nKataloğu', icon: 'library', color: '#F57C00', link: 'https://kutuphane.klu.edu.tr' },
+        { id: '4', title: 'Kütüphane\nÜye Girişi', icon: 'person', color: '#D32F2F', link: 'https://kutuphane.klu.edu.tr' },
+        { id: '5', title: 'Formlar', icon: 'document-text', color: '#7B1FA2', link: 'https://kutuphane.klu.edu.tr' },
+        { id: '6', title: 'Kurumsal Arşiv\nAçık Erişim', icon: 'folder-open', color: '#0288D1', link: 'https://kutuphane.klu.edu.tr' },
+        { id: '7', title: 'Cep\nKütüphanem', icon: 'phone-portrait', color: '#00796B', link: 'https://kutuphane.klu.edu.tr' },
+        { id: '8', title: 'Duyurular', icon: 'megaphone', color: '#C2185B', link: 'https://kutuphane.klu.edu.tr' },
+        { id: '9', title: 'Soru, İstek\nve Önerileriniz', icon: 'chatbubbles', color: '#455A64', link: 'https://kutuphane.klu.edu.tr' },
+    ];
 
 export const LibraryScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
     const { theme } = useAppTheme();
-    const s = styles(theme);
+    const { isDarkMode } = useThemeStore();
+    const s = styles(theme, isDarkMode);
+
+    const getAdjustedColor = (color: string) => {
+        if (!isDarkMode) return color;
+        const lighteningMap: { [key: string]: string } = {
+            '#1976D2': '#42A5F5',
+            '#388E3C': '#66BB6A',
+            '#F57C00': '#FFA726',
+            '#D32F2F': '#EF5350',
+            '#7B1FA2': '#AB47BC',
+            '#0288D1': '#29B6F6',
+            '#00796B': '#26A69A',
+            '#C2185B': '#EC407A',
+            '#455A64': '#78909C',
+        };
+        return lighteningMap[color] || color;
+    };
 
     const handlePress = async (url: string) => {
         const supported = await Linking.canOpenURL(url);
@@ -42,11 +65,11 @@ export const LibraryScreen: React.FC = () => {
 
     return (
         <View style={s.container}>
-            <StatusBar barStyle="light-content" backgroundColor="#101D42" />
+            <StatusBar barStyle="light-content" backgroundColor="#182958" />
 
             {/* Header Hero Image */}
             <View style={s.heroContainer}>
-                <ImageBackground 
+                <ImageBackground
                     source={{ uri: 'https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80' }} // Premium Library Stock
                     style={s.heroBackground}
                     imageStyle={s.heroImage}
@@ -64,21 +87,21 @@ export const LibraryScreen: React.FC = () => {
             </View>
 
             {/* Grid Services */}
-            <ScrollView 
-                contentContainerStyle={[s.scrollContent, { paddingBottom: insets.bottom + 100 }]} 
+            <ScrollView
+                contentContainerStyle={[s.scrollContent, { paddingBottom: insets.bottom + 100 }]}
                 showsVerticalScrollIndicator={false}
             >
                 <View style={s.servicesContainer}>
                     <View style={s.servicesGrid}>
                         {LIBRARY_SERVICES.map((service) => (
-                            <TouchableOpacity 
-                                key={service.id} 
+                            <TouchableOpacity
+                                key={service.id}
                                 style={s.serviceCard}
                                 activeOpacity={0.8}
                                 onPress={() => handlePress(service.link)}
                             >
-                                <View style={[s.iconWrapper, { backgroundColor: `${service.color}15` }]}>
-                                    <Icon name={service.icon} size={28} color={service.color} />
+                                <View style={[s.iconWrapper, { backgroundColor: `${getAdjustedColor(service.color)}20` }]}>
+                                    <Icon name={service.icon} size={28} color={getAdjustedColor(service.color)} />
                                 </View>
                                 <Text style={s.serviceTitle}>{service.title}</Text>
                             </TouchableOpacity>
@@ -90,10 +113,10 @@ export const LibraryScreen: React.FC = () => {
     );
 };
 
-const styles = (theme: Theme) => StyleSheet.create({
+const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: theme.colors.surface,
+        backgroundColor: theme.colors.background,
     },
     heroContainer: {
         width: '100%',
@@ -105,12 +128,12 @@ const styles = (theme: Theme) => StyleSheet.create({
         height: '100%',
     },
     heroImage: {
-        opacity: 0.8,
+        opacity: isDarkMode ? 0.6 : 0.8,
     },
     heroOverlay: {
         flex: 1,
         justifyContent: 'flex-end',
-        padding: 24,
+        padding: spacing.lg,
     },
     heroTextContainer: {
         marginBottom: 8,
@@ -129,8 +152,8 @@ const styles = (theme: Theme) => StyleSheet.create({
         letterSpacing: 0.2,
     },
     scrollContent: {
-        paddingTop: 24,
-        paddingHorizontal: 20,
+        paddingTop: spacing.lg,
+        paddingHorizontal: spacing.md,
     },
     servicesContainer: {
         marginTop: 0,
@@ -141,24 +164,24 @@ const styles = (theme: Theme) => StyleSheet.create({
         justifyContent: 'space-between',
     },
     serviceCard: {
-        width: '31%', // Fits 3 comfortably
+        width: '31%',
         aspectRatio: 0.85,
         backgroundColor: theme.colors.card,
-        borderRadius: 20,
-        padding: 12,
+        borderRadius: borderRadius.lg,
+        padding: spacing.xs,
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: 16,
-        borderWidth: 1.5,
-        borderColor: 'rgba(0,0,0,0.12)',
+        marginBottom: spacing.md,
+        borderWidth: isDarkMode ? 1 : 1.5,
+        borderColor: isDarkMode ? theme.colors.border : 'rgba(0,0,0,0.1)',
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
             height: 4,
         },
-        shadowOpacity: 0.15,
+        shadowOpacity: isDarkMode ? 0.3 : 0.1,
         shadowRadius: 6,
-        elevation: 8,
+        elevation: isDarkMode ? 4 : 8,
     },
     iconWrapper: {
         width: 54,
@@ -169,10 +192,11 @@ const styles = (theme: Theme) => StyleSheet.create({
         marginBottom: 14,
     },
     serviceTitle: {
-        fontSize: 12,
-        fontWeight: '600',
-        color: theme.colors.textSecondary,
+        fontSize: 11,
+        fontWeight: '700',
+        color: theme.colors.text,
         textAlign: 'center',
-        lineHeight: 16,
+        lineHeight: 14,
+        opacity: isDarkMode ? 0.9 : 1,
     },
 });
