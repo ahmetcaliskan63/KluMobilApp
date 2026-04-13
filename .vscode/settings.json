@@ -1,3 +1,14 @@
 {
-    "java.compile.nullAnalysis.mode": "automatic"
+    "files.exclude": {
+        "**/node_modules/@react-native/gradle-plugin": true,
+        "**/node_modules/**/android": true,
+        "**/node_modules/**/ios": true
+    },
+    "search.exclude": {
+        "**/node_modules/@react-native/gradle-plugin": true,
+        "**/node_modules/**/android": true,
+        "**/node_modules/**/ios": true
+    },
+    "typescript.referencesCodeLens.enabled": true,
+    "java.configuration.updateBuildConfiguration": "interactive"
 }
