@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import {
     View,
     Text,
@@ -64,7 +64,7 @@ export const LibraryScreen: React.FC = () => {
 
     return (
         <View style={s.container}>
-            <StatusBar barStyle="light-content" backgroundColor="#101D42" />
+            <StatusBar barStyle="light-content" backgroundColor="#182958" />
 
             {/* Header Hero Image */}
             <View style={s.heroContainer}>
