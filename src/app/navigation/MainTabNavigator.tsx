@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
@@ -86,7 +86,7 @@ export const MainTabNavigator: React.FC = () => {
                     headerShown: true,
                     headerStyle: {
                         backgroundColor: '#182958',
-                        height: Platform.OS === 'ios' ? 120 : 110,
+                        height: Platform.OS === 'ios' ? 90 : 70,
                         elevation: 0,
                         shadowOpacity: 0,
                         borderBottomWidth: 1,

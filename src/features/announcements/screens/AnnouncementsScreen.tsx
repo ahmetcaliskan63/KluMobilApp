@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import {
     View,
     Text,
@@ -132,7 +132,7 @@ export const AnnouncementsScreen: React.FC = () => {
 
     return (
         <View style={s.container}>
-            <StatusBar barStyle="light-content" backgroundColor="#101D42" />
+            <StatusBar barStyle="light-content" backgroundColor="#182958" />
 
             {/* Category Filter */}
             <View style={s.categoryFilterWrapper}>
