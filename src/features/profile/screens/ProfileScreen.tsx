@@ -121,14 +121,11 @@ export const ProfileScreen: React.FC = () => {
 
     return (
         <View style={s.container}>
-            <StatusBar
-                barStyle={theme.colors.background === '#FFFFFF' ? 'dark-content' : 'light-content'}
-                backgroundColor={theme.colors.background}
-            />
+            <StatusBar barStyle="light-content" backgroundColor="#182958" />
 
             <ScrollView
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={[s.scrollContent, { paddingTop: insets.top }]}
+                contentContainerStyle={s.scrollContent}
             >
                 <View style={s.decorativeCircle} />
 
@@ -471,7 +468,7 @@ const styles = (theme: Theme) => StyleSheet.create({
     },
     personaInfoSection: {
         width: '100%',
-        marginTop: verticalScale(-35),
+        marginTop: verticalScale(15),
         marginBottom: verticalScale(15),
     },
     personaGradientWrapper: {
