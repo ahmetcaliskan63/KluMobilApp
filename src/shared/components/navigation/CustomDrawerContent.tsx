@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import {
     View,
     Text,
@@ -11,8 +11,8 @@ import {
 import {
     DrawerContentComponentProps,
 } from '@react-navigation/drawer';
-import Icon from 'react-native-vector-icons/Ionicons';
-import LinearGradient from 'react-native-linear-gradient';
+import { Ionicons as Icon } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { moderateScale, verticalScale } from '@/shared/utils/responsive';
 
 export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
@@ -20,28 +20,28 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props
     const menuItems = [
         {
             id: 'university',
-            title: 'Üniversitemiz',
+            title: 'niversitemiz',
             icon: 'business',
             color: '#3B82F6',
             url: 'https://www.klu.edu.tr/sayfa/32/universitemiz'
         },
         {
             id: 'candidate',
-            title: 'Aday Öğrenci',
+            title: 'Aday renci',
             icon: 'school',
             color: '#10B981',
             url: 'https://aday.klu.edu.tr/'
         },
         {
             id: 'contact',
-            title: 'İletişim',
+            title: 'letiim',
             icon: 'call',
             color: '#F59E0B',
             url: 'https://www.klu.edu.tr/iletisim'
         },
         {
             id: 'social',
-            title: 'KLÜ Sosyal',
+            title: 'KL Sosyal',
             icon: 'share-social',
             color: '#EC4899',
             url: 'https://www.instagram.com/kirklareliedu/'
@@ -77,15 +77,15 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props
                     <View style={styles.logoContainer}>
                         <View style={styles.logoWrapper}>
                             <Image
-                                source={require('../../assets/logo.png')}
+                                source={require('@/shared/assets/logo.png')}
                                 style={styles.logo}
                                 resizeMode="contain"
                             />
                         </View>
                     </View>
                     <View style={styles.headerTextContainer}>
-                        <Text style={styles.universityName}>KIRKLARELİ</Text>
-                        <Text style={styles.subTitle}>ÜNİVERSİTESİ</Text>
+                        <Text style={styles.universityName}>KIRKLAREL</Text>
+                        <Text style={styles.subTitle}>NVERSTES</Text>
                     </View>
                 </View>
             </LinearGradient>
@@ -93,7 +93,7 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props
             {/* Fixed Menu List */}
             <View style={styles.mainContent}>
                 <View style={styles.menuContainer}>
-                    <Text style={styles.sectionTitle}>HIZLI ERİŞİM</Text>
+                    <Text style={styles.sectionTitle}>HIZLI ERM</Text>
                     {menuItems.map((item) => (
                         <TouchableOpacity
                             key={item.id}
@@ -119,7 +119,7 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props
                 >
                     <Icon name="information-circle" size={24} color="#1E293B" />
                     <Text style={styles.infoText}>
-                        Kırklareli Üniversitesi Mobil Uygulaması ile kampüs hayatı parmaklarınızın ucunda.
+                        Krklareli niversitesi Mobil Uygulamas ile kamps hayat parmaklarnzn ucunda.
                     </Text>
                 </LinearGradient>
             </View>
@@ -127,7 +127,7 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props
             {/* Drawer Footer */}
             <View style={styles.footer}>
                 <View style={styles.footerGlow} />
-                <Text style={styles.footerText}>© 2026 Kırklareli Üniversitesi</Text>
+                <Text style={styles.footerText}> 2026 Krklareli niversitesi</Text>
                 <View style={styles.versionBadge}>
                     <Text style={styles.versionText}>v1.0.0</Text>
                 </View>

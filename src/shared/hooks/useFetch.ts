@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import apiClient from '../services/apiClient';
 
 interface FetchOptions {
@@ -18,7 +18,7 @@ export const useFetch = <T,>(url: string, options: FetchOptions = { immediate: t
       const response = await apiClient.get<T>(url);
       setData(response.data);
     } catch (err: any) {
-      setError(err.message || 'Bir hata oluştu');
+      setError(err.message || 'Bir hata olutu');
     } finally {
       setLoading(false);
     }

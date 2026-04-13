@@ -1,7 +1,7 @@
-﻿import React, { memo } from 'react';
+import React, { memo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ColorValue } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import { Theme } from '@/app/theme/theme';
+import { Ionicons as Icon } from '@expo/vector-icons';
+import { Theme } from '@/core/theme/theme';
 import { moderateScale, scale } from '@/shared/utils/responsive';
 
 interface MenuItemProps {

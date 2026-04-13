@@ -1,7 +1,7 @@
-﻿import React from 'react';
+import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { moderateScale, verticalScale, scale } from '@/shared/utils/responsive';
-import { Theme } from '@/app/theme/theme';
+import { Theme } from '@/core/theme/theme';
 
 interface MenuSectionProps {
     title: string;

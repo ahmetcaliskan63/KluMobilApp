@@ -1,6 +1,6 @@
-﻿import React from 'react';
+import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Theme } from '@/app/theme/theme';
+import { Theme } from '@/core/theme/theme';
 import { moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
 import { GraduationProgress } from '@/shared/types/models';
 
@@ -17,7 +17,7 @@ export const GraduationStatusBar: React.FC<GraduationStatusBarProps> = ({ progre
             <View style={styles.topInfo}>
                 <View>
                     <Text style={styles.label}>GRADUATION PROGRESS</Text>
-                    <Text style={styles.mainTitle}>Mezuniyet Yolculuğu</Text>
+                    <Text style={styles.mainTitle}>Mezuniyet Yolculuu</Text>
                 </View>
                 <View style={styles.percentBadge}>
                     <Text style={[styles.percentText, { color: theme.colors.primary }]}>
@@ -48,7 +48,7 @@ export const GraduationStatusBar: React.FC<GraduationStatusBarProps> = ({ progre
             <View style={styles.footerRow}>
                 <View style={styles.statBox}>
                     <Text style={styles.statValue}>{progress.completedCredits}</Text>
-                    <Text style={styles.statSub}>BİTEN AKTS</Text>
+                    <Text style={styles.statSub}>BTEN AKTS</Text>
                 </View>
                 <View style={styles.statBox}>
                     <Text style={styles.statValue}>{progress.totalRequiredCredits - progress.completedCredits}</Text>

@@ -1,13 +1,10 @@
-﻿import * as Keychain from 'react-native-keychain';
+import * as SecureStore from 'expo-secure-store';
 
-const SERVICE_NAME = 'klu_mobile_auth';
+const TOKEN_KEY = 'auth_token';
 
 export const saveToken = async (token: string): Promise<boolean> => {
     try {
-        await Keychain.setGenericPassword('auth_token', token, {
-            service: SERVICE_NAME,
-            accessible: Keychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
-        });
+        await SecureStore.setItemAsync(TOKEN_KEY, token);
         return true;
     } catch (error) {
         console.error('SecureStorage Error (Save):', error);
@@ -17,13 +14,7 @@ export const saveToken = async (token: string): Promise<boolean> => {
 
 export const getToken = async (): Promise<string | null> => {
     try {
-        const credentials = await Keychain.getGenericPassword({
-            service: SERVICE_NAME,
-        });
-        if (credentials) {
-            return credentials.password;
-        }
-        return null;
+        return await SecureStore.getItemAsync(TOKEN_KEY);
     } catch (error) {
         console.error('SecureStorage Error (Get):', error);
         return null;
@@ -32,9 +23,7 @@ export const getToken = async (): Promise<string | null> => {
 
 export const removeToken = async (): Promise<boolean> => {
     try {
-        await Keychain.resetGenericPassword({
-            service: SERVICE_NAME,
-        });
+        await SecureStore.deleteItemAsync(TOKEN_KEY);
         return true;
     } catch (error) {
         console.error('SecureStorage Error (Remove):', error);

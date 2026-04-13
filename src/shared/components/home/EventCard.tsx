@@ -1,8 +1,8 @@
-﻿import React, { memo } from 'react';
+import React, { memo } from 'react';
 import { View, Text, Image, Pressable, Animated, StyleSheet, Platform } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Ionicons as Icon } from '@expo/vector-icons';
 import { Event as EventType } from '@/shared/types/models';
-import { Theme } from '@/app/theme/theme';
+import { Theme } from '@/core/theme/theme';
 import { moderateScale } from '@/shared/utils/responsive';
 
 interface EventCardProps {
@@ -19,8 +19,8 @@ const EventCardComponent: React.FC<EventCardProps> = ({ item, theme, onPress }) 
     const [day, monthName, year] = item.date.split(' ');
 
     const turkishMonths: { [key: string]: number } = {
-        'Ocak': 0, 'Şubat': 1, 'Mart': 2, 'Nisan': 3, 'Mayıs': 4, 'Haziran': 5,
-        'Temmuz': 6, 'Ağustos': 7, 'Eylül': 8, 'Ekim': 9, 'Kasım': 10, 'Aralık': 11
+        'Ocak': 0, 'ubat': 1, 'Mart': 2, 'Nisan': 3, 'Mays': 4, 'Haziran': 5,
+        'Temmuz': 6, 'Austos': 7, 'Eyll': 8, 'Ekim': 9, 'Kasm': 10, 'Aralk': 11
     };
 
     const eventDate = new Date(
@@ -38,7 +38,7 @@ const EventCardComponent: React.FC<EventCardProps> = ({ item, theme, onPress }) 
     const isPast = eventDay < today;
     const isToday = eventDay.getTime() === today.getTime();
 
-    // Use green for future, red for past or today (based on user request: "üstündeki tarih kartı yapıldıysa veya geçmiş bir tarihteyse kırmızı olsun")
+    // Use green for future, red for past or today (based on user request: "stndeki tarih kart yapldysa veya gemi bir tarihteyse krmz olsun")
     const pillColor = isFuture ? '#10B981' : '#EF4444';
 
     return (
@@ -69,7 +69,7 @@ const EventCardComponent: React.FC<EventCardProps> = ({ item, theme, onPress }) 
                             <View style={styles.metaDivider} />
                             <View style={styles.metaItem}>
                                 <Icon name="location-outline" size={14} color="#FFFFFF" style={{ opacity: 0.9 }} />
-                                <Text style={styles.metaText}>Kampüs</Text>
+                                <Text style={styles.metaText}>Kamps</Text>
                             </View>
                         </View>
                     </View>

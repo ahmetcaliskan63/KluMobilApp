@@ -11,7 +11,7 @@ import {
     TextInputProps,
     ViewStyle,
 } from 'react-native';
-import { Theme } from '@/app/theme/theme';
+import { Theme } from '@/core/theme/theme';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { moderateScale, verticalScale } from '@/shared/utils/responsive';
 
@@ -87,4 +87,3 @@ const styles = (theme: Theme) => StyleSheet.create({
         marginTop: verticalScale(4),
     },
 });
-

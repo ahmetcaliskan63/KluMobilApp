@@ -1,9 +1,9 @@
-﻿import React, { memo } from 'react';
+import React, { memo } from 'react';
 import { View, Text, Pressable, Animated, StyleSheet, Platform } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import { Theme, spacing, borderRadius, shadows } from '@/app/theme/theme';
+import { Ionicons as Icon } from '@expo/vector-icons';
+import { Theme, spacing, borderRadius, shadows } from '@/core/theme/theme';
 import { Announcement } from '@/shared/types/models';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 
 interface AnnouncementCardProps {
     item: Announcement;
@@ -29,7 +29,7 @@ const AnnouncementCardComponent: React.FC<AnnouncementCardProps> = ({ item, them
         ]).start();
     };
 
-    const isAcademic = item.category.toUpperCase() === 'AKADEMİK';
+    const isAcademic = item.category.toUpperCase() === 'AKADEMK';
     const categoryColor = isAcademic ? '#0A84FF' : '#182958';
 
     return (

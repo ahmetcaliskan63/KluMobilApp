@@ -1,11 +1,11 @@
-﻿import React from 'react';
+import React from 'react';
 import { Text } from 'react-native';
 import { render, fireEvent } from '@testing-library/react-native';
 import { StateView } from '../StateView';
 import { AsyncState } from '../../../types/asyncState';
 
 // Mock useAppTheme
-jest.mock('../../../hooks/useAppTheme', () => ({
+jest.mock('../@/shared/hooks/useAppTheme', () => ({
     useAppTheme: () => ({
         theme: {
             colors: {

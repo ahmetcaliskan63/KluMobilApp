@@ -1,4 +1,4 @@
-﻿import { renderHook, act, waitFor } from '@testing-library/react-native';
+import { renderHook, act, waitFor } from '@testing-library/react-native';
 import { useAsyncResource } from '../useAsyncResource';
 
 describe('useAsyncResource Stability Edge-Cases', () => {

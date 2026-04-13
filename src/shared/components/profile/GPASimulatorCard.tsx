@@ -1,9 +1,9 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
-import { Theme } from '@/app/theme/theme';
+import { Theme } from '@/core/theme/theme';
 import { moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
-import Icon from 'react-native-vector-icons/Ionicons';
-import LinearGradient from 'react-native-linear-gradient';
+import { Ionicons as Icon } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 interface GPASimulatorCardProps {
     currentGPA: number;
@@ -27,7 +27,7 @@ export const GPASimulatorCard: React.FC<GPASimulatorCardProps> = ({ currentGPA, 
             <View style={styles.header}>
                 <View style={styles.titleInfo}>
                     <Text style={[styles.title, { color: theme.colors.text }]}>Academic Forecast</Text>
-                    <Text style={styles.subtitle}>Gelecekteki başarını bugün planla</Text>
+                    <Text style={styles.subtitle}>Gelecekteki baarn bugn planla</Text>
                 </View>
                 <Icon name="stats-chart" size={20} color={theme.colors.primary} style={styles.statsIcon} />
             </View>
@@ -84,7 +84,7 @@ export const GPASimulatorCard: React.FC<GPASimulatorCardProps> = ({ currentGPA, 
                 {simulatedGPA && (
                     <View style={[styles.feedbackContainer, { backgroundColor: 'rgba(0,0,0,0.02)' }]}>
                         <Text style={styles.feedbackText}>
-                            Hedefine ulaşmak için {targetGrade} ortalama yapmalısın.
+                            Hedefine ulamak iin {targetGrade} ortalama yapmalsn.
                         </Text>
                     </View>
                 )}

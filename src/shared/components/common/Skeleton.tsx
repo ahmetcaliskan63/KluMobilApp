@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
     View,
     StyleSheet,
@@ -7,7 +7,7 @@ import {
     ViewStyle,
     DimensionValue,
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { moderateScale } from '@/shared/utils/responsive';
 

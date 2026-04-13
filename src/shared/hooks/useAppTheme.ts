@@ -1,4 +1,4 @@
-﻿import { theme, colors, darkColors } from '@/app/theme/theme';
+import { theme, colors, darkColors } from '@/core/theme/theme';
 import { useThemeStore } from '../store/themeStore';
 
 export const useAppTheme = () => {

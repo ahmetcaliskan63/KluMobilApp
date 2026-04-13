@@ -1,7 +1,7 @@
-﻿import React, { Component, ErrorInfo, ReactNode } from 'react';
+import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, StatusBar, SafeAreaView } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import { theme } from '@/app/theme/theme';
+import { Ionicons as Icon } from '@expo/vector-icons';
+import { theme } from '@/core/theme/theme';
 
 interface Props {
   children: ReactNode;
@@ -42,7 +42,7 @@ export class ErrorBoundary extends Component<Props, State> {
             </View>
             <Text style={styles.title}>Eyvah!</Text>
             <Text style={styles.subtitle}>
-              Beklenmedik bir hata oluştu. Uygulamayı yeniden başlatmayı deneyebilirsiniz.
+              Beklenmedik bir hata olutu. Uygulamay yeniden balatmay deneyebilirsiniz.
             </Text>
             
             {__DEV__ && (
