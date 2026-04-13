@@ -1,4 +1,4 @@
-﻿import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
     View,
     Text,
@@ -7,7 +7,8 @@ import {
     StatusBar,
     Dimensions,
     Platform,
-    FlatList
+    FlatList,
+    ScrollView
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -19,6 +20,7 @@ import { moderateScale } from '@/shared/utils/responsive';
 import LinearGradient from 'react-native-linear-gradient';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export const CafeteriaScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
@@ -101,7 +103,6 @@ export const CafeteriaScreen: React.FC = () => {
                                     />
                                 </View>
                                 <Text style={isItemToday ? s.todayItemText : s.otherItemText}>{menuItem}</Text>
-                                {isItemToday && <Icon name="chevron-forward" size={16} color="rgba(255,255,255,0.3)" />}
                             </View>
                         ))}
                     </View>
@@ -172,44 +173,45 @@ export const CafeteriaScreen: React.FC = () => {
 
     return (
         <View style={s.container}>
-            <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+            <StatusBar barStyle="light-content" backgroundColor="#182958" />
             <View style={s.meshBackground}>
                 <View style={[s.bgGlow, { top: '10%', right: '-10%', width: 300, height: 300, backgroundColor: 'rgba(59, 130, 246, 0.05)' }]} />
                 <View style={[s.bgGlow, { bottom: '20%', left: '-20%', width: 400, height: 400, backgroundColor: 'rgba(99, 102, 241, 0.03)' }]} />
             </View>
 
-            <View style={s.mainContent}>
-                <FlatList
-                    ref={flatListRef}
-                    data={menu}
-                    renderItem={renderMealItem}
-                    horizontal
-                    pagingEnabled={true}
-                    showsHorizontalScrollIndicator={false}
-                    initialScrollIndex={initialIndex}
-                    getItemLayout={(_, index) => ({
-                        length: SCREEN_WIDTH - 40,
-                        offset: (SCREEN_WIDTH - 40) * index,
-                        index,
-                    })}
-                    onMomentumScrollEnd={(event) => {
-                        const newIndex = Math.round(event.nativeEvent.contentOffset.x / (SCREEN_WIDTH - 40));
-                        setSelectedIndex(newIndex);
-                    }}
-                    scrollEventThrottle={16}
-                    decelerationRate="normal"
-                    snapToInterval={SCREEN_WIDTH - 40}
-                    snapToAlignment="center"
-                    keyExtractor={(item) => item.date}
-                />
+                <View style={s.mainContent}>
+                    <FlatList
+                        ref={flatListRef}
+                        data={menu}
+                        renderItem={renderMealItem}
+                        horizontal
+                        pagingEnabled={true}
+                        showsHorizontalScrollIndicator={false}
+                        initialScrollIndex={initialIndex}
+                        getItemLayout={(_, index) => ({
+                            length: SCREEN_WIDTH - 40,
+                            offset: (SCREEN_WIDTH - 40) * index,
+                            index,
+                        })}
+                        onMomentumScrollEnd={(event) => {
+                            const newIndex = Math.round(event.nativeEvent.contentOffset.x / (SCREEN_WIDTH - 40));
+                            setSelectedIndex(newIndex);
+                        }}
+                        scrollEventThrottle={16}
+                        decelerationRate="normal"
+                        snapToInterval={SCREEN_WIDTH - 40}
+                        snapToAlignment="center"
+                        keyExtractor={(item) => item.date}
+                        style={s.flatList}
+                    />
 
-                <View style={s.bottomInfo}>
-                    <Icon name="alert-circle-outline" size={20} color={theme.colors.error} />
-                    <Text style={s.infoText}>
-                        Menüler haftalık olarak güncellenmektedir. Kampüs yemekhanesi hafta içi 08:30 - 18:00 saatleri arasında hizmet vermektedir.
-                    </Text>
+                    <View style={s.bottomInfo}>
+                        <Icon name="alert-circle-outline" size={20} color={theme.colors.error} />
+                        <Text style={s.infoText}>
+                            Menüler haftalık olarak güncellenmektedir. Kampüs yemekhanesi hafta içi 08:30 - 18:00 saatleri arasında hizmet vermektedir.
+                        </Text>
+                    </View>
                 </View>
-            </View>
 
             {selectedIndex !== initialIndex && (
                 <TouchableOpacity
@@ -249,20 +251,24 @@ const styles = (theme: Theme, insets: any) => StyleSheet.create({
     mainContent: {
         flex: 1,
         padding: 20,
-        paddingTop: 30,
-        paddingBottom: Math.max(insets.bottom, 20) + 80, // Dynamic spacing for tab bar
+        paddingTop: 5,
+        paddingBottom: Math.max(insets.bottom, 20) + 80, // Slightly reduced to shift card down
         justifyContent: 'flex-start',
+        gap: 10, // Bring card and info closer
+    },
+    flatList: {
+        flexGrow: 1,
     },
     mealCardContainer: {
         width: SCREEN_WIDTH - 40,
-        marginBottom: 20,
+        height: SCREEN_HEIGHT * 0.59,
+        justifyContent: 'center',
     },
     todayCard: {
-        borderRadius: 40,
-        padding: 24,
-        paddingBottom: 28,
-        minHeight: 550,
-        height: 550,
+        borderRadius: 45,
+        padding: 22,
+        paddingBottom: 11,
+        height: SCREEN_HEIGHT * 0.59,
         overflow: 'hidden',
         borderWidth: 1,
         borderColor: 'rgba(255, 255, 255, 0.1)',
@@ -290,7 +296,7 @@ const styles = (theme: Theme, insets: any) => StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         height: 60,
-        marginBottom: 20,
+        marginBottom: 10,
     },
     todayDayTitle: {
         fontSize: moderateScale(28),
@@ -324,39 +330,39 @@ const styles = (theme: Theme, insets: any) => StyleSheet.create({
     glassDivider: {
         height: 1,
         backgroundColor: 'rgba(255, 255, 255, 0.1)',
-        marginBottom: 20,
+        marginBottom: 10,
     },
     menuList: {
-        gap: 12,
+        gap: 8,
     },
     glassPill: {
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: 'rgba(255, 255, 255, 0.08)',
         borderRadius: 24,
-        padding: 12,
-        paddingRight: 18,
+        padding: 10,
+        paddingRight: 16,
         borderWidth: 1,
         borderColor: 'rgba(255, 255, 255, 0.05)',
-        gap: 16,
+        gap: 14,
     },
     todayIconContainer: {
-        width: 42,
-        height: 42,
-        borderRadius: 13,
+        width: 38,
+        height: 38,
+        borderRadius: 12,
         backgroundColor: 'rgba(255, 255, 255, 0.12)',
         justifyContent: 'center',
         alignItems: 'center',
     },
     todayItemText: {
-        fontSize: moderateScale(16),
+        fontSize: moderateScale(15.5),
         fontWeight: '700',
         color: '#FFFFFF',
         flex: 1,
     },
     cardFooter: {
         marginTop: 'auto',
-        paddingTop: 30,
+        paddingTop: 10,
     },
     navButtons: {
         flexDirection: 'row',
@@ -395,11 +401,10 @@ const styles = (theme: Theme, insets: any) => StyleSheet.create({
         color: '#182958',
     },
     otherDayCard: {
-        borderRadius: 40,
-        padding: 24,
-        paddingBottom: 28,
-        minHeight: 550,
-        height: 550,
+        borderRadius: 45,
+        padding: 22,
+        paddingBottom: 11,
+        height: SCREEN_HEIGHT * 0.59,
         overflow: 'hidden',
         borderWidth: 1,
         borderColor: 'rgba(255, 255, 255, 0.1)',
@@ -430,18 +435,18 @@ const styles = (theme: Theme, insets: any) => StyleSheet.create({
     lightDivider: {
         height: 1,
         backgroundColor: 'rgba(255, 255, 255, 0.1)',
-        marginBottom: 20,
+        marginBottom: 10,
     },
     lightPill: {
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: 'rgba(255, 255, 255, 0.08)',
         borderRadius: 24,
-        padding: 12,
-        paddingRight: 18,
+        padding: 10,
+        paddingRight: 16,
         borderWidth: 1,
         borderColor: 'rgba(255, 255, 255, 0.05)',
-        gap: 16,
+        gap: 14,
     },
     otherIconContainer: {
         width: 42,
@@ -452,26 +457,27 @@ const styles = (theme: Theme, insets: any) => StyleSheet.create({
         alignItems: 'center',
     },
     otherItemText: {
-        fontSize: moderateScale(16),
+        fontSize: moderateScale(15.5),
         fontWeight: '700',
         color: '#FFFFFF',
         flex: 1,
     },
     bottomInfo: {
         flexDirection: 'row',
-        padding: 24,
+        padding: 16,
         backgroundColor: '#F8FAFC',
-        borderRadius: 28,
-        gap: 14,
+        borderRadius: 24,
+        gap: 12,
         alignItems: 'center',
         borderWidth: 1,
         borderColor: '#F1F5F9',
+        height: 75,
     },
     infoText: {
         flex: 1,
-        fontSize: 12,
+        fontSize: 13,
         color: '#64748B',
-        lineHeight: 20,
+        lineHeight: 22,
         fontWeight: '500',
     },
     todayFab: {
