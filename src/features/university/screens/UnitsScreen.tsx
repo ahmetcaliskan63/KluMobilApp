@@ -1,4 +1,4 @@
-﻿import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
     View,
     Text,
@@ -9,29 +9,29 @@ import {
     Animated,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import LinearGradient from 'react-native-linear-gradient';
+import { Ionicons as Icon } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { moderateScale } from '@/shared/utils/responsive';
 import { useFetch } from '@/shared/hooks/useFetch';
 import { Unit } from '@/shared/types/models';
-import { Theme, spacing } from '@/app/theme/theme';
+import { Theme, spacing } from '@/core/theme/theme';
 
 const CATEGORY_STYLES: Record<string, { color: string; icon: string; bg: string }> = {
     'Birim': { color: '#6366F1', icon: 'layers-outline', bg: '#EEF2FF' },
-    'Enstitü': { color: '#F59E0B', icon: 'school-outline', bg: '#FFFBEB' },
-    'Fakülte': { color: '#10B981', icon: 'business-outline', bg: '#ECFDF5' },
-    'Yüksekokul': { color: '#EC4899', icon: 'ribbon-outline', bg: '#FDF2F8' },
-    'Meslek Yüksekokulu': { color: '#8B5CF6', icon: 'construct-outline', bg: '#F5F3FF' },
+    'Enstit': { color: '#F59E0B', icon: 'school-outline', bg: '#FFFBEB' },
+    'Faklte': { color: '#10B981', icon: 'business-outline', bg: '#ECFDF5' },
+    'Yksekokul': { color: '#EC4899', icon: 'ribbon-outline', bg: '#FDF2F8' },
+    'Meslek Yksekokulu': { color: '#8B5CF6', icon: 'construct-outline', bg: '#F5F3FF' },
 };
 
 const CATEGORY_TITLES: Record<string, string> = {
-    'Birim': 'İDARİ BİRİMLER',
-    'Enstitü': 'ENSTİTÜLER',
-    'Fakülte': 'FAKÜLTELER',
-    'Yüksekokul': 'YÜKSEKOKULLAR',
-    'Meslek Yüksekokulu': 'MESLEK YÜKSEKOKULLARI',
+    'Birim': 'DAR BRMLER',
+    'Enstit': 'ENSTTLER',
+    'Faklte': 'FAKLTELER',
+    'Yksekokul': 'YKSEKOKULLAR',
+    'Meslek Yksekokulu': 'MESLEK YKSEKOKULLARI',
 };
 
 const UnitCard: React.FC<{ item: Unit; index: number; onPress: () => void; theme: Theme }> = ({ item, index, onPress, theme }) => {
@@ -100,11 +100,11 @@ export const UnitsScreen: React.FC = () => {
         );
     }
 
-    // 📂 Data Grouping Logic
+    // ?? Data Grouping Logic
     const groupUnitsBySection = () => {
         if (!units) return [];
         const sections: { title: string; data: Unit[] }[] = [];
-        const order = ['Birim', 'Enstitü', 'Fakülte', 'Yüksekokul', 'Meslek Yüksekokulu'];
+        const order = ['Birim', 'Enstit', 'Faklte', 'Yksekokul', 'Meslek Yksekokulu'];
 
         order.forEach(type => {
             const items = units.filter(u => u.type === type);
@@ -124,7 +124,7 @@ export const UnitsScreen: React.FC = () => {
         <View style={s.container}>
             <StatusBar barStyle="light-content" backgroundColor="#182958" />
 
-            {/* 👑 Premium Minimal Header */}
+            {/* ?? Premium Minimal Header */}
             <View style={[s.header, { paddingTop: insets.top + spacing.sm }]}>
                 <LinearGradient
                     colors={['#182958', '#2A3F7A']}

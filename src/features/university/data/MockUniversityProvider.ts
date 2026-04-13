@@ -1,4 +1,4 @@
-﻿import { News } from '@/shared/types/models';
+import { News } from '@/shared/types/models';
 
 export interface UniversityData {
     news: News[];
@@ -13,21 +13,21 @@ export class MockUniversityProvider {
     private mockNews: News[] = [
         {
             id: '1',
-            title: 'Kırklareli Üniversitesi Yeni Kayıt Kılavuzu Yayınlandı',
+            title: 'Krklareli niversitesi Yeni Kayt Klavuzu Yaynland',
             date: '02 Haz 2026',
             image: 'https://images.unsplash.com/photo-1541339907198-e08756ebafe3?q=80&w=600',
-            location: 'Öğrenci İşleri',
+            location: 'renci leri',
             views: '1.2k',
-            content: 'Üniversitemize yeni yerleşen öğrencilerimiz için hazırlanan kayıt kılavuzu yayınlanmıştır...'
+            content: 'niversitemize yeni yerleen rencilerimiz iin hazrlanan kayt klavuzu yaynlanmtr...'
         },
         {
             id: '2',
-            title: 'Bahar Şenlikleri Programı Açıklandı',
+            title: 'Bahar enlikleri Program Akland',
             date: '15 May 2026',
             image: 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&w=600',
-            location: 'Kültür Merkezi',
+            location: 'Kltr Merkezi',
             views: '2.5k',
-            content: 'Bu yıl düzenlenecek olan Bahar Şenlikleri programı kapsamında birçok sanatçı ve grup üniversitemizde sahne alacak...'
+            content: 'Bu yl dzenlenecek olan Bahar enlikleri program kapsamnda birok sanat ve grup niversitemizde sahne alacak...'
         }
     ];
 

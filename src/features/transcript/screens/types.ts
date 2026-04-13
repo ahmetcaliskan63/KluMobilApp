@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Transcript Module Type Definitions
  * Explicit typing for clear data contracts and senior-level code quality.
  */
@@ -25,4 +25,3 @@ export interface AcademicSummary {
     totalCompletedAkts: string;
     activeSemester: string;
 }
-

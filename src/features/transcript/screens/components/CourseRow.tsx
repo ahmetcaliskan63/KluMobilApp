@@ -1,6 +1,6 @@
-﻿import React from 'react';
+import React from 'react';
 import { View, Text } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Ionicons as Icon } from '@expo/vector-icons';
 import { styles } from '../TranscriptScreen.styles';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { Course } from '../types';

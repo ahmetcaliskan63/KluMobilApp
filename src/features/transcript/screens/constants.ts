@@ -1,4 +1,4 @@
-﻿import { SemesterData, AcademicSummary } from './types';
+import { SemesterData, AcademicSummary } from './types';
 
 export const ACADEMIC_SUMMARY: AcademicSummary = {
     overallGpa: '3.52',
@@ -47,4 +47,3 @@ export const GRADE_COLORS = {
     'DD': '#DC2626', // Red 600
     'FF': '#EF4444', // Red 500
 } as const;
-
