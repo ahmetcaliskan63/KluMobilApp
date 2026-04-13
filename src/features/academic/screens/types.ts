@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Academic Calendar Module Type Definitions
  */
 
@@ -18,4 +18,3 @@ export interface AcademicSemester {
     name: string; // e.g., "2024-2025 Güz"
     events: AcademicEvent[];
 }
-

@@ -1,4 +1,4 @@
-﻿import { AcademicSemester } from './types';
+import { AcademicSemester } from './types';
 
 export const ACADEMIC_CALENDAR_DATA: AcademicSemester[] = [
     {
@@ -115,4 +115,3 @@ export const EVENT_THEMES = {
         label: 'Mezuniyet'
     }
 } as const;
-

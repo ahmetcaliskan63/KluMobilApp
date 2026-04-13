@@ -6,54 +6,41 @@ import {
     FlatList,
     TouchableOpacity,
     StatusBar,
+    Platform,
     ScrollView,
     Pressable,
     Animated,
-    Platform,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Ionicons as Icon } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Card } from '@/shared/components/common';
+import { theme as defaultTheme, Theme } from '@/core/theme/theme';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { HomeStackParamList } from '@/shared/types/navigation';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
-import { useFetch } from '@/shared/hooks/useFetch';
-import { Announcement } from '@/shared/types/models';
-import { Theme } from '@/app/theme/theme';
-import { moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
+import { MOCK_ANNOUNCEMENTS, Announcement } from '@/shared/services/mockData';
+import { viewport, moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
 
 const CATEGORIES = ['Tümü', 'Genel', 'Akademik', 'Etkinlik'];
 
 export const AnnouncementsScreen: React.FC = () => {
+    const insets = useSafeAreaInsets();
     const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
-    const { theme } = useAppTheme();
-    const { data: announcements, loading, error } = useFetch<Announcement[]>('/announcements');
-    const s = styles(theme);
+    const { theme, isDarkMode } = useAppTheme();
+    const s = styles(theme, isDarkMode);
     const [activeCategory, setActiveCategory] = useState('Tümü');
 
-    if (loading) {
-        return (
-            <View style={[s.container, { justifyContent: 'center', alignItems: 'center' }]}>
-                <Text style={{ color: theme.colors.text }}>Duyurular yükleniyor...</Text>
-            </View>
-        );
-    }
-
-    if (error) {
-        return (
-            <View style={[s.container, { justifyContent: 'center', alignItems: 'center' }]}>
-                <Text style={{ color: theme.colors.error }}>Hata: {error}</Text>
-            </View>
-        );
-    }
-
     const filteredAnnouncements = activeCategory === 'Tümü'
-        ? (announcements || [])
-        : (announcements || []).filter(a => a.category === activeCategory);
+        ? MOCK_ANNOUNCEMENTS
+        : MOCK_ANNOUNCEMENTS.filter(a => a.category === activeCategory);
+
+    // Manual header removed to use global glassmorphic header
 
     const getCategoryColor = (category: string) => {
         switch (category) {
-            case 'Akademik': return '#0A84FF';
-            case 'Etkinlik': return '#FF9500';
-            default: return '#101D42';
+            case 'Akademik': return '#0A84FF'; // iOS Blue
+            case 'Etkinlik': return '#FF9500'; // iOS Orange
+            default: return '#101D42'; // KLU Blue
         }
     };
 
@@ -132,7 +119,7 @@ export const AnnouncementsScreen: React.FC = () => {
 
     return (
         <View style={s.container}>
-            <StatusBar barStyle="light-content" backgroundColor="#182958" />
+            <StatusBar barStyle="light-content" backgroundColor="#101D42" />
 
             {/* Category Filter */}
             <View style={s.categoryFilterWrapper}>
@@ -174,7 +161,7 @@ export const AnnouncementsScreen: React.FC = () => {
     );
 };
 
-const styles = (theme: Theme) => StyleSheet.create({
+const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#F2F2F7',
@@ -355,4 +342,3 @@ const styles = (theme: Theme) => StyleSheet.create({
         fontWeight: '700',
     },
 });
-

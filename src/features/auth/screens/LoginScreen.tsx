@@ -1,34 +1,35 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import {
     View,
     Text,
     StyleSheet,
     Image,
+    Platform,
     ScrollView,
     Alert,
     TouchableOpacity,
     Animated,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import { Input } from '@/shared/components/common';
+import { Ionicons as Icon } from '@expo/vector-icons';
+import { Button, Input } from '@/shared/components/common';
 import { useAuthStore } from '@/shared/store/authStore';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
-import { Theme } from '@/app/theme/theme';
-import { moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
+import { Theme } from '@/core/theme/theme';
+import { viewport, moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
 
 
 export const LoginScreen: React.FC = () => {
     const navigation = useNavigation();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('1220404025@ogr.klu.edu.tr');
+    const [password, setPassword] = useState('123456');
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [fadeAnim] = useState(new Animated.Value(0));
     const [showPassword, setShowPassword] = useState(false);
 
     const { login, isLoading } = useAuthStore();
-    const { theme } = useAppTheme();
+    const { theme, isDarkMode } = useAppTheme();
     const s = styles(theme);
 
     React.useEffect(() => {
@@ -39,20 +40,16 @@ export const LoginScreen: React.FC = () => {
         }).start();
     }, []);
 
-    const validateIdentifier = (text: string) => {
+    const validateEmail = (text: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const studentIdRegex = /^\d{10}$/;
-
         if (!text) {
-            setEmailError('Kullanıcı bilgisi gereklidir');
+            setEmailError('E-posta adresi gereklidir');
             return false;
         }
-
-        if (!studentIdRegex.test(text) && !emailRegex.test(text)) {
-            setEmailError('Geçerli bir Öğrenci No veya kurumsal e-posta giriniz');
+        if (!emailRegex.test(text)) {
+            setEmailError('Geçerli bir e-posta adresi giriniz');
             return false;
         }
-
         setEmailError('');
         return true;
     };
@@ -62,8 +59,8 @@ export const LoginScreen: React.FC = () => {
             setPasswordError('Şifre gereklidir');
             return false;
         }
-        if (text.length < 4) {
-            setPasswordError('Şifre en az 4 karakter olmalıdır');
+        if (text.length < 6) {
+            setPasswordError('Şifre en az 6 karakter olmalıdır');
             return false;
         }
         setPasswordError('');
@@ -71,11 +68,12 @@ export const LoginScreen: React.FC = () => {
     };
 
     const handleLogin = async () => {
-        const isIdentifierValid = validateIdentifier(email);
+        const isEmailValid = validateEmail(email);
         const isPasswordValid = validatePassword(password);
 
-        if (isIdentifierValid && isPasswordValid) {
+        if (isEmailValid && isPasswordValid) {
             try {
+                // Execute login via global auth store
                 await login({ studentId: email, password });
             } catch (error) {
                 Alert.alert('Hata', 'Giriş yapılırken bir hata oluştu');
@@ -101,7 +99,7 @@ export const LoginScreen: React.FC = () => {
                         <View style={s.logoContainer}>
                             <View style={s.logoWrapper}>
                                 <Image
-                                    source={require('../../../shared/assets/logo.png')}
+                                    source={require('@/shared/assets/logo.png')}
                                     style={s.logo}
                                     resizeMode="contain"
                                 />
@@ -116,19 +114,19 @@ export const LoginScreen: React.FC = () => {
                         <View style={s.formCard}>
                             <Text style={s.welcomeText}>Hoş Geldiniz</Text>
                             <Text style={s.subtitle}>
-                                Kurumsal Giriş Sistemi
+                                KLU Öğrenci Portalı
                             </Text>
 
                             <View style={s.inputContainer}>
                                 <Input
-                                    label="Kullanıcı Kimliği / Kurumsal E-posta"
-                                    placeholder="Öğrenci No veya ad.soyad@klu.edu.tr"
+                                    label="Öğrenci Numarası / E-posta"
+                                    placeholder="20210001 veya ornek@klu.edu.tr"
                                     value={email}
                                     onChangeText={(text) => {
                                         setEmail(text);
-                                        if (emailError) validateIdentifier(text);
+                                        if (emailError) validateEmail(text);
                                     }}
-                                    onBlur={() => validateIdentifier(email)}
+                                    onBlur={() => validateEmail(email)}
                                     error={emailError}
                                     keyboardType="email-address"
                                     autoCapitalize="none"
@@ -185,6 +183,28 @@ export const LoginScreen: React.FC = () => {
                                     {isLoading ? 'Giriş Yapılıyor...' : 'Giriş Yap'}
                                 </Text>
                             </TouchableOpacity>
+
+                            {/* DEV: Auto-fill Buttons for Testing */}
+                            <View style={s.devContainer}>
+                                <TouchableOpacity
+                                    style={s.devButton}
+                                    onPress={() => {
+                                        setEmail('1220404025@ogr.klu.edu.tr');
+                                        setPassword('123456');
+                                    }}
+                                >
+                                    <Text style={s.devButtonText}>Öğrenci</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={s.devButton}
+                                    onPress={() => {
+                                        setEmail('ahmet.caliskan@klu.edu.tr');
+                                        setPassword('654321');
+                                    }}
+                                >
+                                    <Text style={s.devButtonText}>Akademisyen</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
 
@@ -348,6 +368,25 @@ const styles = (theme: Theme) => StyleSheet.create({
         letterSpacing: 0.8,
         textTransform: 'uppercase',
     },
+    devContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginTop: verticalScale(15),
+        gap: scale(10),
+    },
+    devButton: {
+        paddingHorizontal: scale(12),
+        paddingVertical: verticalScale(6),
+        borderRadius: moderateScale(8),
+        backgroundColor: 'rgba(0, 52, 120, 0.05)',
+        borderWidth: 1,
+        borderColor: 'rgba(0, 52, 120, 0.1)',
+    },
+    devButtonText: {
+        fontSize: moderateScale(11),
+        color: theme.colors.primary,
+        fontWeight: '600',
+    },
     footerContainer: {
         paddingBottom: verticalScale(20),
         marginTop: verticalScale(10),
@@ -360,4 +399,3 @@ const styles = (theme: Theme) => StyleSheet.create({
         opacity: 0.9,
     },
 });
-
