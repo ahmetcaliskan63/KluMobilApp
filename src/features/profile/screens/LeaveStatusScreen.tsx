@@ -8,11 +8,11 @@ import {
     StatusBar,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Ionicons as Icon } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 import { moderateScale, verticalScale } from '@/shared/utils/responsive';
-import { Theme, spacing } from '@/app/theme/theme';
+import { Theme, spacing } from '@/core/theme/theme';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { useAuthStore } from '@/shared/store/authStore';
 

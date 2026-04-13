@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     View,
     Text,
@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { theme } from '@/app/theme/theme';
+import { theme } from '@/core/theme/theme';
 import { useAuthStore } from '@/shared/store/authStore';
 import { useAppStore } from '@/shared/store/appStore';
 import { RootStackParamList } from '@/shared/types/navigation';
@@ -41,16 +41,16 @@ export const SplashScreen: React.FC = () => {
         // 2 saniye sonra yönlendirme yap
         const timer = setTimeout(() => {
             if (isAuthenticated) {
-                navigation.navigate('Main' as any);
+                navigation.navigate('Main');
             } else if (!hasCompletedOnboarding) {
-                navigation.navigate('Onboarding' as any);
+                navigation.navigate('Onboarding');
             } else {
-                navigation.navigate('Auth' as any);
+                navigation.navigate('Auth');
             }
         }, 2000);
 
         return () => clearTimeout(timer);
-    }, [isAuthenticated, fadeAnim, scaleAnim, navigation]);
+    }, [isAuthenticated, hasCompletedOnboarding, fadeAnim, scaleAnim, navigation]);
 
     return (
         <View style={[styles.container, { backgroundColor: theme.colors.primary }]}>
@@ -70,7 +70,7 @@ export const SplashScreen: React.FC = () => {
                     ]}>
                     <View style={styles.logoWrapper}>
                         <Image
-                            source={require('../../../shared/assets/logo.png')}
+                            source={require('@/shared/assets/logo.png')}
                             style={styles.logo}
                             resizeMode="contain"
                         />
@@ -131,4 +131,3 @@ const styles = StyleSheet.create({
         fontWeight: '400',
     },
 });
-

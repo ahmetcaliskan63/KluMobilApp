@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import {
     View,
     Text,
@@ -7,12 +7,13 @@ import {
     TouchableOpacity,
     StatusBar
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons as Icon } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { moderateScale, verticalScale } from '@/shared/utils/responsive';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const NOTIFICATIONS = [
     {
@@ -237,4 +238,3 @@ const styles = StyleSheet.create({
         fontWeight: '500',
     },
 });
-

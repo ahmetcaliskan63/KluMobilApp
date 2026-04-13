@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     View,
     Text,
@@ -12,19 +12,17 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import LinearGradient from 'react-native-linear-gradient';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons as Icon } from '@expo/vector-icons';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
-import { useAuth } from '@/shared/hooks/useAuth';
 import { useThemeStore } from '@/shared/store/themeStore';
-import { Theme, spacing } from '@/app/theme/theme';
+import { Theme, spacing } from '@/core/theme/theme';
 import { moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
 
 export const SettingsScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
     const { theme } = useAppTheme();
-    const { logout } = useAuth();
     const { isDarkMode, toggleDarkMode } = useThemeStore();
     const s = styles(theme);
 
@@ -100,10 +98,7 @@ export const SettingsScreen: React.FC = () => {
                     {renderSettingItem("mail-outline", "Geri Bildirim", "Bize ulaşın")}
                     {renderSettingItem("information-circle-outline", "Hakkında", "Sürüm 1.0.0")}
 
-                    <TouchableOpacity 
-                        style={s.logoutBtnContainer}
-                        onPress={logout}
-                    >
+                    <TouchableOpacity style={s.logoutBtnContainer}>
                         <LinearGradient
                             colors={['#FFF1F1', '#FFF']}
                             style={s.logoutGradient}
@@ -282,4 +277,3 @@ const styles = (theme: Theme) => StyleSheet.create({
         borderRadius: 200,
     },
 });
-
