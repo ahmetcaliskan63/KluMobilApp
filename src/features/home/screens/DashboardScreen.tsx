@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import {
     View,
     Text,
@@ -93,7 +93,7 @@ export const DashboardScreen: React.FC = () => {
 
     return (
         <View style={s.container}>
-            <StatusBar barStyle={theme.colors.background === '#FFFFFF' ? 'dark-content' : 'light-content'} backgroundColor={theme.colors.background} />
+            <StatusBar barStyle="light-content" backgroundColor={theme.colors.primary} />
 
             <View style={s.fixedTabContainer}>
                 <View style={s.segmentedControl}>
