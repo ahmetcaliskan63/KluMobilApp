@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import {
     View,
     Text,
@@ -7,40 +7,72 @@ import {
     TouchableOpacity,
     StatusBar,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Ionicons as Icon } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
-import { useFetch } from '@/shared/hooks/useFetch';
-import { ExamResult } from '@/shared/types/models';
 import { moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
-import { Theme, spacing } from '@/app/theme/theme';
+import { Theme, spacing } from '@/core/theme/theme';
+
+const RESULTS_DATA = [
+    {
+        id: '1',
+        courseName: 'Veri Yapıları ve Algoritmalar',
+        type: 'FİNAL',
+        grade: '72',
+        letterGrade: 'BB',
+        date: '12 Haz',
+        status: 'Açıklandı',
+        color: '#7C3AED',
+    },
+    {
+        id: '2',
+        courseName: 'Mikroişlemciler',
+        type: 'FİNAL',
+        grade: '95',
+        letterGrade: 'AA',
+        date: '15 Haz',
+        status: 'Açıklandı',
+        color: '#D97706',
+    },
+    {
+        id: '3',
+        courseName: 'İşletim Sistemleri',
+        type: 'FİNAL',
+        grade: '82',
+        letterGrade: 'BA',
+        date: '18 Haz',
+        status: 'Açıklandı',
+        color: '#059669',
+    },
+    {
+        id: '4',
+        courseName: 'Yazılım Mühendisliği Güncel Konular',
+        type: 'FİNAL',
+        grade: '88',
+        letterGrade: 'AA',
+        date: '21 Haz',
+        status: 'Açıklandı',
+        color: '#2563EB',
+    },
+    {
+        id: '5',
+        courseName: 'Aritmetik Devreler',
+        type: 'FİNAL',
+        grade: '78',
+        letterGrade: 'BA',
+        date: '24 Haz',
+        status: 'Açıklandı',
+        color: '#6366F1',
+    },
+];
 
 export const ExamResultsScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
     const { theme } = useAppTheme();
-    const { data: results, loading, error } = useFetch<ExamResult[]>('/exams/results');
     const s = styles(theme);
-
-    if (loading) {
-        return (
-            <View style={[s.container, { justifyContent: 'center', alignItems: 'center' }]}>
-                <Text style={{ color: theme.colors.text }}>Sonuçlar yükleniyor...</Text>
-            </View>
-        );
-    }
-
-    if (error) {
-        return (
-            <View style={[s.container, { justifyContent: 'center', alignItems: 'center' }]}>
-                <Text style={{ color: theme.colors.error }}>Hata: {error}</Text>
-            </View>
-        );
-    }
-
-    const examResults = results || [];
 
     return (
         <View style={s.container}>
@@ -70,19 +102,19 @@ export const ExamResultsScreen: React.FC = () => {
                 contentContainerStyle={s.scrollContent}
                 showsVerticalScrollIndicator={false}
             >
-                {examResults.map((item) => (
+                {RESULTS_DATA.map((item) => (
                     <TouchableOpacity
                         key={item.id}
                         activeOpacity={0.85}
                         style={s.resultCard}
                     >
-                        <View style={[s.cardAccent, { backgroundColor: item.color || theme.colors.primary }]} />
+                        <View style={[s.cardAccent, { backgroundColor: item.color }]} />
 
                         <View style={s.cardContent}>
                             <View style={s.cardTop}>
                                 <View style={s.typeWrapper}>
-                                    <View style={[s.typeBadge, { backgroundColor: (item.color || theme.colors.primary) + '15' }]}>
-                                        <Text style={[s.examType, { color: item.color || theme.colors.primary }]}>{item.type}</Text>
+                                    <View style={[s.typeBadge, { backgroundColor: item.color + '15' }]}>
+                                        <Text style={[s.examType, { color: item.color }]}>{item.type}</Text>
                                     </View>
                                     <View style={s.dotSeparator} />
                                     <Text style={s.dateText}>{item.date}</Text>
@@ -313,4 +345,3 @@ const styles = (theme: Theme) => StyleSheet.create({
         fontWeight: '600',
     }
 });
-

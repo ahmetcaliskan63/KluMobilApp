@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import {
     View,
     Text,
@@ -7,40 +7,77 @@ import {
     TouchableOpacity,
     StatusBar,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Ionicons as Icon } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
-import { useFetch } from '@/shared/hooks/useFetch';
-import { Exam } from '@/shared/types/models';
 import { moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
-import { Theme, spacing } from '@/app/theme/theme';
+import { Theme, spacing } from '@/core/theme/theme';
+
+const EXAM_DATA = [
+    {
+        id: '1',
+        courseName: 'Yazılım Mühendisliği Güncel Konular',
+        type: 'VİZE',
+        date: '14 Nis',
+        day: 'Pazartesi',
+        time: '10:30',
+        location: 'Derslik 302',
+        status: 'Yaklaşıyor',
+        color: '#2563EB',
+    },
+    {
+        id: '2',
+        courseName: 'Veri Yapıları ve Algoritmalar',
+        type: 'VİZE',
+        date: '15 Nis',
+        day: 'Salı',
+        time: '13:00',
+        location: 'Lab 1',
+        status: 'Yaklaşıyor',
+        color: '#7C3AED',
+    },
+    {
+        id: '3',
+        courseName: 'İşletim Sistemleri',
+        type: 'VİZE',
+        date: '17 Nis',
+        day: 'Perşembe',
+        time: '09:00',
+        location: 'Amfi 2',
+        status: 'Gelecek Hafta',
+        color: '#059669',
+    },
+    {
+        id: '4',
+        courseName: 'Mikroişlemciler',
+        type: 'VİZE',
+        date: '18 Nis',
+        day: 'Cuma',
+        time: '15:30',
+        location: 'Derslik 104',
+        status: 'Gelecek Hafta',
+        color: '#D97706',
+    },
+    {
+        id: '5',
+        courseName: 'Veri Tabanı Yönetim Sistemleri',
+        type: 'VİZE',
+        date: '21 Nis',
+        day: 'Pazartesi',
+        time: '11:00',
+        location: 'Amfi 1',
+        status: 'Sonraki Hafta',
+        color: '#475569',
+    },
+];
 
 export const ExamScheduleScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
     const { theme } = useAppTheme();
-    const { data: exams, loading, error } = useFetch<Exam[]>('/exams/schedule');
     const s = styles(theme);
-
-    if (loading) {
-        return (
-            <View style={[s.container, { justifyContent: 'center', alignItems: 'center' }]}>
-                <Text style={{ color: theme.colors.text }}>Program yükleniyor...</Text>
-            </View>
-        );
-    }
-
-    if (error) {
-        return (
-            <View style={[s.container, { justifyContent: 'center', alignItems: 'center' }]}>
-                <Text style={{ color: theme.colors.error }}>Hata: {error}</Text>
-            </View>
-        );
-    }
-
-    const examList = exams || [];
 
     return (
         <View style={s.container}>
@@ -71,20 +108,20 @@ export const ExamScheduleScreen: React.FC = () => {
                 showsVerticalScrollIndicator={false}
             >
 
-                {examList.map((exam) => (
+                {EXAM_DATA.map((exam) => (
                     <TouchableOpacity
                         key={exam.id}
                         activeOpacity={0.85}
                         style={s.examCard}
                     >
-                        <View style={[s.cardAccent, { backgroundColor: exam.color || theme.colors.primary }]} />
+                        <View style={[s.cardAccent, { backgroundColor: exam.color }]} />
 
                         <View style={s.cardContent}>
                             <View style={s.cardTop}>
                                 <View style={s.typeWrapper}>
-                                    <Text style={[s.examType, { color: exam.color || theme.colors.primary }]}>{exam.type}</Text>
+                                    <Text style={[s.examType, { color: exam.color }]}>{exam.type}</Text>
                                     <View style={s.dotSeparator} />
-                                    <Text style={s.statusText}>{exam.status || 'Gelecek'}</Text>
+                                    <Text style={s.statusText}>{exam.status}</Text>
                                 </View>
                                 <View style={s.locationBadge}>
                                     <Icon name="location" size={12} color="#64748B" />
@@ -97,7 +134,7 @@ export const ExamScheduleScreen: React.FC = () => {
                             <View style={s.detailsRow}>
                                 <View style={s.detailItem}>
                                     <Icon name="calendar-outline" size={14} color="#64748B" />
-                                    <Text style={s.detailValue}>{exam.date}{exam.day ? ` • ${exam.day}` : ''}</Text>
+                                    <Text style={s.detailValue}>{exam.date} • {exam.day}</Text>
                                 </View>
 
                                 <View style={s.detailItem}>
@@ -264,4 +301,3 @@ const styles = (theme: Theme) => StyleSheet.create({
         marginTop: 4,
     }
 });
-

@@ -1,4 +1,4 @@
-﻿import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
     View,
     Text,
@@ -9,14 +9,13 @@ import {
     Animated,
     Image,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Ionicons as Icon } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { HomeStackParamList } from '@/shared/types/navigation';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
-import { Theme } from '@/app/theme/theme';
-import { Announcement } from '@/shared/types/models';
-import { useFetch } from '@/shared/hooks/useFetch';
+import { Theme } from '@/core/theme/theme';
+import { MOCK_ANNOUNCEMENTS } from '@/shared/services/mockData';
 import { moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
 
 type AnnouncementDetailRouteProp = RouteProp<HomeStackParamList, 'AnnouncementDetail'>;
@@ -35,7 +34,7 @@ export const AnnouncementDetailScreen: React.FC = () => {
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const scrollY = useRef(new Animated.Value(0)).current;
 
-    const { data: announcement, loading, error } = useFetch<Announcement>(`/announcements/${announcementId}`);
+    const announcement = MOCK_ANNOUNCEMENTS.find(a => a.id === announcementId);
     const [imageError, setImageError] = React.useState(false);
 
     useEffect(() => {
@@ -46,27 +45,11 @@ export const AnnouncementDetailScreen: React.FC = () => {
         }).start();
     }, []);
 
+    if (!announcement) return null;
+
     const corporateColor = '#182958'; // KLU Kurumsal Lacivert
+
     const s = styles(theme, corporateColor);
-
-    if (loading && !announcement) {
-        return (
-            <View style={[s.loadingContainer, { paddingTop: insets.top }]}>
-                <Text style={{ color: theme.colors.primary }}>Yükleniyor...</Text>
-            </View>
-        );
-    }
-
-    if (error || !announcement) {
-        return (
-            <View style={[s.loadingContainer, { paddingTop: insets.top }]}>
-                <Text style={{ color: theme.colors.error }}>Duyuru bulunamadı.</Text>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginTop: 20 }}>
-                    <Text style={{ color: theme.colors.primary }}>Geri Dön</Text>
-                </TouchableOpacity>
-            </View>
-        );
-    }
 
     return (
         <View style={s.container}>
@@ -181,12 +164,6 @@ export const AnnouncementDetailScreen: React.FC = () => {
 const styles = (theme: Theme, corporateColor: string) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FFFFFF',
-    },
-    loadingContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
         backgroundColor: '#FFFFFF',
     },
     header: {
@@ -306,4 +283,3 @@ const styles = (theme: Theme, corporateColor: string) => StyleSheet.create({
         opacity: 0.3,
     },
 });
-

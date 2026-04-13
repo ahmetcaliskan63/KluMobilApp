@@ -8,18 +8,22 @@ import {
     StatusBar,
     Animated,
 } from 'react-native';
-import { Theme, spacing, borderRadius, shadows } from '@/app/theme/theme';
+import { Theme, spacing, borderRadius, shadows } from '@/core/theme/theme';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { viewport, moderateScale, verticalScale } from '@/shared/utils/responsive';
 import { useNavigation, CompositeNavigationProp, useRoute, RouteProp } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainTabParamList, HomeStackParamList } from '@/shared/types/navigation';
+import {
+    MOCK_ANNOUNCEMENTS,
+    MOCK_NEWS,
+    MOCK_EVENTS,
+} from '@/shared/services/mockData';
 import { NewsCard } from '@/shared/components/home/NewsCard';
 import { AnnouncementCard } from '@/shared/components/home/AnnouncementCard';
 import { EventCard } from '@/shared/components/home/EventCard';
 import { News, Announcement, Event as EventType } from '@/shared/types/models';
-import { useFetch } from '@/shared/hooks/useFetch';
 
 type DashboardNavigationProp = CompositeNavigationProp<
     NativeStackNavigationProp<HomeStackParamList, 'Dashboard'>,
@@ -28,18 +32,14 @@ type DashboardNavigationProp = CompositeNavigationProp<
 
 type DashboardRouteProp = RouteProp<HomeStackParamList, 'Dashboard'>;
 
+// Senior Refactoring: Cards moved to src/components/home
+
 export const DashboardScreen: React.FC = () => {
     const navigation = useNavigation<DashboardNavigationProp>();
     const route = useRoute<DashboardRouteProp>();
     const { theme } = useAppTheme();
     const s = styles(theme);
     const [activeTab, setActiveTab] = React.useState<'Duyurular' | 'Haberler' | 'Etkinlikler'>('Haberler');
-
-    // Using professional hooks instead of mock imports
-    const { data: announcements, loading: loadingAnnouncements } = useFetch<Announcement[]>('/announcements');
-    const { data: news, loading: loadingNews } = useFetch<News[]>('/news');
-    const { data: events, loading: loadingEvents } = useFetch<EventType[]>('/events');
-
     // Segmented control metrics
     const SEGMENT_PADDING = 4;
     const SEGMENT_WIDTH = (viewport.width - spacing.md * 2 - SEGMENT_PADDING * 2) / 3;
@@ -89,11 +89,9 @@ export const DashboardScreen: React.FC = () => {
         />
     ), [navigation, theme]);
 
-    const isLoading = loadingAnnouncements || loadingNews || loadingEvents;
-
     return (
         <View style={s.container}>
-            <StatusBar barStyle="light-content" backgroundColor={theme.colors.primary} />
+            <StatusBar barStyle={theme.colors.background === '#FFFFFF' ? 'dark-content' : 'light-content'} backgroundColor={theme.colors.background} />
 
             <View style={s.fixedTabContainer}>
                 <View style={s.segmentedControl}>
@@ -131,19 +129,12 @@ export const DashboardScreen: React.FC = () => {
                 style={s.scrollView}
                 contentContainerStyle={s.scrollContent}
                 showsVerticalScrollIndicator={false}
-                scrollEnabled={!isLoading}
             >
-                {isLoading ? (
-                    <View style={{ flex: 1, paddingVertical: 100, alignItems: 'center' }}>
-                        <Text style={{ color: theme.colors.textSecondary }}>Yükleniyor...</Text>
-                    </View>
-                ) : (
-                    <View style={s.contentList}>
-                        {activeTab === 'Duyurular' && announcements?.map(renderAnnouncementCard)}
-                        {activeTab === 'Haberler' && news?.map(renderNewsCard)}
-                        {activeTab === 'Etkinlikler' && events?.map(renderEventCard)}
-                    </View>
-                )}
+                <View style={s.contentList}>
+                    {activeTab === 'Duyurular' && MOCK_ANNOUNCEMENTS.map(renderAnnouncementCard)}
+                    {activeTab === 'Haberler' && MOCK_NEWS.map(renderNewsCard)}
+                    {activeTab === 'Etkinlikler' && MOCK_EVENTS.map(renderEventCard)}
+                </View>
 
                 <View style={{ height: spacing.xl }} />
             </ScrollView>
@@ -211,4 +202,3 @@ const styles = (theme: Theme) => StyleSheet.create({
         paddingTop: 0,
     },
 });
-
