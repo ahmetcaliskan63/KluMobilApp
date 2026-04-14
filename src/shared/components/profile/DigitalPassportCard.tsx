@@ -1,3 +1,4 @@
+import React from 'react';
 import { View, Text, StyleSheet, Image, Platform } from 'react-native';
 import { moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -75,9 +76,16 @@ export const DigitalPassportCard: React.FC<DigitalPassportCardProps> = ({ user }
                             <View style={styles.photoArea}>
                                 <View style={styles.photoRim}>
                                     <View style={styles.photoBox}>
-                                        <Text style={styles.initials}>
-                                            {user?.firstName?.charAt(0)}{user?.lastName?.charAt(0)}
-                                        </Text>
+                                        {user?.profileImage ? (
+                                            <Image 
+                                                source={{ uri: user.profileImage }} 
+                                                style={styles.avatarImage} 
+                                            />
+                                        ) : (
+                                            <Text style={styles.initials}>
+                                                {user?.firstName?.charAt(0)}{user?.lastName?.charAt(0)}
+                                            </Text>
+                                        )}
                                     </View>
                                 </View>
                                 {/* Validity moved under photo per user request */}
@@ -243,6 +251,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         overflow: 'hidden',
+    },
+    avatarImage: {
+        width: '100%',
+        height: '100%',
+        borderRadius: moderateScale(18),
     },
     initials: {
         fontSize: moderateScale(32),
