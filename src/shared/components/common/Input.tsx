@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Custom Input Component
  */
 
@@ -19,15 +19,18 @@ interface InputProps extends TextInputProps {
     label?: string;
     error?: string;
     containerStyle?: ViewStyle;
+    themeOverride?: Theme;
 }
 
 export const Input: React.FC<InputProps> = ({
     label,
     error,
     containerStyle,
+    themeOverride,
     ...props
 }) => {
-    const { theme } = useAppTheme();
+    const { theme: globalTheme } = useAppTheme();
+    const theme = themeOverride || globalTheme;
     const s = styles(theme);
 
     return (

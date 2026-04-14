@@ -44,7 +44,7 @@ export class ErrorBoundary extends Component<Props, State> {
             <Text style={styles.subtitle}>
               Beklenmedik bir hata olutu. Uygulamay yeniden balatmay deneyebilirsiniz.
             </Text>
-            
+
             {__DEV__ && (
               <View style={styles.errorBox}>
                 <Text style={styles.errorText}>{this.state.error?.toString()}</Text>

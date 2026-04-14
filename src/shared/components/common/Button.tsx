@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Custom Button Component
  */
 
@@ -25,6 +25,7 @@ interface ButtonProps {
     loading?: boolean;
     style?: ViewStyle;
     textStyle?: TextStyle;
+    themeOverride?: Theme;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -36,8 +37,10 @@ export const Button: React.FC<ButtonProps> = ({
     loading = false,
     style,
     textStyle,
+    themeOverride,
 }) => {
-    const { theme } = useAppTheme();
+    const { theme: globalTheme } = useAppTheme();
+    const theme = themeOverride || globalTheme;
     const s = styles(theme);
 
     const buttonStyle: StyleProp<ViewStyle> = [
