@@ -1,4 +1,5 @@
 import { LoginCredentials, AuthResponse } from '@/shared/types/models';
+import { MOCK_USER_IMAGE } from './mockData';
 
 export const authService = {
     login: async (credentials: LoginCredentials): Promise<AuthResponse> => {
@@ -37,7 +38,7 @@ export const authService = {
                         grade: role === 'student' ? 3 : 0,
                         role: role as 'student' | 'academic' | 'staff',
                         title: role === 'academic' ? 'Öğretim Görevlisi' : undefined,
-                        profileImage: 'https://i.pravatar.cc/150?u=1',
+                        profileImage: MOCK_USER_IMAGE,
                         faculty: role === 'academic' ? 'Rektörlük' : 'Mühendislik Fakültesi',
                         attendance: role === 'student' ? [
                             { courseName: 'Calculus I', courseCode: 'MAT101', attended: 24, total: 28, limit: 8, risk: 'low' },

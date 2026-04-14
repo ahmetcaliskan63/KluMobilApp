@@ -67,6 +67,8 @@ apiClient.interceptors.response.use(
                     '/library/books': MOCK.MOCK_BOOKS,
                     '/news': MOCK.MOCK_NEWS,
                     '/events': MOCK.MOCK_EVENTS,
+                    '/university/news': MOCK.MOCK_UNIVERSITY_NEWS,
+                    '/university/info': MOCK.MOCK_UNIVERSITY_INFO,
                     '/profile/setup-status': { completed: true },
                     '/obs/courses': MOCK.MOCK_SCHEDULE,
                 };
