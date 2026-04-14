@@ -8,7 +8,6 @@ interface TabBarIconProps {
     color: string;
     isCenter?: boolean;
 }
-
 export const TabBarIcon: React.FC<TabBarIconProps> = ({ name, focused, color, isCenter }) => {
     if (isCenter) {
         return (
@@ -28,7 +27,7 @@ export const TabBarIcon: React.FC<TabBarIconProps> = ({ name, focused, color, is
 
     return (
         <View style={styles.iconWrapper}>
-            <Icon name={name} size={24} color={color} />
+            <Icon name={name as any} size={24} color={color} />
             {focused && <View style={styles.activeDot} />}
         </View>
     );

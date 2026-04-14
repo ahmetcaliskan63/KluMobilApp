@@ -56,7 +56,7 @@ const MenuItemComponent: React.FC<MenuItemComponentProps> = ({ item, index, anim
             >
                 <Text style={styles.menuItemLabel}>{item.label}</Text>
                 <View style={[styles.iconContainer, { backgroundColor: item.color }]}>
-                    <Icon name={item.icon} size={20} color="#FFFFFF" />
+                    <Icon name={item.icon as any} size={20} color="#FFFFFF" />
                 </View>
             </TouchableOpacity>
         </Animated.View>
@@ -138,7 +138,7 @@ export const FloatingMenu: React.FC = () => {
                 >
                     <Animated.View style={fabStyle}>
                         <Icon 
-                            name={isOpen ? "close" : "flash"} 
+                            name={(isOpen ? "close" : "flash") as any} 
                             size={32} 
                             color="#FFFFFF" 
                         />

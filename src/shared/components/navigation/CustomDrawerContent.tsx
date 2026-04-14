@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import {
     View,
     Text,
@@ -7,6 +7,7 @@ import {
     TouchableOpacity,
     Linking,
     Platform,
+    Animated,
 } from 'react-native';
 import {
     DrawerContentComponentProps,
@@ -14,34 +15,37 @@ import {
 import { Ionicons as Icon } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { moderateScale, verticalScale } from '@/shared/utils/responsive';
+import { useAppTheme } from '@/shared/hooks/useAppTheme';
 
 export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
+    const { theme, isDarkMode } = useAppTheme();
+    const s = styles(theme, isDarkMode);
 
     const menuItems = [
         {
             id: 'university',
-            title: 'niversitemiz',
+            title: 'Üniversitemiz',
             icon: 'business',
             color: '#3B82F6',
             url: 'https://www.klu.edu.tr/sayfa/32/universitemiz'
         },
         {
             id: 'candidate',
-            title: 'Aday renci',
+            title: 'Aday Öğrenci',
             icon: 'school',
             color: '#10B981',
             url: 'https://aday.klu.edu.tr/'
         },
         {
             id: 'contact',
-            title: 'letiim',
+            title: 'İletişim',
             icon: 'call',
             color: '#F59E0B',
             url: 'https://www.klu.edu.tr/iletisim'
         },
         {
             id: 'social',
-            title: 'KL Sosyal',
+            title: 'KLÜ Sosyal',
             icon: 'share-social',
             color: '#EC4899',
             url: 'https://www.instagram.com/kirklareliedu/'
@@ -53,92 +57,115 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props
     };
 
     return (
-        <View style={[styles.container, { backgroundColor: '#F8FAFC' }]}>
+        <View style={s.container}>
             {/* Drawer Header */}
             <LinearGradient
-                colors={['#182958', '#101D42', '#080F26']}
+                colors={isDarkMode ? ['#0F172A', '#020617', '#000000'] : ['#182958', '#101D42', '#080F26']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
-                style={styles.header}
+                style={s.header}
             >
                 {/* Decorative Premium Glows */}
-                <View style={[styles.glowCircle, { top: -40, right: -40, backgroundColor: '#3B82F640' }]} />
-                <View style={[styles.glowCircle, { bottom: -20, left: -20, backgroundColor: '#6366F130' }]} />
+                <View style={[s.glowCircle, { top: -40, right: -40, backgroundColor: isDarkMode ? '#3B82F615' : '#3B82F640' }]} />
+                <View style={[s.glowCircle, { bottom: -20, left: -20, backgroundColor: isDarkMode ? '#6366F110' : '#6366F130' }]} />
 
                 {/* Back / Close Button */}
                 <TouchableOpacity 
-                    style={styles.closeButton} 
+                    style={s.closeButton} 
                     onPress={() => props.navigation.closeDrawer()}
+                    activeOpacity={0.7}
                 >
                     <Icon name="chevron-back" size={28} color="#FFFFFF" />
                 </TouchableOpacity>
 
-                <View style={styles.headerContent}>
-                    <View style={styles.logoContainer}>
-                        <View style={styles.logoWrapper}>
+                <View style={s.headerContent}>
+                    <View style={s.logoContainer}>
+                        <View style={s.logoWrapper}>
                             <Image
                                 source={require('@/shared/assets/logo.png')}
-                                style={styles.logo}
+                                style={s.logo}
                                 resizeMode="contain"
                             />
                         </View>
                     </View>
-                    <View style={styles.headerTextContainer}>
-                        <Text style={styles.universityName}>KIRKLAREL</Text>
-                        <Text style={styles.subTitle}>NVERSTES</Text>
+                    <View style={s.headerTextContainer}>
+                        <Text style={s.universityName}>KIRKLARELİ</Text>
+                        <Text style={s.subTitle}>ÜNİVERSİTESİ</Text>
                     </View>
                 </View>
             </LinearGradient>
 
             {/* Fixed Menu List */}
-            <View style={styles.mainContent}>
-                <View style={styles.menuContainer}>
-                    <Text style={styles.sectionTitle}>HIZLI ERM</Text>
-                    {menuItems.map((item) => (
-                        <TouchableOpacity
-                            key={item.id}
-                            style={styles.menuItemCard}
-                            onPress={() => handlePress(item.url)}
-                            activeOpacity={0.8}
-                        >
-                            <View style={[styles.iconBox, { backgroundColor: item.color + '15' }]}>
-                                <Icon name={item.icon} size={22} color={item.color} />
-                            </View>
-                            <Text style={styles.menuText}>{item.title}</Text>
-                            <View style={styles.chevronWrapper}>
-                                <Icon name="chevron-forward" size={18} color="#94A3B8" />
-                            </View>
-                        </TouchableOpacity>
-                    ))}
+            <View style={s.mainContent}>
+                <View style={s.menuContainer}>
+                    <Text style={s.sectionTitle}>HIZLI ERİŞİM</Text>
+                    {menuItems.map((item) => {
+                        const scaleAnim = useRef(new Animated.Value(1)).current;
+
+                        const onPressIn = () => {
+                            Animated.spring(scaleAnim, {
+                                toValue: 0.95,
+                                useNativeDriver: true,
+                            }).start();
+                        };
+
+                        const onPressOut = () => {
+                            Animated.spring(scaleAnim, {
+                                toValue: 1,
+                                useNativeDriver: true,
+                            }).start();
+                        };
+
+                        return (
+                            <Animated.View key={item.id} style={{ transform: [{ scale: scaleAnim }] }}>
+                                <TouchableOpacity
+                                    style={s.menuItemCard}
+                                    onPress={() => handlePress(item.url)}
+                                    onPressIn={onPressIn}
+                                    onPressOut={onPressOut}
+                                    activeOpacity={1}
+                                >
+                                    <View style={[s.iconBox, { backgroundColor: isDarkMode ? item.color + '25' : item.color + '15' }]}>
+                                        <Icon name={item.icon as any} size={22} color={item.color} />
+                                    </View>
+                                    <Text style={s.menuText}>{item.title}</Text>
+                                    <View style={s.chevronWrapper}>
+                                        <Icon name="chevron-forward" size={18} color={isDarkMode ? 'rgba(255,255,255,0.3)' : '#94A3B8'} />
+                                    </View>
+                                </TouchableOpacity>
+                            </Animated.View>
+                        );
+                    })}
                 </View>
 
                 {/* Info Card */}
                 <LinearGradient
-                    colors={['#FFFFFF', '#F1F5F9']}
-                    style={styles.infoCard}
+                    colors={isDarkMode ? ['rgba(255,255,255,0.03)', 'rgba(255,255,255,0.01)'] : ['#FFFFFF', '#F1F5F9']}
+                    style={s.infoCard}
                 >
-                    <Icon name="information-circle" size={24} color="#1E293B" />
-                    <Text style={styles.infoText}>
-                        Krklareli niversitesi Mobil Uygulamas ile kamps hayat parmaklarnzn ucunda.
+                    <Icon name="information-circle" size={24} color={isDarkMode ? theme.colors.primary : '#1E293B'} />
+                    <Text style={s.infoText}>
+                        Kırklareli Üniversitesi Mobil Uygulaması ile kampüs hayatı parmaklarınızın ucunda.
                     </Text>
                 </LinearGradient>
             </View>
 
             {/* Drawer Footer */}
-            <View style={styles.footer}>
-                <View style={styles.footerGlow} />
-                <Text style={styles.footerText}> 2026 Krklareli niversitesi</Text>
-                <View style={styles.versionBadge}>
-                    <Text style={styles.versionText}>v1.0.0</Text>
+            <View style={s.footer}>
+                <View style={s.footerGlow} />
+                <Text style={s.footerText}>© 2026 Kırklareli Üniversitesi</Text>
+                <View style={s.versionBadge}>
+                    <Text style={s.versionText}>v1.0.0</Text>
                 </View>
             </View>
         </View>
     );
 };
 
-const styles = StyleSheet.create({
+const styles = (theme: any, isDarkMode: boolean) => StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: theme.colors.background,
     },
     header: {
         height: verticalScale(220),
@@ -150,11 +177,11 @@ const styles = StyleSheet.create({
     closeButton: {
         position: 'absolute',
         top: Platform.OS === 'ios' ? 65 : 45,
-        left: 20,
-        width: 48,
-        height: 48,
-        borderRadius: 24,
-        backgroundColor: 'rgba(255, 255, 255, 0.25)',
+        left: 15,
+        width: 44,
+        height: 44,
+        borderRadius: 22,
+        backgroundColor: 'rgba(255, 255, 255, 0.15)',
         justifyContent: 'center',
         alignItems: 'center',
         zIndex: 10,
@@ -184,6 +211,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         justifyContent: 'center',
         alignItems: 'center',
+        borderWidth: 1.5,
+        borderColor: '#f1f5f9',
         ...Platform.select({
             ios: {
                 shadowColor: '#000',
@@ -211,8 +240,8 @@ const styles = StyleSheet.create({
     },
     subTitle: {
         color: 'rgba(255, 255, 255, 0.7)',
-        fontSize: moderateScale(12),
-        fontWeight: '600',
+        fontSize: moderateScale(11),
+        fontWeight: '700',
         letterSpacing: 4,
         marginTop: 2,
     },
@@ -223,32 +252,33 @@ const styles = StyleSheet.create({
         padding: moderateScale(20),
     },
     sectionTitle: {
-        fontSize: 12,
-        fontWeight: '800',
-        color: '#64748B',
+        fontSize: 11,
+        fontWeight: '900',
+        color: theme.colors.textSecondary,
         letterSpacing: 1.5,
         marginBottom: 15,
         marginLeft: 5,
+        opacity: 0.6,
     },
     menuItemCard: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
         paddingVertical: moderateScale(12),
         paddingHorizontal: moderateScale(12),
         borderRadius: moderateScale(18),
         marginBottom: 12,
-        borderWidth: 1.5,
-        borderColor: '#E2E8F0',
+        borderWidth: 1.2,
+        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : '#F1F5F9',
         ...Platform.select({
             ios: {
                 shadowColor: '#1E293B',
                 shadowOffset: { width: 0, height: 6 },
-                shadowOpacity: 0.12,
-                shadowRadius: 12,
+                shadowOpacity: isDarkMode ? 0.2 : 0.05,
+                shadowRadius: 10,
             },
             android: {
-                elevation: 6,
+                elevation: 4,
             },
         }),
     },
@@ -262,40 +292,41 @@ const styles = StyleSheet.create({
     },
     menuText: {
         flex: 1,
-        fontSize: moderateScale(16),
+        fontSize: moderateScale(15),
         fontWeight: '700',
-        color: '#1E293B',
+        color: theme.colors.text,
     },
     chevronWrapper: {
         width: 32,
         height: 32,
         borderRadius: 16,
-        backgroundColor: '#F8FAFC',
+        backgroundColor: isDarkMode ? 'rgba(255,255,255,0.03)' : '#F8FAFC',
         justifyContent: 'center',
         alignItems: 'center',
     },
     infoCard: {
         margin: moderateScale(20),
-        padding: moderateScale(20),
-        borderRadius: moderateScale(24),
+        padding: moderateScale(18),
+        borderRadius: moderateScale(22),
         flexDirection: 'row',
         alignItems: 'center',
         gap: 15,
-        borderWidth: 1,
-        borderColor: '#E2E8F0',
+        borderWidth: 1.2,
+        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : '#E2E8F0',
     },
     infoText: {
         flex: 1,
-        fontSize: 13,
-        color: '#475569',
-        lineHeight: 20,
-        fontWeight: '500',
+        fontSize: 12,
+        color: theme.colors.textSecondary,
+        lineHeight: 18,
+        fontWeight: '600',
+        opacity: 0.8,
     },
     footer: {
         padding: moderateScale(25),
         paddingBottom: Platform.OS === 'ios' ? 40 : 25,
         alignItems: 'center',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
         position: 'relative',
     },
     footerGlow: {
@@ -303,24 +334,26 @@ const styles = StyleSheet.create({
         top: 0,
         width: '100%',
         height: 1,
-        backgroundColor: '#F1F5F9',
+        backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : '#F1F5F9',
     },
     footerText: {
-        fontSize: moderateScale(12),
-        color: '#94A3B8',
+        fontSize: moderateScale(11),
+        color: theme.colors.textSecondary,
         fontWeight: '700',
+        opacity: 0.5,
     },
     versionBadge: {
-        backgroundColor: '#F1F5F9',
+        backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : '#F1F5F9',
         paddingHorizontal: 10,
         paddingVertical: 4,
         borderRadius: 10,
         marginTop: 8,
     },
     versionText: {
-        fontSize: moderateScale(10),
-        color: '#64748B',
-        fontWeight: '800',
+        fontSize: moderateScale(9),
+        color: theme.colors.textSecondary,
+        fontWeight: '900',
+        opacity: 0.7,
     },
 });
 
