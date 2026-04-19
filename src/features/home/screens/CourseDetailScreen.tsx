@@ -11,7 +11,7 @@ import { Ionicons as Icon } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { HomeStackParamList } from '@/shared/types/navigation';
-import { theme as defaultTheme, Theme } from '@/core/theme/theme';
+import { Theme } from '@/core/theme/theme';
 import { MOCK_SCHEDULE } from '@/shared/services/mockData';
 import { Card } from '@/shared/components/common';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
