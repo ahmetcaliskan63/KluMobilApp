@@ -66,7 +66,6 @@ export const DashboardScreen: React.FC = () => {
         <NewsCard
             key={item.id}
             item={item}
-            theme={theme}
             onPress={() => navigation.navigate('NewsDetail', { newsId: item.id })}
         />
     ), [navigation, theme]);
@@ -75,7 +74,6 @@ export const DashboardScreen: React.FC = () => {
         <AnnouncementCard
             key={item.id}
             item={item}
-            theme={theme}
             onPress={() => navigation.navigate('AnnouncementDetail', { announcementId: item.id })}
         />
     ), [navigation, theme]);
@@ -84,14 +82,13 @@ export const DashboardScreen: React.FC = () => {
         <EventCard
             key={item.id}
             item={item}
-            theme={theme}
             onPress={() => navigation.navigate('EventDetail', { eventId: item.id })}
         />
     ), [navigation, theme]);
 
     return (
         <View style={s.container}>
-            <StatusBar barStyle={theme.colors.background === '#FFFFFF' ? 'dark-content' : 'light-content'} backgroundColor={theme.colors.background} />
+            <StatusBar barStyle="light-content" backgroundColor="#182958" />
 
             <View style={s.fixedTabContainer}>
                 <View style={s.segmentedControl}>
@@ -152,7 +149,7 @@ const styles = (theme: Theme) => StyleSheet.create({
     },
     scrollContent: {
         padding: spacing.md,
-        paddingTop: 0,
+        paddingTop: spacing.md,
     },
     fixedTabContainer: {
         backgroundColor: theme.colors.background,
@@ -163,14 +160,14 @@ const styles = (theme: Theme) => StyleSheet.create({
     },
     segmentedControl: {
         flexDirection: 'row',
-        backgroundColor: theme.colors.accent,
+        backgroundColor: theme.colors.card,
         borderRadius: borderRadius.full,
         padding: 4,
         position: 'relative',
         height: verticalScale(46),
         alignItems: 'center',
-        borderWidth: 1.5,
-        borderColor: theme.colors.primary,
+        borderWidth: 1,
+        borderColor: theme.colors.border,
     },
     activeBackground: {
         position: 'absolute',
