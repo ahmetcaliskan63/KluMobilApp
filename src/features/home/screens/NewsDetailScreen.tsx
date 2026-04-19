@@ -3,9 +3,7 @@ import {
     View,
     Text,
     StyleSheet,
-    ScrollView,
     TouchableOpacity,
-    Image,
     StatusBar,
     Animated,
     Platform,
@@ -14,9 +12,10 @@ import { Ionicons as Icon } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { HomeStackParamList } from '@/shared/types/navigation';
-import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { MOCK_NEWS } from '@/shared/services/mockData';
 import { viewport, moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
+import { useAppTheme } from '@/shared/hooks/useAppTheme';
+import { Theme } from '@/core/theme/theme';
 
 type NewsDetailRouteProp = RouteProp<HomeStackParamList, 'NewsDetail'>;
 
@@ -24,8 +23,9 @@ export const NewsDetailScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
     const route = useRoute<NewsDetailRouteProp>();
-    const { theme } = useAppTheme();
     const { newsId } = route.params;
+    const { theme, isDarkMode } = useAppTheme();
+    const s = styles(theme, isDarkMode);
     const [imageError, setImageError] = React.useState(false);
     const scrollY = React.useRef(new Animated.Value(0)).current;
     const news = MOCK_NEWS.find(n => n.id === newsId);
@@ -45,12 +45,6 @@ export const NewsDetailScreen: React.FC = () => {
         extrapolate: 'clamp',
     });
 
-    const textOpacity = scrollY.interpolate({
-        inputRange: [0, headerHeight / 2],
-        outputRange: [1, 0],
-        extrapolate: 'clamp',
-    });
-
     const headerOpacity = scrollY.interpolate({
         inputRange: [headerHeight - 80, headerHeight - 30],
         outputRange: [0, 1],
@@ -59,7 +53,7 @@ export const NewsDetailScreen: React.FC = () => {
 
     const backButtonBg = scrollY.interpolate({
         inputRange: [0, headerHeight - 100],
-        outputRange: ['rgba(0,0,0,0.3)', 'rgba(255,255,255,0.1)'],
+        outputRange: ['rgba(0,0,0,0.35)', isDarkMode ? theme.colors.background : '#182958'],
         extrapolate: 'clamp',
     });
 
@@ -156,10 +150,10 @@ export const NewsDetailScreen: React.FC = () => {
     );
 };
 
-const s = StyleSheet.create({
+const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.background,
     },
     imageContainer: {
         height: verticalScale(400),
@@ -184,7 +178,7 @@ const s = StyleSheet.create({
     title: {
         fontSize: moderateScale(24),
         fontWeight: '800',
-        color: '#1C1C1E',
+        color: theme.colors.text,
         lineHeight: moderateScale(32),
         marginBottom: verticalScale(15),
     },
@@ -199,29 +193,29 @@ const s = StyleSheet.create({
         gap: scale(6),
     },
     metaText: {
-        color: '#8E8E93',
+        color: theme.colors.textSecondary,
         fontSize: moderateScale(14),
         fontWeight: '600',
     },
     divider: {
         width: 1,
         height: verticalScale(14),
-        backgroundColor: '#E5E5EA',
+        backgroundColor: theme.colors.border,
     },
     contentDivider: {
         height: 1,
-        backgroundColor: '#F2F2F7',
+        backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : '#F2F2F7',
         marginVertical: verticalScale(20),
     },
     contentContainer: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.background,
         padding: scale(24),
         minHeight: viewport.height - verticalScale(370),
     },
     indicator: {
         width: scale(40),
         height: verticalScale(5),
-        backgroundColor: '#E5E5EA',
+        backgroundColor: theme.colors.border,
         borderRadius: moderateScale(2.5),
         alignSelf: 'center',
         marginBottom: verticalScale(25),
@@ -229,13 +223,13 @@ const s = StyleSheet.create({
     summary: {
         fontSize: moderateScale(18),
         fontWeight: '700',
-        color: '#1C1C1E',
+        color: theme.colors.text,
         lineHeight: moderateScale(26),
         marginBottom: verticalScale(20),
     },
     body: {
         fontSize: moderateScale(16),
-        color: '#3A3A3C',
+        color: theme.colors.textSecondary,
         lineHeight: moderateScale(28),
         fontWeight: '400',
     },
@@ -258,11 +252,13 @@ const s = StyleSheet.create({
         top: 0,
         left: 0,
         right: 0,
-        backgroundColor: '#182958',
+        backgroundColor: isDarkMode ? theme.colors.background : '#182958',
         zIndex: 100,
         justifyContent: 'center',
         alignItems: 'center',
         paddingHorizontal: scale(70),
+        borderBottomWidth: isDarkMode ? 1 : 0,
+        borderBottomColor: theme.colors.border,
         ...Platform.select({
             ios: {
                 shadowColor: '#000',
