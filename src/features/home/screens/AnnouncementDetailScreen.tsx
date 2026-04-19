@@ -3,11 +3,10 @@ import {
     View,
     Text,
     StyleSheet,
-    ScrollView,
     TouchableOpacity,
     StatusBar,
     Animated,
-    Image,
+    Platform,
 } from 'react-native';
 import { Ionicons as Icon } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -28,14 +27,13 @@ export const AnnouncementDetailScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
     const route = useRoute<AnnouncementDetailRouteProp>();
-    const { theme } = useAppTheme();
+    const { theme, isDarkMode } = useAppTheme();
     const { announcementId } = route.params;
-
-    const fadeAnim = useRef(new Animated.Value(0)).current;
+    const [imageError, setImageError] = React.useState(false);
     const scrollY = useRef(new Animated.Value(0)).current;
+    const fadeAnim = useRef(new Animated.Value(0)).current;
 
     const announcement = MOCK_ANNOUNCEMENTS.find(a => a.id === announcementId);
-    const [imageError, setImageError] = React.useState(false);
 
     useEffect(() => {
         Animated.timing(fadeAnim, {
@@ -47,45 +45,53 @@ export const AnnouncementDetailScreen: React.FC = () => {
 
     if (!announcement) return null;
 
-    const corporateColor = '#182958'; // KLU Kurumsal Lacivert
+    const activeColor = isDarkMode ? theme.colors.primary : '#182958';
+    const s = styles(theme, activeColor, isDarkMode);
 
-    const s = styles(theme, corporateColor);
+    const headerHeight = verticalScale(300);
+
+    const imageTranslate = scrollY.interpolate({
+        inputRange: [-headerHeight, 0, headerHeight],
+        outputRange: [headerHeight / 2, 0, -headerHeight / 2],
+    });
+
+    const imageScale = scrollY.interpolate({
+        inputRange: [-headerHeight, 0],
+        outputRange: [2, 1],
+        extrapolate: 'clamp',
+    });
+
+    const headerOpacity = scrollY.interpolate({
+        inputRange: [headerHeight - 100, headerHeight - 40],
+        outputRange: [0, 1],
+        extrapolate: 'clamp',
+    });
+
+    const backButtonBg = scrollY.interpolate({
+        inputRange: [0, headerHeight - 100],
+        outputRange: ['rgba(0,0,0,0.35)', isDarkMode ? theme.colors.background : activeColor],
+        extrapolate: 'clamp',
+    });
 
     return (
         <View style={s.container}>
-            <StatusBar barStyle="light-content" backgroundColor={corporateColor} />
+            <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
-            {/* Premium Corporate Header - Ultra Minimalist */}
-            <View style={[s.header, { paddingTop: insets.top, backgroundColor: corporateColor }]}>
-                <View style={s.headerNav}>
-                    <TouchableOpacity
-                        onPress={() => navigation.goBack()}
-                        style={s.headerButton}
-                        activeOpacity={0.7}
-                    >
-                        <Icon name="chevron-back" size={moderateScale(24)} color="#FFFFFF" />
-                    </TouchableOpacity>
+            {/* Back Button - Floating */}
+            <Animated.View style={[s.backButtonContainer, { top: insets.top + 10 }]}>
+                <TouchableOpacity
+                    onPress={() => navigation.goBack()}
+                    style={s.backButton}
+                    activeOpacity={0.8}
+                >
+                    <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: backButtonBg, borderRadius: 22.5 }]} />
+                    <Icon name="chevron-back" size={24} color="#FFFFFF" />
+                </TouchableOpacity>
+            </Animated.View>
 
-                    <Animated.Text
-                        style={[
-                            s.headerNavTitle,
-                            {
-                                opacity: scrollY.interpolate({
-                                    inputRange: [40, 80],
-                                    outputRange: [0, 1],
-                                    extrapolate: 'clamp',
-                                })
-                            }
-                        ]}
-                        numberOfLines={1}
-                    >
-                        {announcement.title}
-                    </Animated.Text>
-
-                    {/* Placeholder for symmetry */}
-                    <View style={s.headerButton} />
-                </View>
-            </View>
+            <Animated.View style={[s.dynamicHeader, { height: insets.top + 60, opacity: headerOpacity, paddingTop: insets.top, backgroundColor: isDarkMode ? theme.colors.background : activeColor }]}>
+                <Text style={s.headerNavTitle} numberOfLines={1}>{announcement.title}</Text>
+            </Animated.View>
 
             <Animated.ScrollView
                 onScroll={Animated.event(
@@ -98,24 +104,31 @@ export const AnnouncementDetailScreen: React.FC = () => {
                 style={{ opacity: fadeAnim }}
             >
                 {/* Visual Header - New image addition */}
-                {(announcement.image || imageError) && (
-                    <View style={s.imageWrapper}>
-                        <Image
-                            source={{
-                                uri: imageError
-                                    ? (announcement.category === 'Akademik'
-                                        ? 'https://images.unsplash.com/photo-1541339907198-e08759dfc3ef?q=80&w=2070&auto=format&fit=crop'
-                                        : 'https://images.unsplash.com/photo-1523240318241-70e192ce93bd?q=80&w=2070&auto=format&fit=crop')
-                                    : (announcement.image || (announcement.category === 'Akademik'
-                                        ? 'https://images.unsplash.com/photo-1541339907198-e08759dfc3ef?q=80&w=2070&auto=format&fit=crop'
-                                        : 'https://images.unsplash.com/photo-1523240318241-70e192ce93bd?q=80&w=2070&auto=format&fit=crop'))
-                            }}
-                            onError={() => setImageError(true)}
-                            style={s.mainImage}
-                            resizeMode="cover"
-                        />
-                    </View>
-                )}
+                <View style={s.imageWrapper}>
+                    <Animated.Image
+                        source={{
+                            uri: imageError
+                                ? (announcement.category === 'Akademik'
+                                    ? 'https://images.unsplash.com/photo-1541339907198-e08759dfc3ef?q=80&w=2070&auto=format&fit=crop'
+                                    : 'https://images.unsplash.com/photo-1523240318241-70e192ce93bd?q=80&w=2070&auto=format&fit=crop')
+                                : (announcement.image || (announcement.category === 'Akademik'
+                                    ? 'https://images.unsplash.com/photo-1541339907198-e08759dfc3ef?q=80&w=2070&auto=format&fit=crop'
+                                    : 'https://images.unsplash.com/photo-1523240318241-70e192ce93bd?q=80&w=2070&auto=format&fit=crop'))
+                        }}
+                        onError={() => setImageError(true)}
+                        style={[
+                            s.mainImage,
+                            {
+                                transform: [
+                                    { translateY: imageTranslate },
+                                    { scale: imageScale }
+                                ]
+                            }
+                        ]}
+                        resizeMode="cover"
+                    />
+                    <View style={s.imageOverlay} />
+                </View>
 
                 {/* Ultra-Clean Title Section */}
                 <View style={s.titleSection}>
@@ -132,7 +145,7 @@ export const AnnouncementDetailScreen: React.FC = () => {
                     <Text style={s.mainTitle}>{announcement.title}</Text>
 
                     <View style={s.viewCount}>
-                        <Icon name="eye-outline" size={moderateScale(13)} color={theme.colors.textLight} />
+                        <Icon name="eye-outline" size={moderateScale(13)} color={theme.colors.textSecondary} />
                         <Text style={s.viewText}>{announcement.views} görüntülenme</Text>
                     </View>
                 </View>
@@ -152,7 +165,7 @@ export const AnnouncementDetailScreen: React.FC = () => {
 
                 {/* Minimalist Bottom Decoration */}
                 <View style={s.bottomAccent}>
-                    <View style={[s.accentLine, { backgroundColor: corporateColor }]} />
+                    <View style={[s.accentLine, { backgroundColor: activeColor }]} />
                 </View>
 
                 <View style={{ height: verticalScale(100) }} />
@@ -161,10 +174,10 @@ export const AnnouncementDetailScreen: React.FC = () => {
     );
 };
 
-const styles = (theme: Theme, corporateColor: string) => StyleSheet.create({
+const styles = (theme: Theme, activeColor: string, isDarkMode: boolean) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.background,
     },
     header: {
         shadowColor: '#000',
@@ -197,20 +210,62 @@ const styles = (theme: Theme, corporateColor: string) => StyleSheet.create({
         paddingHorizontal: scale(8),
     },
     scrollContent: {
-        paddingTop: verticalScale(0), // Removed padding to let image start from top if needed, or keep minimal
+        paddingTop: verticalScale(0),
     },
     imageWrapper: {
         width: '100%',
-        height: verticalScale(220),
-        backgroundColor: '#F3F4F6',
-        marginBottom: verticalScale(24),
+        height: verticalScale(300),
+        backgroundColor: theme.colors.card,
+        overflow: 'hidden',
     },
     mainImage: {
         width: '100%',
         height: '100%',
     },
+    imageOverlay: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(0,0,0,0.25)',
+    },
+    backButtonContainer: {
+        position: 'absolute',
+        left: scale(20),
+        zIndex: 101,
+    },
+    backButton: {
+        width: scale(45),
+        height: scale(45),
+        borderRadius: scale(22.5),
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: 'rgba(255,255,255,0.2)',
+    },
+    dynamicHeader: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 100,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: scale(70),
+        borderBottomWidth: isDarkMode ? 1 : 0,
+        borderBottomColor: theme.colors.border,
+        ...Platform.select({
+            ios: {
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.1,
+                shadowRadius: 10,
+            },
+            android: {
+                elevation: 4,
+            },
+        }),
+    },
     titleSection: {
         paddingHorizontal: scale(24),
+        paddingTop: verticalScale(24),
         marginBottom: verticalScale(28),
     },
     badgeRow: {
@@ -220,17 +275,17 @@ const styles = (theme: Theme, corporateColor: string) => StyleSheet.create({
         marginBottom: verticalScale(16),
     },
     categoryBadge: {
-        backgroundColor: '#F8F9FB',
+        backgroundColor: isDarkMode ? `${activeColor}15` : '#F8F9FB',
         paddingHorizontal: scale(12),
         paddingVertical: verticalScale(6),
         borderRadius: moderateScale(4),
         borderLeftWidth: 3,
-        borderLeftColor: corporateColor,
+        borderLeftColor: activeColor,
     },
     categoryText: {
         fontSize: moderateScale(11),
         fontWeight: '800',
-        color: corporateColor,
+        color: activeColor,
         textTransform: 'uppercase',
         letterSpacing: 0.8,
     },
@@ -247,7 +302,7 @@ const styles = (theme: Theme, corporateColor: string) => StyleSheet.create({
     mainTitle: {
         fontSize: moderateScale(22),
         fontWeight: '800',
-        color: '#111827',
+        color: theme.colors.text,
         lineHeight: moderateScale(30),
         marginBottom: verticalScale(16),
     },
@@ -258,7 +313,7 @@ const styles = (theme: Theme, corporateColor: string) => StyleSheet.create({
     },
     viewText: {
         fontSize: moderateScale(12),
-        color: theme.colors.textLight,
+        color: theme.colors.textSecondary,
         fontWeight: '500',
     },
     contentContainer: {
@@ -267,7 +322,7 @@ const styles = (theme: Theme, corporateColor: string) => StyleSheet.create({
     contentText: {
         fontSize: moderateScale(16),
         lineHeight: moderateScale(28),
-        color: '#374151',
+        color: theme.colors.textSecondary,
         fontWeight: '400',
         textAlign: 'left',
         letterSpacing: 0.1,
