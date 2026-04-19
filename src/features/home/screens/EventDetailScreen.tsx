@@ -27,7 +27,7 @@ export const EventDetailScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
     const route = useRoute<EventDetailRouteProp>();
-    const { theme } = useAppTheme();
+    const { theme, isDarkMode } = useAppTheme();
     const { eventId } = route.params;
 
     const scrollY = useRef(new Animated.Value(0)).current;
@@ -70,7 +70,7 @@ export const EventDetailScreen: React.FC = () => {
 
     const backButtonBg = scrollY.interpolate({
         inputRange: [0, headerHeight - 100],
-        outputRange: ['rgba(0,0,0,0.35)', corporateColor],
+        outputRange: ['rgba(0,0,0,0.35)', isDarkMode ? theme.colors.background : corporateColor],
         extrapolate: 'clamp',
     });
 
@@ -135,12 +135,11 @@ export const EventDetailScreen: React.FC = () => {
                 {/* Content Area */}
                 <View style={s.mainContent}>
 
-                    {/* Highlights Section - Unified & Prestigious Grid */}
                     <View style={s.highlightsWrapper}>
                         <View style={s.highlightsRow}>
                             <View style={s.highlightCard}>
-                                <View style={[s.iconCircle, { backgroundColor: '#F0F7FF' }]}>
-                                    <Icon name="calendar-outline" size={moderateScale(18)} color="#0066FF" />
+                                <View style={[s.iconCircle, { backgroundColor: isDarkMode ? 'rgba(0, 102, 255, 0.1)' : '#F0F7FF' }]}>
+                                    <Icon name="calendar-outline" size={moderateScale(18)} color={isDarkMode ? '#66A3FF' : '#0066FF'} />
                                 </View>
                                 <View style={s.highlightInfo}>
                                     <Text style={s.highlightLabel}>TARİH</Text>
@@ -149,8 +148,8 @@ export const EventDetailScreen: React.FC = () => {
                             </View>
 
                             <View style={s.highlightCard}>
-                                <View style={[s.iconCircle, { backgroundColor: '#FFF5F0' }]}>
-                                    <Icon name="time-outline" size={moderateScale(18)} color="#FF6600" />
+                                <View style={[s.iconCircle, { backgroundColor: isDarkMode ? 'rgba(255, 102, 0, 0.1)' : '#FFF5F0' }]}>
+                                    <Icon name="time-outline" size={moderateScale(18)} color={isDarkMode ? '#FF944D' : '#FF6600'} />
                                 </View>
                                 <View style={s.highlightInfo}>
                                     <Text style={s.highlightLabel}>SAAT</Text>
@@ -160,8 +159,8 @@ export const EventDetailScreen: React.FC = () => {
                         </View>
 
                         <View style={s.locationHighlight}>
-                            <View style={[s.iconBox, { backgroundColor: '#F3FBF5' }]}>
-                                <Icon name="location-outline" size={moderateScale(20)} color="#10B981" />
+                            <View style={[s.iconBox, { backgroundColor: isDarkMode ? 'rgba(16, 185, 129, 0.1)' : '#F3FBF5' }]}>
+                                <Icon name="location-outline" size={moderateScale(20)} color={isDarkMode ? '#34D399' : '#10B981'} />
                             </View>
                             <View style={s.highlightInfo}>
                                 <Text style={s.highlightLabel}>ETKİNLİK KONUMU</Text>
@@ -171,8 +170,8 @@ export const EventDetailScreen: React.FC = () => {
 
                         <View style={s.organizerHighlight}>
                             <View style={s.organizerLeft}>
-                                <View style={[s.iconCircle, { backgroundColor: '#F1F5F9' }]}>
-                                    <Icon name="business-outline" size={moderateScale(18)} color="#64748B" />
+                                <View style={[s.iconCircle, { backgroundColor: isDarkMode ? 'rgba(148, 163, 184, 0.1)' : '#F1F5F9' }]}>
+                                    <Icon name="business-outline" size={moderateScale(18)} color={isDarkMode ? '#94A3B8' : '#64748B'} />
                                 </View>
                                 <View style={s.highlightInfo}>
                                     <Text style={s.highlightLabel}>DÜZENLEYEN BİRİM</Text>
@@ -208,10 +207,10 @@ export const EventDetailScreen: React.FC = () => {
     );
 };
 
-const styles = (_theme: Theme, corporateColor: string, headerHeight: number) => StyleSheet.create({
+const styles = (theme: Theme, corporateColor: string, headerHeight: number) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.background,
     },
     stickyHeader: {
         position: 'absolute',
@@ -302,7 +301,7 @@ const styles = (_theme: Theme, corporateColor: string, headerHeight: number) => 
     mainContent: {
         paddingHorizontal: scale(24),
         paddingTop: verticalScale(32),
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.background,
         marginTop: verticalScale(-25),
         borderTopLeftRadius: moderateScale(30),
         borderTopRightRadius: moderateScale(30),
@@ -319,31 +318,31 @@ const styles = (_theme: Theme, corporateColor: string, headerHeight: number) => 
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#F8FAFC',
+        backgroundColor: theme.colors.card,
         borderRadius: moderateScale(22),
         padding: scale(14),
         borderWidth: 1,
-        borderColor: '#F1F5F9',
+        borderColor: theme.colors.border,
     },
     locationHighlight: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#F8FAFC',
+        backgroundColor: theme.colors.card,
         borderRadius: moderateScale(22),
         padding: scale(16),
         borderWidth: 1,
-        borderColor: '#F1F5F9',
+        borderColor: theme.colors.border,
     },
     organizerHighlight: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        backgroundColor: '#F8FAFC',
+        backgroundColor: theme.colors.card,
         borderRadius: moderateScale(22),
         paddingHorizontal: scale(16),
         paddingVertical: verticalScale(14),
         borderWidth: 1,
-        borderColor: '#F1F5F9',
+        borderColor: theme.colors.border,
         borderStyle: 'dashed',
     },
     organizerLeft: {
@@ -381,20 +380,20 @@ const styles = (_theme: Theme, corporateColor: string, headerHeight: number) => 
     highlightValue: {
         fontSize: moderateScale(14),
         fontWeight: '800',
-        color: '#1E293B',
+        color: theme.colors.text,
         lineHeight: moderateScale(20),
     },
     organizerText: {
         fontSize: moderateScale(14),
         fontWeight: '700',
-        color: '#475569',
+        color: theme.colors.textSecondary,
     },
     verifiedBadge: {
         marginLeft: scale(8),
     },
     contentDivider: {
         height: 1,
-        backgroundColor: '#F1F5F9',
+        backgroundColor: theme.colors.border,
         marginBottom: verticalScale(32),
     },
     sectionHeader: {
@@ -412,13 +411,13 @@ const styles = (_theme: Theme, corporateColor: string, headerHeight: number) => 
     sectionTitle: {
         fontSize: moderateScale(19),
         fontWeight: '900',
-        color: '#0F172A',
+        color: theme.colors.text,
         letterSpacing: -0.5,
     },
     description: {
         fontSize: moderateScale(16),
         lineHeight: moderateScale(28),
-        color: '#475569',
+        color: theme.colors.textSecondary,
         fontWeight: '400',
     },
 });
