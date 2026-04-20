@@ -76,15 +76,15 @@ const EXAM_DATA = [
 export const ExamScheduleScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
-    const { theme } = useAppTheme();
-    const s = styles(theme);
+    const { theme, isDarkMode } = useAppTheme();
+    const s = styles(theme, isDarkMode);
 
     return (
         <View style={s.container}>
-            <StatusBar barStyle="light-content" />
+            <StatusBar barStyle="light-content" backgroundColor="#182958" />
 
             <LinearGradient
-                colors={['#0B1120', '#101D42']}
+                colors={isDarkMode ? ['#0F172A', '#020617'] : ['#0B1120', '#101D42']}
                 style={[s.header, { paddingTop: insets.top + 10 }]}
             >
                 <View style={s.headerTop}>
@@ -155,10 +155,10 @@ export const ExamScheduleScreen: React.FC = () => {
     );
 };
 
-const styles = (theme: Theme) => StyleSheet.create({
+const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F8FAFC',
+        backgroundColor: theme.colors.background,
     },
     header: {
         paddingBottom: verticalScale(20),
@@ -200,17 +200,17 @@ const styles = (theme: Theme) => StyleSheet.create({
         padding: spacing.lg,
     },
     examCard: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
         borderRadius: 16,
         marginBottom: verticalScale(14),
         flexDirection: 'row',
         overflow: 'hidden',
         borderWidth: 2,
-        borderColor: '#94A3B8', // Sharper, darker border
+        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : '#E2E8F0',
         elevation: 6,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.12,
+        shadowOpacity: isDarkMode ? 0.3 : 0.12,
         shadowRadius: 12,
     },
     cardAccent: {
@@ -252,7 +252,7 @@ const styles = (theme: Theme) => StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: 4,
-        backgroundColor: '#F1F5F9',
+        backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.08)' : '#F1F5F9',
         paddingHorizontal: 8,
         paddingVertical: 3,
         borderRadius: 6,
@@ -260,12 +260,12 @@ const styles = (theme: Theme) => StyleSheet.create({
     locationText: {
         fontSize: moderateScale(10),
         fontWeight: '700',
-        color: '#475569',
+        color: isDarkMode ? theme.colors.textSecondary : '#475569',
     },
     courseName: {
         fontSize: moderateScale(14),
         fontWeight: '800',
-        color: '#1E293B',
+        color: theme.colors.text,
         marginBottom: 12,
     },
     detailsRow: {
@@ -281,7 +281,7 @@ const styles = (theme: Theme) => StyleSheet.create({
     detailValue: {
         fontSize: moderateScale(12),
         fontWeight: '700',
-        color: '#475569',
+        color: theme.colors.textSecondary,
     },
     footerContainer: {
         marginTop: 20,
