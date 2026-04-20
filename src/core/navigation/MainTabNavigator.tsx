@@ -86,7 +86,7 @@ export const MainTabNavigator: React.FC = () => {
                     headerShown: true,
                     headerStyle: {
                         backgroundColor: '#182958',
-                        height: Platform.OS === 'ios' ? 90 : 70,
+                        height: Platform.OS === 'ios' ? 110 : 85,
                         elevation: 0,
                         shadowOpacity: 0,
                         borderBottomWidth: 1,
@@ -94,7 +94,7 @@ export const MainTabNavigator: React.FC = () => {
                     },
                     headerTitleStyle: {
                         fontWeight: '900',
-                        fontSize: 18,
+                        fontSize: 20,
                         color: '#FFFFFF',
                     },
                     headerTitleAlign: 'center',
