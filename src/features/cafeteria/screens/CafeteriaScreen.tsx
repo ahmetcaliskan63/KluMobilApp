@@ -1,22 +1,20 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import {
     View,
     Text,
     StyleSheet,
-    ScrollView,
     TouchableOpacity,
     StatusBar,
     Dimensions,
     Platform,
-    Animated,
     FlatList
 } from 'react-native';
 import { Ionicons as Icon } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Theme } from '@/core/theme/theme';
+import { Theme, spacing } from '@/core/theme/theme';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { MOCK_WEEKLY_MENU } from '@/shared/services/mockData';
-import { moderateScale } from '@/shared/utils/responsive';
+import { moderateScale, verticalScale } from '@/shared/utils/responsive';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -26,13 +24,9 @@ export const CafeteriaScreen: React.FC = () => {
     const { theme } = useAppTheme();
     const s = styles(theme, insets);
 
-    // Get current day (0=Sun, 1=Mon, ..., 5=Fri, 6=Sat)
     const today = new Date();
-    const dayOfWeek = today.getDay(); // Sunday=0, Monday=1, etc.
+    const dayOfWeek = today.getDay();
 
-    // Logic: 
-    // - If Mon-Fri (1-5), show that day (index 0-4)
-    // - If Sat/Sun (6/0), show Friday (index 4)
     const initialIndex = dayOfWeek === 0 || dayOfWeek === 6 ? 4 : dayOfWeek - 1;
 
     const [selectedIndex, setSelectedIndex] = useState(initialIndex);
@@ -47,10 +41,6 @@ export const CafeteriaScreen: React.FC = () => {
         });
     };
 
-    const navigate = (direction: 'prev' | 'next') => {
-        const nextIndex = direction === 'prev' ? selectedIndex - 1 : selectedIndex + 1;
-        transitionTo(nextIndex);
-    };
 
     const renderMealItem = ({ item, index }: { item: typeof MOCK_WEEKLY_MENU[0], index: number }) => {
         const icons = ['restaurant', 'pizza', 'nutrition', 'ice-cream'];
@@ -73,7 +63,6 @@ export const CafeteriaScreen: React.FC = () => {
         return (
             <View style={s.mealCardContainer}>
                 <CardContainer {...(cardProps as any)}>
-                    {/* Decorative hyper-premium mesh glows */}
                     <View style={[s.glowCircle, { top: -50, right: -50, backgroundColor: isItemToday ? '#3B82F6' : '#60A5FA', opacity: isItemToday ? 0.2 : 0.15 }]} />
                     <View style={[s.glowCircle, { bottom: -20, left: -40, backgroundColor: isItemToday ? '#6366F1' : '#818CF8', opacity: isItemToday ? 0.15 : 0.1 }]} />
 
@@ -97,7 +86,7 @@ export const CafeteriaScreen: React.FC = () => {
                             <View key={idx} style={isItemToday ? s.glassPill : s.lightPill}>
                                 <View style={isItemToday ? s.todayIconContainer : s.otherIconContainer}>
                                     <Icon
-                                        name={(icons[idx % icons.length] || 'restaurant-outline') + '-outline'}
+                                        name={((icons[idx % icons.length] || 'restaurant-outline') + '-outline') as any}
                                         size={20}
                                         color="#FFFFFF"
                                     />
@@ -120,7 +109,7 @@ export const CafeteriaScreen: React.FC = () => {
                                     size={24}
                                     color={isItemToday
                                         ? (index === 0 ? 'rgba(255,255,255,0.2)' : '#FFFFFF')
-                                        : (index === 0 ? 'rgba(24, 41, 88, 0.2)' : '#182958')
+                                        : (index === 0 ? (theme.colors.background === '#FFFFFF' ? 'rgba(24, 41, 88, 0.2)' : 'rgba(255, 255, 255, 0.2)') : theme.colors.primary)
                                     }
                                 />
                                 <Text style={[
@@ -144,8 +133,8 @@ export const CafeteriaScreen: React.FC = () => {
                                     name="chevron-forward"
                                     size={24}
                                     color={isItemToday
-                                        ? (index === MOCK_WEEKLY_MENU.length - 1 ? 'rgba(255,255,255,0.2)' : '#FFFFFF')
-                                        : (index === MOCK_WEEKLY_MENU.length - 1 ? 'rgba(24, 41, 88, 0.2)' : '#182958')
+                                        ? (index === 0 ? 'rgba(255,255,255,0.2)' : '#FFFFFF')
+                                        : (index === MOCK_WEEKLY_MENU.length - 1 ? (theme.colors.background === '#FFFFFF' ? 'rgba(24, 41, 88, 0.2)' : 'rgba(255, 255, 255, 0.2)') : theme.colors.primary)
                                     }
                                 />
                             </TouchableOpacity>
@@ -158,7 +147,10 @@ export const CafeteriaScreen: React.FC = () => {
 
     return (
         <View style={s.container}>
-            <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+            <StatusBar 
+                barStyle={theme.colors.background === '#FFFFFF' ? "light-content" : "light-content"} 
+                backgroundColor="#182958" 
+            />
             <View style={s.meshBackground}>
                 <View style={[s.bgGlow, { top: '10%', right: '-10%', width: 300, height: 300, backgroundColor: 'rgba(59, 130, 246, 0.05)' }]} />
                 <View style={[s.bgGlow, { bottom: '20%', left: '-20%', width: 400, height: 400, backgroundColor: 'rgba(99, 102, 241, 0.03)' }]} />
@@ -173,24 +165,24 @@ export const CafeteriaScreen: React.FC = () => {
                     pagingEnabled={true}
                     showsHorizontalScrollIndicator={false}
                     initialScrollIndex={initialIndex}
-                    getItemLayout={(data, index) => ({
-                        length: SCREEN_WIDTH - 40,
-                        offset: (SCREEN_WIDTH - 40) * index,
+                    getItemLayout={(_data, index) => ({
+                        length: SCREEN_WIDTH,
+                        offset: SCREEN_WIDTH * index,
                         index,
                     })}
                     onMomentumScrollEnd={(event) => {
-                        const newIndex = Math.round(event.nativeEvent.contentOffset.x / (SCREEN_WIDTH - 40));
+                        const newIndex = Math.round(event.nativeEvent.contentOffset.x / SCREEN_WIDTH);
                         setSelectedIndex(newIndex);
                     }}
                     scrollEventThrottle={16}
                     decelerationRate="normal"
-                    snapToInterval={SCREEN_WIDTH - 40}
+                    snapToInterval={SCREEN_WIDTH}
                     snapToAlignment="center"
                     keyExtractor={(item) => item.date}
                 />
 
                 <View style={s.bottomInfo}>
-                    <Icon name="information-circle-outline" size={20} color="#64748B" />
+                    <Icon name="information-circle-outline" size={20} color="#EF4444" />
                     <Text style={s.infoText}>
                         Menüler haftalık olarak güncellenmektedir. Kampüs yemekhanesi hafta içi 08:30 - 18:00 saatleri arasında hizmet vermektedir.
                     </Text>
@@ -220,7 +212,7 @@ export const CafeteriaScreen: React.FC = () => {
 const styles = (theme: Theme, insets: any) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.background,
     },
     meshBackground: {
         ...StyleSheet.absoluteFillObject,
@@ -235,21 +227,21 @@ const styles = (theme: Theme, insets: any) => StyleSheet.create({
     },
     mainContent: {
         flex: 1,
-        padding: 20,
-        paddingTop: 30,
-        paddingBottom: Math.max(insets.bottom, 20) + 80, // Dynamic spacing for tab bar
-        justifyContent: 'flex-start',
+        paddingVertical: spacing.lg,
+        paddingBottom: Math.max(insets.bottom, 20) + 70,
+        justifyContent: 'space-between',
     },
     mealCardContainer: {
-        width: SCREEN_WIDTH - 40,
-        marginBottom: 20,
+        width: SCREEN_WIDTH,
+        paddingHorizontal: spacing.lg,
+        paddingVertical: spacing.sm,
     },
     todayCard: {
-        borderRadius: 40,
-        padding: 24,
-        paddingBottom: 28,
-        minHeight: 550,
-        height: 550,
+        borderRadius: moderateScale(40),
+        padding: spacing.lg,
+        paddingBottom: spacing.xxl,
+        height: verticalScale(530),
+        minHeight: verticalScale(480),
         overflow: 'hidden',
         borderWidth: 1,
         borderColor: 'rgba(255, 255, 255, 0.1)',
@@ -375,18 +367,18 @@ const styles = (theme: Theme, insets: any) => StyleSheet.create({
         color: '#FFFFFF',
     },
     lightNavBtn: {
-        backgroundColor: '#FFFFFF',
-        borderColor: '#E2E8F0',
+        backgroundColor: theme.colors.card,
+        borderColor: theme.colors.border,
     },
     lightNavBtnText: {
-        color: '#182958',
+        color: theme.colors.primary,
     },
     otherDayCard: {
-        borderRadius: 40,
-        padding: 24,
-        paddingBottom: 28,
-        minHeight: 550,
-        height: 550,
+        borderRadius: moderateScale(40),
+        padding: spacing.lg,
+        paddingBottom: spacing.xxl,
+        height: verticalScale(530),
+        minHeight: verticalScale(480),
         overflow: 'hidden',
         borderWidth: 1,
         borderColor: 'rgba(255, 255, 255, 0.1)',
@@ -446,18 +438,19 @@ const styles = (theme: Theme, insets: any) => StyleSheet.create({
     },
     bottomInfo: {
         flexDirection: 'row',
-        padding: 24,
-        backgroundColor: '#F8FAFC',
-        borderRadius: 28,
-        gap: 14,
+        marginHorizontal: spacing.lg,
+        padding: moderateScale(20),
+        backgroundColor: theme.colors.card,
+        borderRadius: moderateScale(24),
+        gap: moderateScale(14),
         alignItems: 'center',
         borderWidth: 1,
-        borderColor: '#F1F5F9',
+        borderColor: theme.colors.border,
     },
     infoText: {
         flex: 1,
         fontSize: 12,
-        color: '#64748B',
+        color: theme.colors.textSecondary,
         lineHeight: 20,
         fontWeight: '500',
     },
