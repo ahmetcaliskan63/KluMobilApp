@@ -12,18 +12,18 @@ interface Props {
 }
 
 export const SemesterCard: React.FC<Props> = ({ semester }) => {
-    const { theme } = useAppTheme();
-    const s = styles(theme);
+    const { theme, isDarkMode } = useAppTheme();
+    const s = styles(theme, isDarkMode);
 
     return (
         <View style={s.semesterCard}>
             {/* Semester Header */}
             <LinearGradient
-                colors={['#F8FAFC', '#F1F5F9']}
+                colors={isDarkMode ? ['rgba(255, 255, 255, 0.05)', 'rgba(255, 255, 255, 0.02)'] : ['#F8FAFC', '#F1F5F9']}
                 style={s.semesterHeader}
             >
                 <View style={s.semesterTitleWrapper}>
-                    <View style={s.semesterBlueIndicator} />
+                    <View style={[s.semesterBlueIndicator, { backgroundColor: isDarkMode ? theme.colors.primary : '#3B82F6' }]} />
                     <View>
                         <Text style={s.semesterTitleText}>{semester.semester}</Text>
                         <Text style={s.semesterSubtitleText}>{semester.subTitle}</Text>

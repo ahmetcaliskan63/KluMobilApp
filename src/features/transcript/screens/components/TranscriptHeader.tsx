@@ -10,12 +10,12 @@ import { useAppTheme } from '@/shared/hooks/useAppTheme';
 export const TranscriptHeader: React.FC = () => {
     const navigation = useNavigation();
     const insets = useSafeAreaInsets();
-    const { theme } = useAppTheme();
-    const s = styles(theme);
+    const { theme, isDarkMode } = useAppTheme();
+    const s = styles(theme, isDarkMode);
 
     return (
         <LinearGradient
-            colors={['#182958', '#101D42']}
+            colors={isDarkMode ? ['#0F172A', '#020617'] : ['#182958', '#101D42']}
             style={[s.header, { paddingTop: insets.top + 10 }]}
         >
             <TouchableOpacity

@@ -13,8 +13,8 @@ interface Props {
 }
 
 export const CourseRow: React.FC<Props> = ({ course, isLast, isAlternate }) => {
-    const { theme } = useAppTheme();
-    const s = styles(theme);
+    const { theme, isDarkMode } = useAppTheme();
+    const s = styles(theme, isDarkMode);
 
     const getGradeColor = (grade: string) => {
         return GRADE_COLORS[grade as keyof typeof GRADE_COLORS] || '#64748B';
@@ -23,7 +23,7 @@ export const CourseRow: React.FC<Props> = ({ course, isLast, isAlternate }) => {
     return (
         <View style={[
             s.courseRow,
-            isAlternate && { backgroundColor: '#F9FBFF' },
+            isAlternate && { backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.015)' : '#F9FBFF' },
             isLast && { borderBottomWidth: 0 }
         ]}>
             <View style={{ flex: 2.2 }}>

@@ -2,10 +2,10 @@ import { StyleSheet } from 'react-native';
 import { Theme } from '@/core/theme/theme';
 import { moderateScale, verticalScale } from '@/shared/utils/responsive';
 
-export const styles = (_theme: Theme) => StyleSheet.create({
+export const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F3F6F9',
+        backgroundColor: theme.colors.background,
     },
     header: {
         height: verticalScale(110),
@@ -46,15 +46,15 @@ export const styles = (_theme: Theme) => StyleSheet.create({
     },
     summaryCard: {
         flexDirection: 'row',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
         borderRadius: 22,
         paddingVertical: 20,
         paddingHorizontal: 14,
         borderWidth: 1.5,
-        borderColor: '#D1D5DB',
-        shadowColor: '#182958',
+        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.08)' : '#D1D5DB',
+        shadowColor: '#000',
         shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: 0.08,
+        shadowOpacity: isDarkMode ? 0.3 : 0.08,
         shadowRadius: 20,
         elevation: 6,
     },
@@ -65,13 +65,13 @@ export const styles = (_theme: Theme) => StyleSheet.create({
     summaryDivider: {
         width: 1.5,
         height: '60%',
-        backgroundColor: '#E2E8F0',
+        backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : '#E2E8F0',
         alignSelf: 'center',
     },
     summaryLabel: {
         fontSize: moderateScale(9),
         fontWeight: '900',
-        color: '#64748B',
+        color: isDarkMode ? theme.colors.textSecondary : '#64748B',
         letterSpacing: 0.8,
         marginBottom: 6,
         textAlign: 'center',
@@ -79,18 +79,18 @@ export const styles = (_theme: Theme) => StyleSheet.create({
     summaryValue: {
         fontSize: moderateScale(19),
         fontWeight: '900',
-        color: '#182958',
+        color: isDarkMode ? '#FFFFFF' : '#182958',
     },
     semesterCard: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
         borderRadius: 24,
         marginBottom: 24,
         overflow: 'hidden',
         borderWidth: 1.5,
-        borderColor: '#D1D5DB',
+        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : '#D1D5DB',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 6 },
-        shadowOpacity: 0.04,
+        shadowOpacity: isDarkMode ? 0.2 : 0.04,
         shadowRadius: 15,
         elevation: 4,
     },
@@ -100,7 +100,7 @@ export const styles = (_theme: Theme) => StyleSheet.create({
         alignItems: 'center',
         padding: 18,
         borderBottomWidth: 1,
-        borderBottomColor: '#E2E8F0',
+        borderBottomColor: isDarkMode ? 'rgba(255, 255, 255, 0.03)' : '#E2E8F0',
     },
     semesterTitleWrapper: {
         flexDirection: 'row',
@@ -116,7 +116,7 @@ export const styles = (_theme: Theme) => StyleSheet.create({
     semesterTitleText: {
         fontSize: moderateScale(15),
         fontWeight: '900',
-        color: '#1E293B',
+        color: isDarkMode ? '#FFFFFF' : '#1E293B',
         marginBottom: 2,
     },
     semesterSubtitleText: {
@@ -128,12 +128,12 @@ export const styles = (_theme: Theme) => StyleSheet.create({
     },
     semesterGpaBadge: {
         alignItems: 'center',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.03)' : '#FFFFFF',
         paddingHorizontal: 12,
         paddingVertical: 6,
         borderRadius: 14,
         borderWidth: 1,
-        borderColor: '#E2E8F0',
+        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : '#E2E8F0',
     },
     semesterGpaLabel: {
         fontSize: moderateScale(9),
@@ -144,15 +144,15 @@ export const styles = (_theme: Theme) => StyleSheet.create({
     semesterGpaValue: {
         fontSize: moderateScale(15),
         fontWeight: '900',
-        color: '#182958',
+        color: isDarkMode ? theme.colors.primary : '#182958',
     },
     tableHeader: {
         flexDirection: 'row',
         paddingHorizontal: 18,
         paddingVertical: 12,
-        backgroundColor: '#F8FAFC',
+        backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.015)' : '#F8FAFC',
         borderBottomWidth: 1,
-        borderBottomColor: '#F1F5F9',
+        borderBottomColor: isDarkMode ? 'rgba(255, 255, 255, 0.03)' : '#F1F5F9',
     },
     tableHeaderStats: {
         flex: 1.8,
@@ -174,7 +174,7 @@ export const styles = (_theme: Theme) => StyleSheet.create({
         textAlign: 'center',
     },
     courseList: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: 'transparent',
     },
     courseRow: {
         flexDirection: 'row',
@@ -182,12 +182,12 @@ export const styles = (_theme: Theme) => StyleSheet.create({
         paddingVertical: 14,
         paddingHorizontal: 18,
         borderBottomWidth: 1,
-        borderBottomColor: '#E2E8F0', // More visible grey
+        borderBottomColor: isDarkMode ? 'rgba(255, 255, 255, 0.03)' : '#E2E8F0', 
     },
     courseName: {
         fontSize: moderateScale(13),
         fontWeight: '800',
-        color: '#1E293B',
+        color: isDarkMode ? theme.colors.text : '#1E293B',
         marginBottom: 2,
     },
     courseCodeWrapper: {
@@ -204,7 +204,7 @@ export const styles = (_theme: Theme) => StyleSheet.create({
     courseValue: {
         fontSize: moderateScale(13),
         fontWeight: '700',
-        color: '#475569',
+        color: isDarkMode ? theme.colors.textSecondary : '#475569',
     },
     gradeBadge: {
         width: 38,
@@ -229,9 +229,9 @@ export const styles = (_theme: Theme) => StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        backgroundColor: '#FDFEFF',
+        backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.01)' : '#FDFEFF',
         borderTopWidth: 1,
-        borderTopColor: '#F1F5F9',
+        borderTopColor: isDarkMode ? 'rgba(255, 255, 255, 0.03)' : '#F1F5F9',
     },
     footerLeft: {
         flexDirection: 'row',
@@ -251,15 +251,15 @@ export const styles = (_theme: Theme) => StyleSheet.create({
     footerSummaryText: {
         fontSize: moderateScale(10),
         fontWeight: '800',
-        color: '#64748B',
+        color: isDarkMode ? theme.colors.textSecondary : '#64748B',
     },
     footerSummaryValue: {
-        backgroundColor: '#F1F5F9',
+        backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : '#F1F5F9',
         paddingHorizontal: 8,
         paddingVertical: 3,
         borderRadius: 6,
         fontSize: moderateScale(11),
         fontWeight: '900',
-        color: '#182958',
+        color: isDarkMode ? theme.colors.primary : '#182958',
     },
 });
