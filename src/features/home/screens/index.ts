@@ -1,5 +1,4 @@
 export * from './DashboardScreen';
-export * from './ScheduleScreen';
 export * from './OBSScreen';
 export * from './CourseDetailScreen';
 export * from './ExamDetailScreen';

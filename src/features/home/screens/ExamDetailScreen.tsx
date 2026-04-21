@@ -15,7 +15,7 @@ import { theme as defaultTheme, Theme } from '@/core/theme/theme';
 import { MOCK_GRADES } from '@/shared/services/mockData';
 import { Card } from '@/shared/components/common';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
-import { viewport, moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
+import { moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
 
 type ExamDetailRouteProp = RouteProp<HomeStackParamList, 'ExamDetail'>;
 

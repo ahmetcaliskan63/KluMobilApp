@@ -9,12 +9,12 @@ import {
 } from 'react-native';
 import { Ionicons as Icon } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { theme as defaultTheme, Theme } from '@/core/theme/theme';
+import { Theme } from '@/core/theme/theme';
 import { MOCK_GRADES, MOCK_STATS, Grade } from '@/shared/services/mockData';
 import { Card } from '@/shared/components/common';
 import { useNavigation } from '@react-navigation/native';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
-import { viewport, moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
+import { moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
 
 export const OBSScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
