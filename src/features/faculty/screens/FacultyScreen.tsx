@@ -18,7 +18,6 @@ import { moderateScale } from '@/shared/utils/responsive';
 import { MOCK_SCHEDULE } from '@/shared/services/mockData';
 
 
-// 🎩 Mock Data for Featured Faculty
 const ACADEMIC_PROFILES = {
     ADVISOR: {
         id: 'adv_1',
@@ -29,8 +28,8 @@ const ACADEMIC_PROFILES = {
         email: 'ayse.yilmaz@klu.edu.tr',
         office: 'A Blok, Kat 3, No: 312',
         avatar: 'AY',
-        color: ['#1E293B', '#0F172A'], // Premium Navy/Slate
-        accent: '#F59E0B', // Gold
+        color: ['#1E293B', '#0F172A'],
+        accent: '#F59E0B',
     },
     DEPT_HEAD: {
         id: 'dept_1',
@@ -41,12 +40,11 @@ const ACADEMIC_PROFILES = {
         email: 'ahmet.demir@klu.edu.tr',
         office: 'B Blok, Kat 2, No: 205',
         avatar: 'AD',
-        color: ['#334155', '#1E293B'], // Slate
-        accent: '#94A3B8', // Silver
+        color: ['#334155', '#1E293B'],
+        accent: '#94A3B8',
     }
 };
 
-// 👩‍🏫 Mock database for detailed faculty info (to bridge names from schedule)
 const FACULTY_DIRECTORY = [
     { id: 'f1', name: 'Doç. Dr. M. Kaya', email: 'm.kaya@klu.edu.tr', office: 'C-201', dept: 'Yazılım Mühendisliği', avatar: 'MK', color: '#3B82F6' },
     { id: 'f2', name: 'Dr. Öğr. Üyesi A. Demir', email: 'a.demir@klu.edu.tr', office: 'Lab-2', dept: 'Yazılım Mühendisliği', avatar: 'AD', color: '#8B5CF6' },
@@ -75,7 +73,6 @@ export const FacultyScreen: React.FC = () => {
         ]).start();
     }, []);
 
-    // 🧠 Extract "Term Instructors" from Schedule
     const termInstructors = useMemo(() => {
         const names = [...new Set(MOCK_SCHEDULE.map(course => course.instructor))];
         return FACULTY_DIRECTORY.filter(f => names.includes(f.name));
@@ -145,7 +142,7 @@ export const FacultyScreen: React.FC = () => {
 
     return (
         <View style={s.container}>
-            <StatusBar barStyle="light-content" backgroundColor="#0f172a" />
+            <StatusBar barStyle="light-content" backgroundColor="#182958" />
 
             {/* 👑 Senior Designer Header */}
             <LinearGradient colors={['#0f172a', '#1e293b']} style={[s.header, { paddingTop: insets.top + spacing.sm }]}>

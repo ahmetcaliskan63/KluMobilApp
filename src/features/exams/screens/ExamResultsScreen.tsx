@@ -71,15 +71,15 @@ const RESULTS_DATA = [
 export const ExamResultsScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
-    const { theme } = useAppTheme();
-    const s = styles(theme);
+    const { theme, isDarkMode } = useAppTheme();
+    const s = styles(theme, isDarkMode);
 
     return (
         <View style={s.container}>
-            <StatusBar barStyle="light-content" />
+            <StatusBar barStyle="light-content" backgroundColor="#182958" />
 
             <LinearGradient
-                colors={['#0B1120', '#101D42']}
+                colors={isDarkMode ? ['#0F172A', '#020617'] : ['#0B1120', '#101D42']}
                 style={[s.header, { paddingTop: insets.top + 10 }]}
             >
                 <View style={s.headerTop}>
@@ -156,10 +156,10 @@ export const ExamResultsScreen: React.FC = () => {
     );
 };
 
-const styles = (theme: Theme) => StyleSheet.create({
+const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F8FAFC',
+        backgroundColor: theme.colors.background,
     },
     header: {
         paddingBottom: verticalScale(20),
@@ -201,17 +201,17 @@ const styles = (theme: Theme) => StyleSheet.create({
         padding: spacing.lg,
     },
     resultCard: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
         borderRadius: 16,
         marginBottom: verticalScale(14),
         flexDirection: 'row',
         overflow: 'hidden',
         borderWidth: 2,
-        borderColor: '#94A3B8',
+        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : '#E2E8F0',
         elevation: 6,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.12,
+        shadowOpacity: isDarkMode ? 0.3 : 0.12,
         shadowRadius: 12,
     },
     cardAccent: {
@@ -276,7 +276,7 @@ const styles = (theme: Theme) => StyleSheet.create({
     courseName: {
         fontSize: moderateScale(15),
         fontWeight: '800',
-        color: '#0F172A',
+        color: theme.colors.text,
         marginBottom: 2,
     },
     instructorName: {
@@ -292,30 +292,30 @@ const styles = (theme: Theme) => StyleSheet.create({
         minWidth: scale(54),
     },
     numericBadge: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: isDarkMode ? '#1e293b' : '#FFFFFF',
         paddingHorizontal: 8,
         paddingVertical: 3,
         borderRadius: 6,
         marginBottom: -10, // Pull the letter box up
         zIndex: 1,
         borderWidth: 1.5,
-        borderColor: '#94A3B8',
+        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.2)' : '#94A3B8',
         elevation: 2,
     },
     numericValue: {
         fontSize: moderateScale(11),
         fontWeight: '900',
-        color: '#1E293B', // Darker for better contrast
+        color: isDarkMode ? '#FFFFFF' : '#1E293B', // Darker for better contrast
     },
     letterGradeBox: {
-        backgroundColor: '#101D42',
+        backgroundColor: isDarkMode ? '#0f172a' : '#101D42',
         width: '100%',
         paddingVertical: 6,
         paddingHorizontal: 8,
         borderRadius: 12,
         alignItems: 'center',
         borderWidth: 1.5,
-        borderColor: '#101D42',
+        borderColor: isDarkMode ? '#1e293b' : '#101D42',
         elevation: 4,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },

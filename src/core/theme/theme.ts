@@ -28,7 +28,7 @@ export const colors = {
 };
 
 export const darkColors = {
-  primary: '#182958',
+  primary: '#3B82F6', // More visible blue for Dark Mode
   primaryLight: '#2A3F7A',
   primaryDark: '#0F1B3C',
 
@@ -41,7 +41,7 @@ export const darkColors = {
 
   text: '#F8FAFC',
   textSecondary: '#94A3B8',
-  textLight: '#64748B',
+  textLight: '#94A3B8',
   textOnPrimary: '#FFFFFF',
   success: '#10B981',
   warning: '#F59E0B',
@@ -68,6 +68,7 @@ export const borderRadius = {
   md: moderateScale(8),
   lg: moderateScale(12),
   xl: moderateScale(16),
+  xxl: moderateScale(24),
   full: 999,
 };
 
