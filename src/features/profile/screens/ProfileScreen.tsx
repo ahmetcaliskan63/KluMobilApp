@@ -10,6 +10,7 @@ import {
     Pressable,
     Animated,
     Linking,
+    Image,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons as Icon } from '@expo/vector-icons';
@@ -24,19 +25,19 @@ import { DigitalPassportCard } from '@/shared/components/profile/DigitalPassport
 export const ProfileScreen: React.FC = () => {
     const navigation = useNavigation<any>();
     const { user } = useAuthStore();
-    const { theme } = useAppTheme();
+    const { theme, isDarkMode } = useAppTheme();
     const insets = useSafeAreaInsets();
     const [showIdModal, setShowIdModal] = useState(false);
     const [showCalendarModal, setShowCalendarModal] = useState(false);
     const [isLandscape, setIsLandscape] = useState(false);
-    const s = styles(theme);
+    const s = styles(theme, isDarkMode);
 
 
     return (
         <View style={s.container}>
             <StatusBar
-                barStyle={theme.colors.background === '#FFFFFF' ? 'dark-content' : 'light-content'}
-                backgroundColor={theme.colors.background}
+                barStyle="light-content"
+                backgroundColor="#182958"
             />
 
             <ScrollView
@@ -53,7 +54,7 @@ export const ProfileScreen: React.FC = () => {
                     onPress={() => navigation.navigate('ProfileDetail')}
                 >
                     <LinearGradient
-                        colors={['rgba(150, 150, 150, 0.12)', 'rgba(200, 200, 200, 0.03)', 'transparent']}
+                        colors={isDarkMode ? ['rgba(255, 255, 255, 0.05)', 'rgba(255, 255, 255, 0.01)', 'transparent'] : ['rgba(150, 150, 150, 0.12)', 'rgba(200, 200, 200, 0.03)', 'transparent']}
                         style={s.personaGradientWrapper}
                     >
                         <View style={s.personaMain}>
@@ -64,14 +65,12 @@ export const ProfileScreen: React.FC = () => {
                                         colors={['#3B82F6', '#2DD4BF']}
                                         style={s.avatarGlow}
                                     />
-                                    <View style={[s.avatarBox, { backgroundColor: theme.colors.card }]}>
-                                        <Text style={[s.avatarInitial, { color: theme.colors.text }]}>
-                                            {user?.firstName?.charAt(0)}{user?.lastName?.charAt(0)}
-                                        </Text>
+                                    <View style={[s.avatarBox]}>
+                                        <Image
+                                            source={{ uri: user?.profileImage || 'https://i.pravatar.cc/150?u=1' }}
+                                            style={s.avatarImage}
+                                        />
                                     </View>
-                                    <TouchableOpacity style={[s.editBadge, { backgroundColor: theme.colors.primary, borderColor: theme.colors.background }]}>
-                                        <Icon name="camera" size={10} color="#FFFFFF" />
-                                    </TouchableOpacity>
                                 </View>
 
                                 <View style={s.textDetails}>
@@ -86,7 +85,7 @@ export const ProfileScreen: React.FC = () => {
                                     </View>
                                 </View>
 
-                                <Icon name="chevron-forward" size={20} color="#182958" style={s.personaChevron} />
+                                <Icon name="chevron-forward" size={20} color={isDarkMode ? theme.colors.textSecondary : "#182958"} style={s.personaChevron} />
                             </View>
 
                             {/* Divider Line */}
@@ -95,7 +94,7 @@ export const ProfileScreen: React.FC = () => {
                             {/* Bottom Floor: Academic Micro-Cards */}
                             <View style={s.personaStatsRow}>
                                 <LinearGradient
-                                    colors={['rgba(255, 255, 255, 1)', 'rgba(248, 250, 252, 1)']}
+                                    colors={isDarkMode ? ['rgba(255, 255, 255, 0.05)', 'rgba(255, 255, 255, 0.02)'] : ['rgba(255, 255, 255, 1)', 'rgba(248, 250, 252, 1)']}
                                     style={s.personaStatCard}
                                 >
                                     <Text style={s.personaStatLabel}>GANO</Text>
@@ -103,7 +102,7 @@ export const ProfileScreen: React.FC = () => {
                                 </LinearGradient>
 
                                 <LinearGradient
-                                    colors={['rgba(255, 255, 255, 1)', 'rgba(248, 250, 252, 1)']}
+                                    colors={isDarkMode ? ['rgba(255, 255, 255, 0.05)', 'rgba(255, 255, 255, 0.02)'] : ['rgba(255, 255, 255, 1)', 'rgba(248, 250, 252, 1)']}
                                     style={s.personaStatCard}
                                 >
                                     <Text style={s.personaStatLabel}>AKTS</Text>
@@ -111,7 +110,7 @@ export const ProfileScreen: React.FC = () => {
                                 </LinearGradient>
 
                                 <LinearGradient
-                                    colors={['rgba(255, 255, 255, 1)', 'rgba(248, 250, 252, 1)']}
+                                    colors={isDarkMode ? ['rgba(255, 255, 255, 0.05)', 'rgba(255, 255, 255, 0.02)'] : ['rgba(255, 255, 255, 1)', 'rgba(248, 250, 252, 1)']}
                                     style={s.personaStatCard}
                                 >
                                     <Text style={s.personaStatLabel}>YARIYIL</Text>
@@ -160,7 +159,7 @@ export const ProfileScreen: React.FC = () => {
                             { id: '6', title: 'E-Posta / Şifre', icon: 'key', color: '#6366F1', subtitle: 'Hesap Ayarı' },
                             { id: '7', title: 'WiFi İşlemleri', icon: 'wifi', color: '#06B6D4', subtitle: 'Kampüs Net' },
                             { id: '8', title: 'Hocalarımız', icon: 'people', color: '#EC4899', subtitle: 'Akademik Kadro' },
-                            { id: '9', title: 'Birimler', icon: 'business', color: '#475569', subtitle: 'Fakülteler' },
+                            { id: '9', title: 'Birimler', icon: 'business', color: '#F97316', subtitle: 'Fakülteler' },
                         ].map((item) => {
                             // Add press animation scale
                             const scaleValue = React.useRef(new Animated.Value(1)).current;
@@ -203,16 +202,18 @@ export const ProfileScreen: React.FC = () => {
                                                 Linking.openURL('https://kluposta.klu.edu.tr/');
                                             } else if (item.id === '8') {
                                                 navigation.navigate('Faculty');
+                                            } else if (item.id === '9') {
+                                                navigation.navigate('Units');
                                             }
                                         }}
                                     >
                                         <LinearGradient
-                                            colors={['#F8FAFC', '#F1F5F9']} // Light Grey Background
+                                            colors={isDarkMode ? [theme.colors.card, theme.colors.surface] : ['#F8FAFC', '#F1F5F9']} 
                                             style={s.quickListItemGradient}
                                         >
                                             <View style={s.quickListItemContent}>
-                                                <View style={[s.quickIconCircle, { backgroundColor: item.color + '15' }]}>
-                                                    <Icon name={item.icon} size={20} color={item.color} />
+                                                <View style={[s.quickIconCircle, { backgroundColor: isDarkMode ? item.color + '25' : item.color + '15' }]}>
+                                                    <Icon name={item.icon as any} size={20} color={item.color} />
                                                 </View>
 
                                                 <View style={s.quickListItemTextWrapper}>
@@ -229,10 +230,8 @@ export const ProfileScreen: React.FC = () => {
                     </View>
                 </View>
 
-                {/* Content can follow here */}
             </ScrollView>
 
-            {/* Premium Digital ID Modal */}
             <Modal
                 visible={showIdModal}
                 transparent={true}
@@ -266,7 +265,7 @@ export const ProfileScreen: React.FC = () => {
                             s.cardScaleWrapper,
                             isLandscape && s.landscapeCard
                         ]}>
-                            <DigitalPassportCard user={user} theme={theme} />
+                            <DigitalPassportCard user={user} />
                         </View>
                     </View>
                 </Pressable>
@@ -369,7 +368,7 @@ export const ProfileScreen: React.FC = () => {
     );
 };
 
-const styles = (theme: Theme) => StyleSheet.create({
+const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: theme.colors.background,
@@ -390,7 +389,7 @@ const styles = (theme: Theme) => StyleSheet.create({
     },
     personaInfoSection: {
         width: '100%',
-        marginTop: verticalScale(-35),
+        marginTop: verticalScale(15),
         marginBottom: verticalScale(15),
     },
     personaGradientWrapper: {
@@ -404,7 +403,7 @@ const styles = (theme: Theme) => StyleSheet.create({
         backgroundColor: theme.colors.card,
         borderRadius: moderateScale(28),
         borderWidth: 1.5,
-        borderColor: 'rgba(80, 80, 80, 0.5)',
+        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(80, 80, 80, 0.12)',
         ...theme.shadows.medium,
         overflow: 'hidden',
     },
@@ -432,12 +431,11 @@ const styles = (theme: Theme) => StyleSheet.create({
     personaStatCard: {
         flex: 1,
         alignItems: 'center',
-        paddingVertical: verticalScale(6), // Reduced padding
-        borderRadius: moderateScale(14),
-        borderWidth: 1.5,
-        borderColor: 'rgba(71, 85, 105, 0.4)', // Darker/sharper slate border
-        ...theme.shadows.small,
-        elevation: 2,
+        paddingVertical: verticalScale(8),
+        borderRadius: moderateScale(16),
+        borderWidth: 1,
+        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(71, 85, 105, 0.2)',
+        backgroundColor: 'transparent',
     },
     personaStatLabel: {
         fontSize: moderateScale(9),
@@ -450,8 +448,9 @@ const styles = (theme: Theme) => StyleSheet.create({
     personaStatValue: {
         fontSize: moderateScale(18),
         fontWeight: '900',
-        color: '#1e293b', // Darker slate for value
+        color: isDarkMode ? '#FFFFFF' : '#1e293b',
         letterSpacing: -0.5,
+        backgroundColor: 'transparent', // Explicitly transparent
     },
     avatarContainer: {
         position: 'relative',
@@ -473,12 +472,14 @@ const styles = (theme: Theme) => StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 2,
-        borderColor: '#182958',
+        borderColor: isDarkMode ? theme.colors.primary : '#182958',
+        backgroundColor: theme.colors.card,
         ...theme.shadows.small,
     },
-    avatarInitial: {
-        fontSize: moderateScale(26),
-        fontWeight: 'bold',
+    avatarImage: {
+        width: '100%',
+        height: '100%',
+        borderRadius: moderateScale(38),
     },
     editBadge: {
         position: 'absolute',
@@ -655,15 +656,15 @@ const styles = (theme: Theme) => StyleSheet.create({
     quickListItemWrapper: {
         width: '100%',
         borderRadius: moderateScale(22),
-        backgroundColor: '#F1F5F9',
+        backgroundColor: theme.colors.card,
         // Sharper, more visible shadow
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.12,
+        shadowOpacity: isDarkMode ? 0.3 : 0.12,
         shadowRadius: 6,
         elevation: 5,
         borderWidth: 1.5,
-        borderColor: '#CBD5E1',
+        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : '#CBD5E1',
     },
     quickListItemGradient: {
         borderRadius: moderateScale(22),
@@ -703,7 +704,7 @@ const styles = (theme: Theme) => StyleSheet.create({
     },
     calendarModalCard: {
         width: '92%',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
         borderRadius: moderateScale(30),
         paddingVertical: verticalScale(30),
         paddingHorizontal: spacing.xl,
@@ -714,7 +715,7 @@ const styles = (theme: Theme) => StyleSheet.create({
         shadowRadius: 35,
         elevation: 25,
         borderWidth: 2,
-        borderColor: '#991B1B', // Darker red as requested
+        borderColor: isDarkMode ? theme.colors.primary : '#991B1B', 
     },
     calendarModalHeader: {
         alignItems: 'center',
@@ -788,9 +789,9 @@ const styles = (theme: Theme) => StyleSheet.create({
         paddingVertical: verticalScale(12),
         paddingHorizontal: spacing.xxl,
         borderRadius: moderateScale(16),
-        backgroundColor: '#F1F5F9',
+        backgroundColor: isDarkMode ? theme.colors.surface : '#F1F5F9',
         borderWidth: 1.5,
-        borderColor: '#CBD5E1',
+        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : '#CBD5E1',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,

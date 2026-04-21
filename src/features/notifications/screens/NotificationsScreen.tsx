@@ -45,7 +45,8 @@ const NOTIFICATIONS = [
 export const NotificationsScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
-    const { theme } = useAppTheme();
+    const { theme, isDarkMode } = useAppTheme();
+    const s = styles(theme, isDarkMode);
 
     const renderItem = ({ item }: { item: typeof NOTIFICATIONS[0] }) => {
         let iconName = 'notifications';
@@ -60,26 +61,25 @@ export const NotificationsScreen: React.FC = () => {
         return (
             <TouchableOpacity
                 style={[
-                    styles.notificationItem,
-                    { backgroundColor: theme.colors.card },
-                    !item.isRead && styles.unreadItem
+                    s.notificationItem,
+                    !item.isRead && s.unreadItem
                 ]}
                 activeOpacity={0.7}
             >
-                <View style={[styles.iconContainer, { backgroundColor: iconColor + '15' }]}>
-                    <Icon name={iconName} size={22} color={iconColor} />
+                <View style={[s.iconContainer, { backgroundColor: isDarkMode ? iconColor + '20' : iconColor + '15' }]}>
+                    <Icon name={iconName as any} size={22} color={iconColor} />
                 </View>
-                <View style={styles.contentContainer}>
-                    <View style={styles.headerRow}>
-                        <Text style={[styles.title, { color: theme.colors.text }]} numberOfLines={1}>
+                <View style={s.contentContainer}>
+                    <View style={s.headerRow}>
+                        <Text style={s.title} numberOfLines={1}>
                             {item.title}
                         </Text>
-                        {!item.isRead && <View style={styles.unreadDot} />}
+                        {!item.isRead && <View style={s.unreadDot} />}
                     </View>
-                    <Text style={[styles.description, { color: theme.colors.textSecondary }]} numberOfLines={2}>
+                    <Text style={s.description} numberOfLines={2}>
                         {item.description}
                     </Text>
-                    <Text style={[styles.time, { color: theme.colors.textSecondary }]}>
+                    <Text style={s.time}>
                         {item.time}
                     </Text>
                 </View>
@@ -88,36 +88,39 @@ export const NotificationsScreen: React.FC = () => {
     };
 
     return (
-        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <View style={s.container}>
             <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
 
-            {/* Header: Extended to top to remove white gap and integrate with Status Bar */}
-            <LinearGradient
-                colors={['#182958', '#101D42']}
-                style={[styles.header, { paddingTop: insets.top + 10 }]}
-            >
-                <TouchableOpacity
-                    onPress={() => navigation.goBack()}
-                    style={styles.backButton}
+            <View style={s.headerContainer}>
+                <LinearGradient
+                    colors={isDarkMode ? ['#0F172A', '#020617'] : ['#182958', '#4F46E5']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={[s.header, { paddingTop: insets.top + 10 }]}
                 >
-                    <Icon name="chevron-back" size={24} color="#FFFFFF" />
-                </TouchableOpacity>
-                <Text style={styles.headerTitle}>Bildirimler</Text>
-                <TouchableOpacity style={styles.headerRight}>
-                    <Icon name="checkmark-done" size={22} color="#FFFFFF" />
-                </TouchableOpacity>
-            </LinearGradient>
+                    <TouchableOpacity
+                        onPress={() => navigation.goBack()}
+                        style={s.backButton}
+                    >
+                        <Icon name="chevron-back" size={24} color="#FFFFFF" />
+                    </TouchableOpacity>
+                    <Text style={s.headerTitle}>Bildirimler</Text>
+                    <TouchableOpacity style={s.headerRight}>
+                        <Icon name="checkmark-done" size={22} color="#FFFFFF" />
+                    </TouchableOpacity>
+                </LinearGradient>
+            </View>
 
             <FlatList
                 data={NOTIFICATIONS}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
-                contentContainerStyle={styles.listContent}
+                contentContainerStyle={[s.listContent, { paddingBottom: insets.bottom + 40 }]}
                 showsVerticalScrollIndicator={false}
                 ListEmptyComponent={() => (
-                    <View style={styles.emptyContainer}>
+                    <View style={s.emptyContainer}>
                         <Icon name="notifications-off-outline" size={64} color={theme.colors.textSecondary} />
-                        <Text style={[styles.emptyText, { color: theme.colors.textSecondary }]}>
+                        <Text style={s.emptyText}>
                             Henüz bildiriminiz yok.
                         </Text>
                     </View>
@@ -127,23 +130,38 @@ export const NotificationsScreen: React.FC = () => {
     );
 };
 
-const styles = StyleSheet.create({
+const styles = (theme: any, isDarkMode: boolean) => StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: theme.colors.background,
+    },
+    headerContainer: {
+        height: verticalScale(110),
     },
     header: {
-        height: verticalScale(110),
+        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: 16,
+        borderBottomLeftRadius: 30,
+        borderBottomRightRadius: 30,
     },
     headerTitle: {
         fontSize: moderateScale(18),
         fontWeight: '900',
         color: '#FFFFFF',
+        letterSpacing: -0.5,
     },
     backButton: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: 'rgba(255, 255, 255, 0.12)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    headerRight: {
         width: 40,
         height: 40,
         borderRadius: 20,
@@ -151,38 +169,32 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    headerRight: {
-        width: 40,
-        height: 40,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
     listContent: {
         padding: 20,
-        paddingBottom: 40,
+        marginTop: 10,
     },
     notificationItem: {
         flexDirection: 'row',
         padding: 18,
         borderRadius: 24,
         marginBottom: 16,
-        backgroundColor: '#FFFFFF',
-        // Hyper-Premium Ultra-Soft Shadow
+        backgroundColor: theme.colors.card,
+        elevation: 8,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: 0.04,
-        shadowRadius: 20,
-        elevation: 4,
-        borderWidth: 1.5,
-        borderColor: '#d1d5db',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: isDarkMode ? 0.3 : 0.08,
+        shadowRadius: 12,
+        borderWidth: 1.2,
+        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : '#F1F5F9',
     },
     unreadItem: {
-        backgroundColor: '#FFFBFA', // Very subtle red tint for unread
+        backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.02)' : '#FFFBFA',
+        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : '#FEE2E2',
     },
     iconContainer: {
-        width: 54,
-        height: 54,
-        borderRadius: 18,
+        width: 52,
+        height: 52,
+        borderRadius: 16,
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: 16,
@@ -195,35 +207,39 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginBottom: 2,
+        marginBottom: 4,
     },
     title: {
         fontSize: moderateScale(15),
         fontWeight: '800',
+        color: theme.colors.text,
         flex: 1,
         marginRight: 8,
         letterSpacing: -0.4,
     },
     unreadDot: {
-        width: 10,
-        height: 10,
-        borderRadius: 5,
+        width: 8,
+        height: 8,
+        borderRadius: 4,
         backgroundColor: '#EF4444',
         shadowColor: '#EF4444',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.3,
-        shadowRadius: 4,
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.6,
+        shadowRadius: 6,
+        elevation: 4,
     },
     description: {
         fontSize: moderateScale(13),
         lineHeight: 18,
-        marginBottom: 6,
-        opacity: 0.8,
+        color: theme.colors.textSecondary,
+        marginBottom: 8,
+        opacity: 0.9,
     },
     time: {
         fontSize: moderateScale(11),
-        fontWeight: '600',
-        opacity: 0.5,
+        fontWeight: '700',
+        color: theme.colors.textSecondary,
+        opacity: 0.6,
         letterSpacing: 0.2,
     },
     emptyContainer: {
@@ -235,6 +251,7 @@ const styles = StyleSheet.create({
     emptyText: {
         marginTop: 16,
         fontSize: moderateScale(15),
-        fontWeight: '500',
+        fontWeight: '600',
+        color: theme.colors.textSecondary,
     },
 });

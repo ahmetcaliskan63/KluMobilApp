@@ -5,17 +5,16 @@ import {
     StyleSheet,
     ScrollView,
     TouchableOpacity,
-    StatusBar,
-    Platform
+    StatusBar
 } from 'react-native';
 import { Ionicons as Icon } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { theme as defaultTheme, Theme } from '@/core/theme/theme';
-import { MOCK_SCHEDULE, Course } from '@/shared/services/mockData';
+import { Theme } from '@/core/theme/theme';
+import { MOCK_SCHEDULE } from '@/shared/services/mockData';
 import { Card } from '@/shared/components/common';
 import { useNavigation } from '@react-navigation/native';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
-import { moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
+import { moderateScale, verticalScale } from '@/shared/utils/responsive';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const DAYS = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma'];
@@ -23,8 +22,8 @@ const DAYS = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma'];
 export const ScheduleScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
-    const { theme } = useAppTheme();
-    const s = styles(theme);
+    const { theme, isDarkMode } = useAppTheme();
+    const s = styles(theme, isDarkMode);
     const [selectedDay, setSelectedDay] = useState('Pazartesi');
 
     const filteredSchedule = MOCK_SCHEDULE.filter(course => course.day === selectedDay);
@@ -34,7 +33,7 @@ export const ScheduleScreen: React.FC = () => {
             <StatusBar barStyle="light-content" backgroundColor="#182958" />
 
             <LinearGradient
-                colors={['#182958', '#101D42']}
+                colors={isDarkMode ? ['#0F172A', '#020617'] : ['#182958', '#101D42']}
                 style={[s.header, { paddingTop: Math.max(insets.top, 20) }]}
             >
                 <View style={s.headerTop}>
@@ -83,7 +82,7 @@ export const ScheduleScreen: React.FC = () => {
                             </View>
                             <View style={s.timelineLine}>
                                 <View style={[s.timelineDot, { backgroundColor: course.color }]}>
-                                    <View style={[s.innerDot, { backgroundColor: '#FFFFFF' }]} />
+                                    <View style={[s.innerDot, { backgroundColor: isDarkMode ? theme.colors.card : '#FFFFFF' }]} />
                                 </View>
                                 <View style={s.line} />
                             </View>
@@ -131,10 +130,10 @@ export const ScheduleScreen: React.FC = () => {
     );
 };
 
-const styles = (theme: Theme) => StyleSheet.create({
+const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F8FAFC',
+        backgroundColor: theme.colors.background,
     },
     header: {
         paddingBottom: verticalScale(24),
@@ -180,7 +179,7 @@ const styles = (theme: Theme) => StyleSheet.create({
         backgroundColor: 'rgba(255, 255, 255, 0.1)',
     },
     activeDayItem: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: isDarkMode ? theme.colors.primary : '#FFFFFF',
     },
     dayText: {
         color: 'rgba(255, 255, 255, 0.8)',
@@ -188,7 +187,7 @@ const styles = (theme: Theme) => StyleSheet.create({
         fontSize: moderateScale(13),
     },
     activeDayText: {
-        color: '#182958',
+        color: isDarkMode ? '#FFFFFF' : '#182958',
     },
     scrollContent: {
         padding: 20,
@@ -208,11 +207,11 @@ const styles = (theme: Theme) => StyleSheet.create({
     startTime: {
         fontSize: moderateScale(14),
         fontWeight: '800',
-        color: '#1E293B',
+        color: theme.colors.text,
     },
     endTime: {
         fontSize: moderateScale(11),
-        color: '#64748B',
+        color: theme.colors.textSecondary,
         marginTop: 2,
         fontWeight: '600',
     },
@@ -241,7 +240,7 @@ const styles = (theme: Theme) => StyleSheet.create({
     line: {
         flex: 1,
         width: 2,
-        backgroundColor: '#E2E8F0',
+        backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : '#E2E8F0',
         marginTop: -4,
         borderRadius: 1,
     },
@@ -251,14 +250,14 @@ const styles = (theme: Theme) => StyleSheet.create({
         padding: 0,
         overflow: 'hidden',
         borderRadius: 20,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.03,
+        shadowOpacity: isDarkMode ? 0.2 : 0.03,
         shadowRadius: 10,
         elevation: 2,
         borderWidth: 1,
-        borderColor: 'rgba(0, 0, 0, 0.03)',
+        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)',
     },
     colorBar: {
         width: 5,
@@ -302,13 +301,13 @@ const styles = (theme: Theme) => StyleSheet.create({
         width: 120,
         height: 120,
         borderRadius: 60,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.02)' : '#FFFFFF',
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 20,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: 0.05,
+        shadowOpacity: isDarkMode ? 0.3 : 0.05,
         shadowRadius: 20,
         elevation: 5,
     },

@@ -3,10 +3,10 @@ import {
     View,
     Text,
     StyleSheet,
-    ScrollView,
     TouchableOpacity,
     StatusBar,
     Animated,
+    Image,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons as Icon } from '@expo/vector-icons';
@@ -16,13 +16,14 @@ import { useAuthStore } from '@/shared/store/authStore';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { moderateScale, verticalScale, scale } from '@/shared/utils/responsive';
 import { Theme, spacing } from '@/core/theme/theme';
+const DEFAULT_AVATAR = require('@/shared/assets/avatar.png');
 
 export const ProfileDetailScreen: React.FC = () => {
     const navigation = useNavigation();
     const { user } = useAuthStore();
-    const { theme } = useAppTheme();
+    const { theme, isDarkMode } = useAppTheme();
     const insets = useSafeAreaInsets();
-    const s = styles(theme);
+    const s = styles(theme, isDarkMode);
 
     // 🏎️ Animation Logic
     const scrollY = useRef(new Animated.Value(0)).current;
@@ -64,14 +65,13 @@ export const ProfileDetailScreen: React.FC = () => {
         </View>
     );
 
-    const SectionCard = ({ title, icon, colors, children }: { title: string; icon: string; colors: string[]; children: React.ReactNode }) => (
+    const SectionCard = ({ title, icon, colors, children }: { title: string; icon: React.ComponentProps<typeof Icon>['name']; colors: string[]; children: React.ReactNode }) => (
         <View style={[s.detailedCard, { borderColor: colors[0], borderWidth: 2 }]}>
-            <View style={[s.corner, s.topLeft, { borderColor: colors[0] }]} />
-            <View style={[s.corner, s.topRight, { borderColor: colors[0] }]} />
+
 
             <View style={s.cardHeader}>
                 <LinearGradient
-                    colors={colors}
+                    colors={colors as [string, string, ...string[]]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     style={s.cardHeaderIcon}
@@ -89,13 +89,13 @@ export const ProfileDetailScreen: React.FC = () => {
     );
 
     return (
-        <View style={[s.container, { backgroundColor: '#F0F2F5' }]}>
+        <View style={s.container}>
             <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
             <View style={[s.stickyNavContainer, { height: NAV_BAR_HEIGHT }]}>
                 <Animated.View style={[
                     s.navBarBackground,
-                    { opacity: navBarBgOpacity, backgroundColor: '#0F172A' }
+                    { opacity: navBarBgOpacity, backgroundColor: isDarkMode ? theme.colors.card : '#0F172A' }
                 ]} />
 
                 <View style={[s.navBarContent, { paddingTop: insets.top }]}>
@@ -130,13 +130,15 @@ export const ProfileDetailScreen: React.FC = () => {
                         {/* Avatar with User Initials */}
                         <View style={s.avatarContainer}>
                             <LinearGradient
-                                colors={['rgba(255,255,255,0.2)', 'transparent']}
+                                colors={['rgba(255,255,255,0.3)', 'transparent']}
                                 style={s.avatarHalo}
                             />
                             <View style={s.avatar}>
-                                <Text style={s.avatarText}>
-                                    {user?.firstName?.charAt(0)}{user?.lastName?.charAt(0)}
-                                </Text>
+                                <Image 
+                                    source={user?.profileImage ? { uri: user.profileImage } : DEFAULT_AVATAR}
+                                    style={s.avatarImage}
+                                    resizeMode="cover"
+                                />
                             </View>
                         </View>
 
@@ -195,9 +197,10 @@ export const ProfileDetailScreen: React.FC = () => {
     );
 };
 
-const styles = (theme: Theme) => StyleSheet.create({
+const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: theme.colors.background,
     },
     stickyNavContainer: {
         position: 'absolute',
@@ -212,7 +215,7 @@ const styles = (theme: Theme) => StyleSheet.create({
         borderBottomRightRadius: moderateScale(20),
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.15,
+        shadowOpacity: isDarkMode ? 0.3 : 0.15,
         shadowRadius: 8,
         elevation: 10,
     },
@@ -287,14 +290,19 @@ const styles = (theme: Theme) => StyleSheet.create({
         borderColor: 'rgba(255,255,255,0.1)',
     },
     avatar: {
-        width: scale(75),
-        height: scale(75),
-        borderRadius: moderateScale(37.5),
+        width: scale(80),
+        height: scale(80),
+        borderRadius: moderateScale(40),
         backgroundColor: 'rgba(255, 255, 255, 0.08)',
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 2,
         borderColor: '#FFFFFF',
+        overflow: 'hidden',
+    },
+    avatarImage: {
+        width: '100%',
+        height: '100%',
     },
     avatarText: {
         color: '#FFFFFF',
@@ -317,14 +325,14 @@ const styles = (theme: Theme) => StyleSheet.create({
         paddingHorizontal: spacing.lg,
     },
     detailedCard: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
         borderRadius: moderateScale(20),
         marginBottom: spacing.lg,
         borderWidth: 1.5,
-        borderColor: '#E2E8F0',
+        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : '#E2E8F0',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.05,
+        shadowOpacity: isDarkMode ? 0.2 : 0.05,
         shadowRadius: 10,
         elevation: 3,
         position: 'relative',
@@ -354,8 +362,8 @@ const styles = (theme: Theme) => StyleSheet.create({
         paddingHorizontal: spacing.md,
         paddingVertical: verticalScale(11),
         borderBottomWidth: 1,
-        borderBottomColor: '#F1F5F9',
-        backgroundColor: '#F8FAFC',
+        borderBottomColor: isDarkMode ? 'rgba(255, 255, 255, 0.03)' : '#F1F5F9',
+        backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.015)' : '#F8FAFC',
     },
     cardHeaderIcon: {
         width: moderateScale(26),
@@ -413,7 +421,7 @@ const styles = (theme: Theme) => StyleSheet.create({
     },
     separator: {
         height: 1,
-        backgroundColor: '#bebfc1',
+        backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : '#E2E8F0',
         marginLeft: spacing.md + 3,
     },
 });

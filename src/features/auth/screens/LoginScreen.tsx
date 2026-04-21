@@ -14,8 +14,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Ionicons as Icon } from '@expo/vector-icons';
 import { Button, Input } from '@/shared/components/common';
 import { useAuthStore } from '@/shared/store/authStore';
-import { useAppTheme } from '@/shared/hooks/useAppTheme';
-import { Theme } from '@/core/theme/theme';
+import { theme as lightTheme, Theme } from '@/core/theme/theme';
 import { viewport, moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
 
 
@@ -29,7 +28,8 @@ export const LoginScreen: React.FC = () => {
     const [showPassword, setShowPassword] = useState(false);
 
     const { login, isLoading } = useAuthStore();
-    const { theme, isDarkMode } = useAppTheme();
+    // Force Light Mode for Login Screen
+    const theme = lightTheme;
     const s = styles(theme);
 
     React.useEffect(() => {
@@ -131,6 +131,7 @@ export const LoginScreen: React.FC = () => {
                                     keyboardType="email-address"
                                     autoCapitalize="none"
                                     autoComplete="email"
+                                    themeOverride={theme}
                                 />
                             </View>
 
@@ -149,6 +150,7 @@ export const LoginScreen: React.FC = () => {
                                             error={passwordError}
                                             secureTextEntry={!showPassword}
                                             autoCapitalize="none"
+                                            themeOverride={theme}
                                         />
                                     </View>
                                     <TouchableOpacity
