@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Custom Input Component
  */
 
@@ -11,7 +11,7 @@ import {
     TextInputProps,
     ViewStyle,
 } from 'react-native';
-import { Theme } from '@/app/theme/theme';
+import { Theme } from '@/core/theme/theme';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { moderateScale, verticalScale } from '@/shared/utils/responsive';
 
@@ -19,15 +19,18 @@ interface InputProps extends TextInputProps {
     label?: string;
     error?: string;
     containerStyle?: ViewStyle;
+    themeOverride?: Theme;
 }
 
 export const Input: React.FC<InputProps> = ({
     label,
     error,
     containerStyle,
+    themeOverride,
     ...props
 }) => {
-    const { theme } = useAppTheme();
+    const { theme: globalTheme } = useAppTheme();
+    const theme = themeOverride || globalTheme;
     const s = styles(theme);
 
     return (
@@ -87,4 +90,3 @@ const styles = (theme: Theme) => StyleSheet.create({
         marginTop: verticalScale(4),
     },
 });
-

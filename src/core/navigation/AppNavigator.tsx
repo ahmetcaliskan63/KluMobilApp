@@ -1,6 +1,6 @@
 /**
  * App Navigator
- * Ana navigasyon yapÄ±sÄ±
+ * Ana navigasyon yapısı
  */
 
 import React from 'react';

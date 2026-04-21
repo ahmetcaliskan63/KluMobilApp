@@ -1,17 +1,18 @@
-﻿import React, { memo } from 'react';
-import { View, Text, Pressable, Animated, StyleSheet, Platform } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import { Theme, spacing, borderRadius, shadows } from '@/app/theme/theme';
+import React, { memo } from 'react';
+import { View, Text, Pressable, Animated, StyleSheet } from 'react-native';
+import { Ionicons as Icon } from '@expo/vector-icons';
+import { Theme, spacing } from '@/core/theme/theme';
+import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { Announcement } from '@/shared/types/models';
-import LinearGradient from 'react-native-linear-gradient';
 
 interface AnnouncementCardProps {
     item: Announcement;
-    theme: Theme;
     onPress: () => void;
 }
 
-const AnnouncementCardComponent: React.FC<AnnouncementCardProps> = ({ item, theme, onPress }) => {
+const AnnouncementCardComponent: React.FC<AnnouncementCardProps> = ({ item, onPress }) => {
+    const { theme, isDarkMode } = useAppTheme();
+    const s = styles(theme, isDarkMode);
     const scale = React.useRef(new Animated.Value(1)).current;
     const opacity = React.useRef(new Animated.Value(1)).current;
 
@@ -30,34 +31,34 @@ const AnnouncementCardComponent: React.FC<AnnouncementCardProps> = ({ item, them
     };
 
     const isAcademic = item.category.toUpperCase() === 'AKADEMİK';
-    const categoryColor = isAcademic ? '#0A84FF' : '#182958';
+    const categoryColor = isAcademic ? (isDarkMode ? '#0A84FF' : '#1976D2') : theme.colors.primary;
 
     return (
-        <Animated.View style={[styles.container, { transform: [{ scale }], opacity }]}>
+        <Animated.View style={[s.container, { transform: [{ scale }], opacity }]}>
             <Pressable
                 onPressIn={handlePressIn}
                 onPressOut={handlePressOut}
                 onPress={onPress}
-                style={styles.card}
+                style={s.card}
             >
-                <View style={styles.gradientBg} />
-                <View style={[styles.accent, { backgroundColor: categoryColor }]} />
 
-                <View style={styles.inner}>
-                    <View style={styles.topRow}>
-                        <View style={[styles.tag, { backgroundColor: `${categoryColor}12` }]}>
-                            <View style={[styles.dot, { backgroundColor: categoryColor }]} />
-                            <Text style={[styles.categoryText, { color: categoryColor }]}>{item.category}</Text>
+                <View style={[s.accent, { backgroundColor: categoryColor }]} />
+
+                <View style={s.inner}>
+                    <View style={s.topRow}>
+                        <View style={[s.tag, { backgroundColor: `${categoryColor}20` }]}>
+                            <View style={[s.dot, { backgroundColor: categoryColor }]} />
+                            <Text style={[s.categoryText, { color: categoryColor }]}>{item.category}</Text>
                         </View>
-                        <Text style={styles.dateText}>{item.date}</Text>
+                        <Text style={s.dateText}>{item.date}</Text>
                     </View>
 
-                    <Text style={styles.title} numberOfLines={2}>{item.title}</Text>
+                    <Text style={s.title} numberOfLines={2}>{item.title}</Text>
 
-                    <View style={styles.bottomRow}>
-                        <View style={styles.metaItem}>
-                            <Icon name="eye-outline" size={12} color="#8E8E93" />
-                            <Text style={styles.viewsText}>{item.views}</Text>
+                    <View style={s.bottomRow}>
+                        <View style={s.metaItem}>
+                            <Icon name="eye-outline" size={12} color={isDarkMode ? '#94A3B8' : '#8E8E93'} />
+                            <Text style={s.viewsText}>{item.views}</Text>
                         </View>
                         <Icon name="chevron-forward-circle" size={20} color={categoryColor} />
                     </View>
@@ -67,28 +68,23 @@ const AnnouncementCardComponent: React.FC<AnnouncementCardProps> = ({ item, them
     );
 };
 
-const styles = StyleSheet.create({
+const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
     container: {
         marginBottom: 20,
         borderRadius: 28,
         backgroundColor: 'transparent',
-        shadowColor: '#101D42',
+        shadowColor: isDarkMode ? '#000' : '#101D42',
         shadowOffset: { width: 0, height: 15 },
-        shadowOpacity: 0.18,
+        shadowOpacity: isDarkMode ? 0.3 : 0.18,
         shadowRadius: 22,
         elevation: 10,
     },
     card: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
         borderRadius: 28,
         overflow: 'hidden',
-        borderWidth: 2,
-        borderColor: 'rgba(24, 41, 88, 0.3)',
-    },
-    gradientBg: {
-        ...StyleSheet.absoluteFillObject,
-        backgroundColor: '#FFFFFF',
-        opacity: 0.98,
+        borderWidth: 1.5,
+        borderColor: isDarkMode ? theme.colors.border : 'rgba(24, 41, 88, 0.15)',
     },
     accent: {
         position: 'absolute',
@@ -100,7 +96,7 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 4,
     },
     inner: {
-        padding: 20,
+        padding: spacing.md,
     },
     topRow: {
         flexDirection: 'row',
@@ -129,13 +125,13 @@ const styles = StyleSheet.create({
     },
     dateText: {
         fontSize: 10,
-        color: '#8E8E93',
+        color: isDarkMode ? '#94A3B8' : '#8E8E93',
         fontWeight: '700',
     },
     title: {
         fontSize: 15,
         fontWeight: '800',
-        color: '#1C1C1E',
+        color: theme.colors.text,
         lineHeight: 22,
         marginBottom: 16,
         letterSpacing: -0.3,
@@ -145,7 +141,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         borderTopWidth: 1,
-        borderTopColor: 'rgba(0,0,0,0.02)',
+        borderTopColor: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.02)',
         paddingTop: 12,
     },
     metaItem: {
@@ -155,7 +151,7 @@ const styles = StyleSheet.create({
     },
     viewsText: {
         fontSize: 11,
-        color: '#8E8E93',
+        color: isDarkMode ? '#94A3B8' : '#8E8E93',
         fontWeight: '700',
     },
 });

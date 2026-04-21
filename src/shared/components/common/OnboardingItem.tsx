@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, Image, Dimensions } from 'react-native';
 import Animated, {
     useAnimatedStyle,
@@ -6,7 +6,7 @@ import Animated, {
     Extrapolate,
     SharedValue
 } from 'react-native-reanimated';
-import { Theme, spacing } from '@/app/theme/theme';
+import { Theme, spacing } from '@/core/theme/theme';
 import { viewport, moderateScale } from '@/shared/utils/responsive';
 
 const { width } = Dimensions.get('window');

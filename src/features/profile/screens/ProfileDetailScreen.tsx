@@ -3,18 +3,19 @@ import {
     View,
     Text,
     StyleSheet,
+    ScrollView,
     TouchableOpacity,
     StatusBar,
     Animated,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Ionicons as Icon } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import LinearGradient from 'react-native-linear-gradient';
-import { moderateScale, verticalScale, scale } from '@/shared/utils/responsive';
-import { Theme, spacing } from '@/app/theme/theme';
-import { useAppTheme } from '@/shared/hooks/useAppTheme';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useAuthStore } from '@/shared/store/authStore';
+import { useAppTheme } from '@/shared/hooks/useAppTheme';
+import { moderateScale, verticalScale, scale } from '@/shared/utils/responsive';
+import { Theme, spacing } from '@/core/theme/theme';
 
 export const ProfileDetailScreen: React.FC = () => {
     const navigation = useNavigation();
@@ -22,7 +23,6 @@ export const ProfileDetailScreen: React.FC = () => {
     const { theme } = useAppTheme();
     const insets = useSafeAreaInsets();
     const s = styles(theme);
-    const isAcademic = user?.role === 'academic' || user?.role === 'staff';
 
     // 🏎️ Animation Logic
     const scrollY = useRef(new Animated.Value(0)).current;
@@ -105,7 +105,7 @@ export const ProfileDetailScreen: React.FC = () => {
                     >
                         <Icon name="arrow-back" size={22} color="#FFFFFF" />
                     </TouchableOpacity>
-                    <Text style={s.headerTitle}>{isAcademic ? 'Personel Kişisel Bilgileri' : 'Öğrenci Kişisel Bilgileri'}</Text>
+                    <Text style={s.headerTitle}>Öğrenci Kişisel Bilgileri</Text>
                     <View style={{ width: 44 }} />
                 </View>
             </View>
@@ -165,54 +165,37 @@ export const ProfileDetailScreen: React.FC = () => {
                 )}
                 scrollEventThrottle={16}
             >
-                {isAcademic ? (
-                    <SectionCard title="PERSONEL BİLGİLERİ" icon="person-outline" colors={['#182958', '#0F172A']}>
-                        <InfoRow label="TC KİMLİK NUMARASI" value={user?.tcNo || ''} indicatorColor="#182958" />
-                        <InfoRow label="KURUM SİCİL NUMARASI" value={user?.staffNumber || ''} indicatorColor="#182958" />
-                        <InfoRow label="BİRİMİ" value={user?.faculty || ''} indicatorColor="#182958" />
-                        <InfoRow label="BÖLÜMÜ" value={user?.department || '-'} indicatorColor="#182958" />
-                        <InfoRow label="ANA BİLİM DALI" value={user?.majorBranch || '-'} indicatorColor="#182958" />
-                        <InfoRow label="ADRES" value={user?.address || ''} indicatorColor="#182958" />
-                        <InfoRow label="KURUM E-POSTA ADRESİ" value={user?.email || '-'} indicatorColor="#182958" />
-                        <InfoRow label="CEP TELEFONU" value={user?.phone || ''} indicatorColor="#182958" />
-                        <InfoRow label="İŞ TELEFONU" value={user?.workPhone || '-'} indicatorColor="#182958" />
-                        <InfoRow label="DAHİLİ" value={user?.internalPhone || '-'} indicatorColor="#182958" isLast />
-                    </SectionCard>
-                ) : (
-                    <>
-                        <SectionCard title="KİMLİK VERİLERİ" icon="barcode-outline" colors={['#2563EB', '#1D4ED8']}>
-                            <InfoRow label="T.C. KİMLİK NUMARASI" value={user?.tcNo || ''} indicatorColor="#2563EB" />
-                            <InfoRow label="DOĞUM YERİ" value={user?.birthPlace || ''} indicatorColor="#2563EB" />
-                            <InfoRow label="DOĞUM TARİHİ" value={user?.birthDate || ''} indicatorColor="#2563EB" isLast />
-                        </SectionCard>
+                <SectionCard title="KİMLİK VERİLERİ" icon="barcode-outline" colors={['#2563EB', '#1D4ED8']}>
+                    <InfoRow label="T.C. KİMLİK NUMARASI" value={user?.tcNo || ''} indicatorColor="#2563EB" />
+                    <InfoRow label="DOĞUM YERİ" value={user?.birthPlace || ''} indicatorColor="#2563EB" />
+                    <InfoRow label="DOĞUM TARİHİ" value={user?.birthDate || ''} indicatorColor="#2563EB" isLast />
+                </SectionCard>
 
-                        <SectionCard title="AKADEMİK STATÜ" icon="ribbon-outline" colors={['#059669', '#047857']}>
-                            <InfoRow label="ÖĞRENCİ NUMARASI" value={
-                                user?.studentNumber?.includes('@')
-                                    ? user.studentNumber.split('@')[0]
-                                    : user?.studentNumber || ''
-                            } indicatorColor="#059669" />
-                            <InfoRow label="FAKÜLTE" value={user?.faculty || ''} indicatorColor="#059669" />
-                            <InfoRow label="BÖLÜM" value={user?.department || ''} indicatorColor="#059669" />
-                            <InfoRow label="ANABİLİM DALI" value={user?.majorBranch || ''} indicatorColor="#059669" />
-                            <InfoRow label="GANO (GÜNCEL)" value={user?.gpa || ''} indicatorColor="#059669" />
-                            <InfoRow label="SINIF / DÖNEM" value={user?.grade?.toString() || ''} indicatorColor="#059669" />
-                            <InfoRow label="KAYIT TARİHİ" value={user?.registrationDate || ''} indicatorColor="#059669" isLast />
-                        </SectionCard>
+                <SectionCard title="AKADEMİK STATÜ" icon="ribbon-outline" colors={['#059669', '#047857']}>
+                    <InfoRow label="ÖĞRENCİ NUMARASI" value={
+                        user?.studentNumber?.includes('@')
+                            ? user.studentNumber.split('@')[0]
+                            : user?.studentNumber || ''
+                    } indicatorColor="#059669" />
+                    <InfoRow label="FAKÜLTE" value={user?.faculty || ''} indicatorColor="#059669" />
+                    <InfoRow label="BÖLÜM" value={user?.department || ''} indicatorColor="#059669" />
+                    <InfoRow label="ANABİLİM DALI" value={user?.majorBranch || ''} indicatorColor="#059669" />
+                    <InfoRow label="GANO (GÜNCEL)" value={user?.gpa || ''} indicatorColor="#059669" />
+                    <InfoRow label="SINIF / DÖNEM" value={user?.grade?.toString() || ''} indicatorColor="#059669" />
+                    <InfoRow label="KAYIT TARİHİ" value={user?.registrationDate || ''} indicatorColor="#059669" isLast />
+                </SectionCard>
 
-                        <SectionCard title="İLETİŞİM KANALLARI" icon="planet-outline" colors={['#D97706', '#B45309']}>
-                            <InfoRow label="KURUMSAL E-POSTA" value={user?.email || ''} indicatorColor="#D97706" />
-                            <InfoRow label="TELEFON" value={user?.phone || ''} indicatorColor="#D97706" />
-                            <InfoRow label="RESMİ ADRES" value={user?.address || ''} indicatorColor="#D97706" isLast />
-                        </SectionCard>
-                    </>
-                )}
+                <SectionCard title="İLETİŞİM KANALLARI" icon="planet-outline" colors={['#D97706', '#B45309']}>
+                    <InfoRow label="KURUMSAL E-POSTA" value={user?.email || ''} indicatorColor="#D97706" />
+                    <InfoRow label="TELEFON" value={user?.phone || ''} indicatorColor="#D97706" />
+                    <InfoRow label="RESMİ ADRES" value={user?.address || ''} indicatorColor="#D97706" isLast />
+                </SectionCard>
             </Animated.ScrollView>
         </View>
     );
 };
 
-const styles = (_theme: Theme) => StyleSheet.create({
+const styles = (theme: Theme) => StyleSheet.create({
     container: {
         flex: 1,
     },
@@ -434,4 +417,3 @@ const styles = (_theme: Theme) => StyleSheet.create({
         marginLeft: spacing.md + 3,
     },
 });
-

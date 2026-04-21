@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import {
     View,
     Text,
@@ -8,16 +8,15 @@ import {
     StatusBar,
     Platform
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Ionicons as Icon } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { theme as defaultTheme, Theme } from '@/core/theme/theme';
+import { MOCK_SCHEDULE, Course } from '@/shared/services/mockData';
 import { Card } from '@/shared/components/common';
 import { useNavigation } from '@react-navigation/native';
-import { theme as defaultTheme, Theme } from '@/app/theme/theme';
-import { useFetch } from '@/shared/hooks/useFetch';
-import { Course } from '@/shared/types/models';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const DAYS = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma'];
 
@@ -25,27 +24,10 @@ export const ScheduleScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
     const { theme } = useAppTheme();
-    const { data: schedule, loading, error } = useFetch<Course[]>('/schedule');
     const s = styles(theme);
     const [selectedDay, setSelectedDay] = useState('Pazartesi');
 
-    if (loading) {
-        return (
-            <View style={[s.container, { justifyContent: 'center', alignItems: 'center' }]}>
-                <Text style={{ color: theme.colors.text }}>Program yükleniyor...</Text>
-            </View>
-        );
-    }
-
-    if (error) {
-        return (
-            <View style={[s.container, { justifyContent: 'center', alignItems: 'center' }]}>
-                <Text style={{ color: theme.colors.error }}>Hata: {error}</Text>
-            </View>
-        );
-    }
-
-    const filteredSchedule = (schedule || []).filter(course => course.day === selectedDay);
+    const filteredSchedule = MOCK_SCHEDULE.filter(course => course.day === selectedDay);
 
     return (
         <View style={s.container}>
@@ -338,4 +320,3 @@ const styles = (theme: Theme) => StyleSheet.create({
         lineHeight: 22,
     },
 });
-

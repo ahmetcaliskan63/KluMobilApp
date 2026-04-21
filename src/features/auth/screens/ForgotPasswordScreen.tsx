@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import {
     View,
     Text,
@@ -7,10 +7,10 @@ import {
     StatusBar,
     Alert,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Ionicons as Icon } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { Theme } from '@/app/theme/theme';
+import { theme as defaultTheme, Theme } from '@/core/theme/theme';
 import { Input, Button } from '@/shared/components/common';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 
@@ -134,4 +134,3 @@ const styles = (theme: Theme) => StyleSheet.create({
         width: '100%',
     },
 });
-

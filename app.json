@@ -1,5 +1,41 @@
-﻿{
-  "name": "KLUMobile",
-  "displayName": "KLUMobile"
+{
+  "expo": {
+    "name": "KLUMobile",
+    "slug": "klumobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./src/shared/assets/images/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./src/shared/assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ahmetcaliskan.klumobile"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./src/shared/assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.ahmetcaliskan.klumobile"
+    },
+    "web": {
+      "favicon": "./src/shared/assets/images/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "718d83a9-8697-42b6-8ebd-329b6a1e7ede"
+      }
+    },
+    "plugins": [
+      "expo-font",
+      "expo-secure-store"
+    ]
+  }
 }
-

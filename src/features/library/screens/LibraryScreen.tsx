@@ -9,14 +9,11 @@ import {
     ImageBackground,
     StatusBar,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import LinearGradient from 'react-native-linear-gradient';
+import { Ionicons as Icon } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Book } from '@/shared/types/models';
-import { Card } from '@/shared/components/common';
+import { Theme } from '@/core/theme/theme';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
-import { useFetch } from '@/shared/hooks/useFetch';
-import { Theme } from '@/app/theme/theme';
 
 // The items defined from the old web design screenshot
 const LIBRARY_SERVICES = [
@@ -36,8 +33,6 @@ export const LibraryScreen: React.FC = () => {
     const { theme } = useAppTheme();
     const s = styles(theme);
 
-    const { data: borrowedBooks } = useFetch<Book[]>('/library/borrowed');
-
     const handlePress = async (url: string) => {
         const supported = await Linking.canOpenURL(url);
         if (supported) {
@@ -45,30 +40,13 @@ export const LibraryScreen: React.FC = () => {
         }
     };
 
-    const renderBorrowedBook = (book: Book) => (
-        <Card key={book.id} style={s.bookCard}>
-            <View style={s.bookInfo}>
-                <View style={s.bookIconWrapper}>
-                    <Icon name="book" size={24} color={theme.colors.primary} />
-                </View>
-                <View style={{ flex: 1 }}>
-                    <Text style={s.bookTitle}>{book.title}</Text>
-                    <Text style={s.bookAuthor}>{book.author}</Text>
-                </View>
-                <View style={[s.dateBadge, { backgroundColor: book.status === 'Warning' ? theme.colors.warning + '20' : theme.colors.primary + '10' }]}>
-                    <Text style={[s.dateText, { color: book.status === 'Warning' ? theme.colors.warning : theme.colors.primary }]}>{book.dueDate}</Text>
-                </View>
-            </View>
-        </Card>
-    );
-
     return (
         <View style={s.container}>
-            <StatusBar barStyle="light-content" backgroundColor="#182958" />
+            <StatusBar barStyle="light-content" backgroundColor="#101D42" />
 
             {/* Header Hero Image */}
             <View style={s.heroContainer}>
-                <ImageBackground
+                <ImageBackground 
                     source={{ uri: 'https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80' }} // Premium Library Stock
                     style={s.heroBackground}
                     imageStyle={s.heroImage}
@@ -85,25 +63,16 @@ export const LibraryScreen: React.FC = () => {
                 </ImageBackground>
             </View>
 
-            {/* Content */}
-            <ScrollView
-                contentContainerStyle={[s.scrollContent, { paddingBottom: insets.bottom + 100 }]}
+            {/* Grid Services */}
+            <ScrollView 
+                contentContainerStyle={[s.scrollContent, { paddingBottom: insets.bottom + 100 }]} 
                 showsVerticalScrollIndicator={false}
             >
-                {/* Borrowed Books Section */}
-                {borrowedBooks && borrowedBooks.length > 0 && (
-                    <View style={s.section}>
-                        <Text style={s.sectionTitle}>Ödünç Aldıklarım</Text>
-                        {borrowedBooks.map(renderBorrowedBook)}
-                    </View>
-                )}
-
-                <View style={s.section}>
-                    <Text style={s.sectionTitle}>Kütüphane Hizmetleri</Text>
+                <View style={s.servicesContainer}>
                     <View style={s.servicesGrid}>
                         {LIBRARY_SERVICES.map((service) => (
-                            <TouchableOpacity
-                                key={service.id}
+                            <TouchableOpacity 
+                                key={service.id} 
                                 style={s.serviceCard}
                                 activeOpacity={0.8}
                                 onPress={() => handlePress(service.link)}
@@ -120,7 +89,6 @@ export const LibraryScreen: React.FC = () => {
         </View>
     );
 };
-
 
 const styles = (theme: Theme) => StyleSheet.create({
     container: {
@@ -163,56 +131,6 @@ const styles = (theme: Theme) => StyleSheet.create({
     scrollContent: {
         paddingTop: 24,
         paddingHorizontal: 20,
-    },
-    section: {
-        marginBottom: 24,
-    },
-    sectionTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: theme.colors.text,
-        marginBottom: 16,
-    },
-    bookCard: {
-        marginBottom: 12,
-        padding: 16,
-        borderRadius: 20,
-        backgroundColor: theme.colors.card,
-        borderWidth: 1,
-        borderColor: theme.colors.border,
-    },
-    bookInfo: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    bookIconWrapper: {
-        width: 44,
-        height: 44,
-        borderRadius: 14,
-        backgroundColor: theme.colors.primary + '10',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: 14,
-    },
-    bookTitle: {
-        fontSize: 15,
-        fontWeight: '700',
-        color: theme.colors.text,
-        marginBottom: 2,
-    },
-    bookAuthor: {
-        fontSize: 13,
-        color: theme.colors.textSecondary,
-    },
-    dateBadge: {
-        paddingHorizontal: 10,
-        paddingVertical: 6,
-        borderRadius: 10,
-        marginLeft: 8,
-    },
-    dateText: {
-        fontSize: 11,
-        fontWeight: 'bold',
     },
     servicesContainer: {
         marginTop: 0,
@@ -258,4 +176,3 @@ const styles = (theme: Theme) => StyleSheet.create({
         lineHeight: 16,
     },
 });
-

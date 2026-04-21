@@ -1,2 +1,1 @@
-﻿export * from './TranscriptScreen';
-
+export * from './TranscriptScreen';

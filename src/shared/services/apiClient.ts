@@ -1,4 +1,4 @@
-﻿import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
+import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 
 // KLU API Base URL - This would be updated with the actual production URL
 const BASE_URL = 'https://api.klu.edu.tr/v1'; // Mock base URL
@@ -42,7 +42,7 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
     (response) => response,
     async (error) => {
-        // 🛠️ Professional Mock Interceptor for Development
+        // ??? Professional Mock Interceptor for Development
         // Since BASE_URL isn't real, requests will fail. We intercept here to return mock data.
         const url = error.config?.url;
         
@@ -67,6 +67,8 @@ apiClient.interceptors.response.use(
                     '/library/books': MOCK.MOCK_BOOKS,
                     '/news': MOCK.MOCK_NEWS,
                     '/events': MOCK.MOCK_EVENTS,
+                    '/university/news': MOCK.MOCK_UNIVERSITY_NEWS,
+                    '/university/info': MOCK.MOCK_UNIVERSITY_INFO,
                     '/profile/setup-status': { completed: true },
                     '/obs/courses': MOCK.MOCK_SCHEDULE,
                 };
@@ -84,7 +86,7 @@ apiClient.interceptors.response.use(
                     };
                 }
 
-                // 🔍 Dynamic Detail Route Handling (e.g., /announcements/1)
+                // ?? Dynamic Detail Route Handling (e.g., /announcements/1)
                 if (url?.startsWith('/announcements/') || url?.startsWith('/news/') || url?.startsWith('/events/') || url?.startsWith('/faculty/units/')) {
                     const parts = url.split('/');
                     const id = parts[parts.length - 1];
@@ -122,7 +124,7 @@ apiClient.interceptors.response.use(
         }
 
         // Customize error messages based on response
-        const errorMessage = error.response?.data?.message || 'Bir hata oluştu. Lütfen tekrar deneyin.';
+        const errorMessage = error.response?.data?.message || 'Bir hata olutu. Ltfen tekrar deneyin.';
         error.message = errorMessage;
 
         return Promise.reject(error);

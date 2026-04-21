@@ -1,21 +1,21 @@
-﻿import React from 'react';
+import React from 'react';
 import {
     View,
     Text,
     StyleSheet,
+    ScrollView,
     TouchableOpacity,
+    Image,
     StatusBar,
     Animated,
     Platform,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Ionicons as Icon } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { HomeStackParamList } from '@/shared/types/navigation';
-import { useTranslation } from '@/shared/hooks/useTranslation';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
-import { News } from '@/shared/types/models';
-import { useFetch } from '@/shared/hooks/useFetch';
+import { MOCK_NEWS } from '@/shared/services/mockData';
 import { viewport, moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
 
 type NewsDetailRouteProp = RouteProp<HomeStackParamList, 'NewsDetail'>;
@@ -25,32 +25,12 @@ export const NewsDetailScreen: React.FC = () => {
     const navigation = useNavigation();
     const route = useRoute<NewsDetailRouteProp>();
     const { theme } = useAppTheme();
-    const { t } = useTranslation();
     const { newsId } = route.params;
     const [imageError, setImageError] = React.useState(false);
     const scrollY = React.useRef(new Animated.Value(0)).current;
-    const buttonScale = React.useRef(new Animated.Value(1)).current;
+    const news = MOCK_NEWS.find(n => n.id === newsId);
 
-    const { data: news, loading, error } = useFetch<News>(`/news/${newsId}`);
-
-    if (loading && !news) {
-        return (
-            <View style={[s.container, { justifyContent: 'center', alignItems: 'center' }]}>
-                <Text style={{ color: theme.colors.primary }}>Yükleniyor...</Text>
-            </View>
-        );
-    }
-
-    if (error || !news) {
-        return (
-            <View style={[s.container, { justifyContent: 'center', alignItems: 'center' }]}>
-                <Text style={{ color: theme.colors.error }}>Haber bulunamadı.</Text>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginTop: 20 }}>
-                    <Text style={{ color: theme.colors.primary }}>Geri Dön</Text>
-                </TouchableOpacity>
-            </View>
-        );
-    }
+    if (!news) return null;
 
     const headerHeight = verticalScale(400);
 
@@ -83,15 +63,17 @@ export const NewsDetailScreen: React.FC = () => {
         extrapolate: 'clamp',
     });
 
+    const scaleAnim = React.useRef(new Animated.Value(1)).current;
+
     const handlePressIn = () => {
-        Animated.spring(buttonScale, {
+        Animated.spring(scaleAnim, {
             toValue: 0.92,
             useNativeDriver: true,
         }).start();
     };
 
     const handlePressOut = () => {
-        Animated.spring(buttonScale, {
+        Animated.spring(scaleAnim, {
             toValue: 1,
             useNativeDriver: true,
         }).start();
@@ -127,7 +109,7 @@ export const NewsDetailScreen: React.FC = () => {
 
                 <View style={s.contentContainer}>
                     <View style={s.indicator} />
-                    <Animated.Text style={[s.title, { opacity: textOpacity }]}>{news.title}</Animated.Text>
+                    <Text style={s.title}>{news.title}</Text>
                     <View style={s.metaRow}>
                         <View style={s.metaItem}>
                             <Icon name="eye-outline" size={16} color="#8E8E93" />
@@ -142,10 +124,13 @@ export const NewsDetailScreen: React.FC = () => {
 
                     <View style={s.contentDivider} />
                     <Text style={s.summary}>
-                        {t('news.placeholder_snippet')}
+                        Üniversitemiz tarafından düzenlenen bu önemli gelişme, akademik ve yerel topluluklar için büyük önem taşımaktadır.
                     </Text>
                     <Text style={s.body}>
-                        {news.content || t('news.placeholder_body')}
+                        {news.content}
+                        {"\n\n"}
+                        Ziyaret kapsamında iki üniversite arasında akademik iş birliği, ortak projeler ve bölgesel kalkınma odaklı strategic çalışmalar ele alındı. Rektörümüz, nazik ziyaretlerinden dolayı konuk heyete teşekkürlerini ileterek, bölgemizin eğitim kalitesini artırmak için dayanışma içerisinde çalışmaya devam edeceklerini belirtti.{"\n\n"}
+                        Görüşmede ayrıca üniversite kampüslerinin geliştirilmesi, öğrenci değişim programlarının kapsamının genişletilmesi ve teknolojik altyapı paylaşımı gibi konular üzerinde fikir alışverişinde bulunuldu. Ziyaret, karşılıklı hediye takdimi ve günün anısına çekilen hatıra fotoğrafı ile sona erdi.
                     </Text>
                 </View>
                 <View style={{ height: 100 }} />
@@ -155,7 +140,7 @@ export const NewsDetailScreen: React.FC = () => {
                 <Text style={s.dynamicTitle} numberOfLines={1}>{news.title}</Text>
             </Animated.View>
 
-            <Animated.View style={[s.backButtonContainer, { top: insets.top + 10, transform: [{ scale: buttonScale }] }]}>
+            <Animated.View style={[s.backButtonContainer, { top: insets.top + 10, transform: [{ scale: scaleAnim }] }]}>
                 <TouchableOpacity
                     onPressIn={handlePressIn}
                     onPressOut={handlePressOut}
@@ -296,4 +281,3 @@ const s = StyleSheet.create({
         fontWeight: '700',
     },
 });
-

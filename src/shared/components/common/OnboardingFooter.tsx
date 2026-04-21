@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import Animated, {
     useAnimatedStyle,
@@ -6,8 +6,8 @@ import Animated, {
     Extrapolate,
     SharedValue
 } from 'react-native-reanimated';
-import { Theme, spacing, borderRadius, shadows } from '@/app/theme/theme';
-import LinearGradient from 'react-native-linear-gradient';
+import { Theme, spacing, borderRadius, shadows } from '@/core/theme/theme';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const { width } = Dimensions.get('window');
 

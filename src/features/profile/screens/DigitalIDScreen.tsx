@@ -1,13 +1,13 @@
-﻿import React from 'react';
+import React from 'react';
 import { View, StyleSheet, TouchableOpacity, StatusBar, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Ionicons as Icon } from '@expo/vector-icons';
 import { DigitalPassportCard } from '@/shared/components/profile/DigitalPassportCard';
 import { useAuthStore } from '@/shared/store/authStore';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export const DigitalIDScreen: React.FC = () => {
     const navigation = useNavigation<any>();
@@ -136,4 +136,3 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     }
 });
-

@@ -1,6 +1,6 @@
-﻿import React from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { Theme } from '@/app/theme/theme';
+import { Theme } from '@/core/theme/theme';
 import { moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
 import { Attendance } from '@/shared/types/models';
 
@@ -15,10 +15,10 @@ export const AttendanceRiskCard: React.FC<AttendanceRiskCardProps> = ({ data, th
             <View style={styles.header}>
                 <View>
                     <Text style={styles.label}>ABSENCE CONTROL</Text>
-                    <Text style={styles.title}>Devamsızlık Takibi</Text>
+                    <Text style={styles.title}>Devamszlk Takibi</Text>
                 </View>
                 <TouchableOpacity style={styles.detailButton}>
-                    <Text style={[styles.detailText, { color: theme.colors.primary }]}>Tümünü Gör</Text>
+                    <Text style={[styles.detailText, { color: theme.colors.primary }]}>Tmn Gr</Text>
                 </TouchableOpacity>
             </View>
 

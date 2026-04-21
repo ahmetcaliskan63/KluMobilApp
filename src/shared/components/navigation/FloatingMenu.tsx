@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text, Platform, TouchableWithoutFeedback } from 'react-native';
 import Animated, { 
     useAnimatedStyle, 
@@ -10,14 +10,14 @@ import Animated, {
     runOnJS,
     SharedValue
 } from 'react-native-reanimated';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Ionicons as Icon } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
 
 const MENU_ITEMS = [
     { id: 'calendar', icon: 'calendar', label: 'Akademik Takvim', screen: 'AcademicCalendar', type: 'Root', color: '#2196F3' },
-    { id: 'email', icon: 'mail', label: 'E-Posta Şifre İşlemleri', screen: 'EmailSettings', type: 'Root', color: '#E91E63' },
-    { id: 'wifi', icon: 'wifi', label: 'Wifi İşlemleri', screen: 'WifiSettings', type: 'Root', color: '#4CAF50' },
+    { id: 'email', icon: 'mail', label: 'E-Posta ifre lemleri', screen: 'EmailSettings', type: 'Root', color: '#E91E63' },
+    { id: 'wifi', icon: 'wifi', label: 'Wifi lemleri', screen: 'WifiSettings', type: 'Root', color: '#4CAF50' },
 ];
 
 interface MenuItemComponentProps {
@@ -56,7 +56,7 @@ const MenuItemComponent: React.FC<MenuItemComponentProps> = ({ item, index, anim
             >
                 <Text style={styles.menuItemLabel}>{item.label}</Text>
                 <View style={[styles.iconContainer, { backgroundColor: item.color }]}>
-                    <Icon name={item.icon} size={20} color="#FFFFFF" />
+                    <Icon name={item.icon as any} size={20} color="#FFFFFF" />
                 </View>
             </TouchableOpacity>
         </Animated.View>
@@ -138,7 +138,7 @@ export const FloatingMenu: React.FC = () => {
                 >
                     <Animated.View style={fabStyle}>
                         <Icon 
-                            name={isOpen ? "close" : "flash"} 
+                            name={(isOpen ? "close" : "flash") as any} 
                             size={32} 
                             color="#FFFFFF" 
                         />

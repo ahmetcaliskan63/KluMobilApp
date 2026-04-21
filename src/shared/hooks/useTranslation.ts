@@ -1,4 +1,4 @@
-﻿import { useCallback } from 'react';
+import { useCallback } from 'react';
 import tr from '@/shared/i18n/tr.json';
 import en from '@/shared/i18n/en.json';
 

@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import {
     View,
     Text,
@@ -7,16 +7,15 @@ import {
     TouchableOpacity,
     StatusBar,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Ionicons as Icon } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { HomeStackParamList } from '@/shared/types/navigation';
-import { Grade } from '@/shared/types/models';
+import { theme as defaultTheme, Theme } from '@/core/theme/theme';
+import { MOCK_GRADES } from '@/shared/services/mockData';
 import { Card } from '@/shared/components/common';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
-import { useFetch } from '@/shared/hooks/useFetch';
-import { moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
-import { Theme } from '@/app/theme/theme';
+import { viewport, moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
 
 type ExamDetailRouteProp = RouteProp<HomeStackParamList, 'ExamDetail'>;
 
@@ -28,22 +27,14 @@ export const ExamDetailScreen: React.FC = () => {
     const s = styles(theme);
     const { examId } = route.params;
 
-    const { data: grade, loading, error } = useFetch<Grade>(`/grades/${examId}`);
+    const grade = MOCK_GRADES.find(g => g.id === examId);
 
-    if (loading && !grade) {
-        return (
-            <View style={[s.errorContainer, { backgroundColor: theme.colors.background }]}>
-                <Text style={{ color: theme.colors.primary }}>Yükleniyor...</Text>
-            </View>
-        );
-    }
-
-    if (error || !grade) {
+    if (!grade) {
         return (
             <View style={s.errorContainer}>
                 <Text style={{ color: theme.colors.text }}>Not bilgisi bulunamadı.</Text>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginTop: 20 }}>
-                    <Text style={{ color: theme.colors.primary }}>Geri Dön</Text>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Text style={{ color: theme.colors.primary, marginTop: 10 }}>Geri Dön</Text>
                 </TouchableOpacity>
             </View>
         );
@@ -210,7 +201,7 @@ const styles = (theme: Theme) => StyleSheet.create({
     letterGrade: {
         fontSize: moderateScale(32),
         fontWeight: '900',
-        color: theme.colors.primary,
+        color: defaultTheme.colors.primary,
     },
     scrollView: {
         flex: 1,
@@ -355,4 +346,3 @@ const styles = (theme: Theme) => StyleSheet.create({
         backgroundColor: theme.colors.background,
     }
 });
-

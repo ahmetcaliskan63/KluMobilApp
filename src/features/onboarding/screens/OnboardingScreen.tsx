@@ -1,4 +1,4 @@
-﻿import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import { View, StyleSheet, FlatList, StatusBar, ViewToken } from 'react-native';
 import Animated, {
     useSharedValue,
@@ -17,25 +17,25 @@ const slides = [
         id: '1',
         title: "KLU Mobil Dünyasına\nHoş Geldiniz",
         description: "Kırklareli Üniversitesi'nin yenilikçi, hızlı ve kullanıcı dostu resmi mobil uygulamasıyla tanışın.",
-        image: require('../../../shared/assets/welcome.png'),
+        image: require('@/shared/assets/welcome.png'),
     },
     {
         id: '2',
         title: "Akademik Başarı\nCebinizde",
         description: "Sınav sonuçlarınıza, transkriptinize ve ders programınıza anında, tek dokunuşla ulaşın.",
-        image: require('../../../shared/assets/academic.png'),
+        image: require('@/shared/assets/academic.png'),
     },
     {
         id: '3',
         title: "Kampüs Hayatını\nKolaylaştırın",
         description: "Yemekhane menülerini takip edin, kütüphanede arama yapın ve Dijital Kimlik ile kampüse güvenle girin.",
-        image: require('../../../shared/assets/services.png'),
+        image: require('@/shared/assets/services.png'),
     },
     {
         id: '4',
         title: "Her An\nHaberdar Olun",
         description: "Duyurular, haberler ve etkinlikler için anlık bildirimler alın. Üniversite hayatını kaçırmayın.",
-        image: require('../../../shared/assets/communication.png'),
+        image: require('@/shared/assets/communication.png'),
     },
 ];
 

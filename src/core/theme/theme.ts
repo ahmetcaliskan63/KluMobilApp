@@ -1,4 +1,4 @@
-﻿
+
 import { moderateScale } from '@/shared/utils/responsive';
 
 export const colors = {

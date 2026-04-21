@@ -1,17 +1,19 @@
-﻿import React, { memo } from 'react';
-import { View, Text, Image, Pressable, Animated, StyleSheet, Platform } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import React, { memo } from 'react';
+import { View, Text, Image, Pressable, Animated, StyleSheet } from 'react-native';
+import { Ionicons as Icon } from '@expo/vector-icons';
 import { Event as EventType } from '@/shared/types/models';
-import { Theme } from '@/app/theme/theme';
 import { moderateScale } from '@/shared/utils/responsive';
+import { Theme } from '@/core/theme/theme';
+import { useAppTheme } from '@/shared/hooks/useAppTheme';
 
 interface EventCardProps {
     item: EventType;
-    theme: Theme;
     onPress: () => void;
 }
 
-const EventCardComponent: React.FC<EventCardProps> = ({ item, theme, onPress }) => {
+const EventCardComponent: React.FC<EventCardProps> = ({ item, onPress }) => {
+    const { theme, isDarkMode } = useAppTheme();
+    const s = styles(theme, isDarkMode);
     const scale = React.useRef(new Animated.Value(1)).current;
     const handlePressIn = () => Animated.spring(scale, { toValue: 0.98, useNativeDriver: true, tension: 100, friction: 10 }).start();
     const handlePressOut = () => Animated.spring(scale, { toValue: 1, useNativeDriver: true, tension: 100, friction: 10 }).start();
@@ -19,8 +21,8 @@ const EventCardComponent: React.FC<EventCardProps> = ({ item, theme, onPress }) 
     const [day, monthName, year] = item.date.split(' ');
 
     const turkishMonths: { [key: string]: number } = {
-        'Ocak': 0, 'Şubat': 1, 'Mart': 2, 'Nisan': 3, 'Mayıs': 4, 'Haziran': 5,
-        'Temmuz': 6, 'Ağustos': 7, 'Eylül': 8, 'Ekim': 9, 'Kasım': 10, 'Aralık': 11
+        'Ocak': 0, 'ubat': 1, 'Mart': 2, 'Nisan': 3, 'Mays': 4, 'Haziran': 5,
+        'Temmuz': 6, 'Austos': 7, 'Eyll': 8, 'Ekim': 9, 'Kasm': 10, 'Aralk': 11
     };
 
     const eventDate = new Date(
@@ -35,45 +37,43 @@ const EventCardComponent: React.FC<EventCardProps> = ({ item, theme, onPress }) 
     const eventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
 
     const isFuture = eventDay > today;
-    const isPast = eventDay < today;
-    const isToday = eventDay.getTime() === today.getTime();
 
-    // Use green for future, red for past or today (based on user request: "üstündeki tarih kartı yapıldıysa veya geçmiş bir tarihteyse kırmızı olsun")
+    // Use green for future, red for past or today (based on user request: "stndeki tarih kart yapldysa veya gemi bir tarihteyse krmz olsun")
     const pillColor = isFuture ? '#10B981' : '#EF4444';
 
     return (
-        <Animated.View style={[styles.container, { transform: [{ scale }] }]}>
+        <Animated.View style={[s.container, { transform: [{ scale }] }]}>
             <Pressable
                 onPressIn={handlePressIn}
                 onPressOut={handlePressOut}
                 onPress={onPress}
-                style={styles.card}
+                style={s.card}
             >
-                <Image source={{ uri: item.image }} style={styles.image} resizeMode="cover" />
-                <View style={styles.overlay} />
+                <Image source={{ uri: item.image }} style={s.image} resizeMode="cover" />
+                <View style={s.overlay} />
 
-                <View style={[styles.datePill, { backgroundColor: pillColor }]}>
-                    <Text style={[styles.dayText, { color: '#FFFFFF' }]}>{day}</Text>
-                    <Text style={[styles.monthText, { color: '#FFFFFF' }]}>{monthName?.substring(0, 3)}</Text>
+                <View style={[s.datePill, { backgroundColor: isDarkMode ? theme.colors.card : '#FFFFFF' }]}>
+                    <Text style={[s.dayText, { color: pillColor }]}>{day}</Text>
+                    <Text style={[s.monthText, { color: pillColor }]}>{monthName?.substring(0, 3)}</Text>
                 </View>
 
-                <View style={styles.infoBlock}>
-                    <View style={styles.glassBg} />
-                    <View style={styles.infoInner}>
-                        <Text style={styles.title} numberOfLines={1}>{item.title}</Text>
-                        <View style={styles.metaRow}>
-                            <View style={styles.metaItem}>
+                <View style={s.infoBlock}>
+                    <View style={s.glassBg} />
+                    <View style={s.infoInner}>
+                        <Text style={s.title} numberOfLines={1}>{item.title}</Text>
+                        <View style={s.metaRow}>
+                            <View style={s.metaItem}>
                                 <Icon name="time-outline" size={14} color="#FFFFFF" style={{ opacity: 0.9 }} />
-                                <Text style={styles.metaText}>{item.time}</Text>
+                                <Text style={s.metaText}>{item.time}</Text>
                             </View>
-                            <View style={styles.metaDivider} />
-                            <View style={styles.metaItem}>
+                            <View style={s.metaDivider} />
+                            <View style={s.metaItem}>
                                 <Icon name="location-outline" size={14} color="#FFFFFF" style={{ opacity: 0.9 }} />
-                                <Text style={styles.metaText}>Kampüs</Text>
+                                <Text style={s.metaText}>Kampüs</Text>
                             </View>
                         </View>
                     </View>
-                    <View style={styles.actionIcon}>
+                    <View style={s.actionIcon}>
                         <Icon name="arrow-forward" size={18} color="#FFFFFF" />
                     </View>
                 </View>
@@ -82,14 +82,14 @@ const EventCardComponent: React.FC<EventCardProps> = ({ item, theme, onPress }) 
     );
 };
 
-const styles = StyleSheet.create({
+const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
     container: {
         marginBottom: 20,
         borderRadius: 28,
         backgroundColor: 'transparent',
-        shadowColor: '#101D42',
+        shadowColor: isDarkMode ? '#000' : '#101D42',
         shadowOffset: { width: 0, height: 16 },
-        shadowOpacity: 0.2,
+        shadowOpacity: isDarkMode ? 0.35 : 0.2,
         shadowRadius: 22,
         elevation: 12,
     },
@@ -97,9 +97,9 @@ const styles = StyleSheet.create({
         height: 200,
         borderRadius: 28,
         overflow: 'hidden',
-        backgroundColor: '#101D42',
-        borderWidth: 2,
-        borderColor: 'rgba(24, 41, 88, 0.5)',
+        backgroundColor: theme.colors.card,
+        borderWidth: 1.5,
+        borderColor: isDarkMode ? theme.colors.border : 'rgba(24, 41, 88, 0.25)',
     },
     image: {
         width: '100%',
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     },
     overlay: {
         ...StyleSheet.absoluteFillObject,
-        backgroundColor: 'rgba(0, 0, 0, 0.25)',
+        backgroundColor: isDarkMode ? 'rgba(0, 0, 0, 0.45)' : 'rgba(0, 0, 0, 0.25)',
     },
     datePill: {
         position: 'absolute',
@@ -122,8 +122,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         minWidth: 50,
         borderWidth: 1.5,
-        borderColor: '#182958',
-        // Simple shadow for pill
+        borderColor: isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(24, 41, 88, 0.1)',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
@@ -156,7 +155,7 @@ const styles = StyleSheet.create({
     },
     glassBg: {
         ...StyleSheet.absoluteFillObject,
-        backgroundColor: 'rgba(16, 29, 66, 0.85)',
+        backgroundColor: isDarkMode ? 'rgba(15, 23, 42, 0.95)' : 'rgba(16, 29, 66, 0.85)',
     },
     infoInner: {
         flex: 1,

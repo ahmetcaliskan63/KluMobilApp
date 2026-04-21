@@ -1,4 +1,4 @@
-﻿import { MockUniversityProvider } from '@/features/university/data';
+import { MockUniversityProvider } from '@/features/university/data';
 
 describe('MockUniversityProvider', () => {
     let provider: MockUniversityProvider;

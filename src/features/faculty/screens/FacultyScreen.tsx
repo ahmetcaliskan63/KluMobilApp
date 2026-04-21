@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
     View,
     Text,
@@ -9,64 +9,81 @@ import {
     Animated,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import LinearGradient from 'react-native-linear-gradient';
+import { Ionicons as Icon } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Theme, spacing } from '@/app/theme/theme';
+import { Theme, spacing } from '@/core/theme/theme';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { moderateScale } from '@/shared/utils/responsive';
-import { useFetch } from '@/shared/hooks/useFetch';
-import { FacultyMember, FacultyProfile } from '@/shared/types/models';
+import { MOCK_SCHEDULE } from '@/shared/services/mockData';
+
+
+// 🎩 Mock Data for Featured Faculty
+const ACADEMIC_PROFILES = {
+    ADVISOR: {
+        id: 'adv_1',
+        name: 'Prof. Dr. Ayşe Yılmaz',
+        title: 'Akademik Danışman',
+        role: 'Bölüm Başkanı',
+        department: 'Yazılım Mühendisliği',
+        email: 'ayse.yilmaz@klu.edu.tr',
+        office: 'A Blok, Kat 3, No: 312',
+        avatar: 'AY',
+        color: ['#1E293B', '#0F172A'], // Premium Navy/Slate
+        accent: '#F59E0B', // Gold
+    },
+    DEPT_HEAD: {
+        id: 'dept_1',
+        name: 'Prof. Dr. Ahmet Demir',
+        title: 'Bölüm Başkanı',
+        role: 'Yazılım Mühendisliği Bölüm Başkanı',
+        department: 'Yazılım Mühendisliği',
+        email: 'ahmet.demir@klu.edu.tr',
+        office: 'B Blok, Kat 2, No: 205',
+        avatar: 'AD',
+        color: ['#334155', '#1E293B'], // Slate
+        accent: '#94A3B8', // Silver
+    }
+};
+
+// 👩‍🏫 Mock database for detailed faculty info (to bridge names from schedule)
+const FACULTY_DIRECTORY = [
+    { id: 'f1', name: 'Doç. Dr. M. Kaya', email: 'm.kaya@klu.edu.tr', office: 'C-201', dept: 'Yazılım Mühendisliği', avatar: 'MK', color: '#3B82F6' },
+    { id: 'f2', name: 'Dr. Öğr. Üyesi A. Demir', email: 'a.demir@klu.edu.tr', office: 'Lab-2', dept: 'Yazılım Mühendisliği', avatar: 'AD', color: '#8B5CF6' },
+    { id: 'f3', name: 'Dr. Öğr. Üyesi S. Demir', email: 's.demir@klu.edu.tr', office: 'Lab-1', dept: 'Yazılım Mühendisliği', avatar: 'SD', color: '#10B981' },
+    { id: 'f4', name: 'Prof. Dr. L. Aksoy', email: 'l.aksoy@klu.edu.tr', office: 'HB-202', dept: 'Matematik Bölümü', avatar: 'LA', color: '#F59E0B' },
+    { id: 'f5', name: 'Okutman M. Yılmaz', email: 'm.yilmaz@klu.edu.tr', office: 'HB-305', dept: 'Yabancı Diller', avatar: 'MY', color: '#6366F1' },
+    { id: 'f6', name: 'Prof. Dr. A. Yılmaz', email: 'a.yilmaz@klu.edu.tr', office: 'HB-202', dept: 'Matematik Bölümü', avatar: 'AY', color: '#4A90E2' },
+    { id: 'f7', name: 'Dr. Öğr. Üyesi C. Can', email: 'c.can@klu.edu.tr', office: 'Lab-1', dept: 'Yazılım Mühendisliği', avatar: 'CC', color: '#F43F5E' },
+    { id: 'f8', name: 'Öğr. Gör. H. Arslan', email: 'h.arslan@klu.edu.tr', office: 'HB-301', dept: 'Türk Dili', avatar: 'HA', color: '#D0021B' },
+    { id: 'f9', name: 'Doç. Dr. V. Şahin', email: 'v.sahin@klu.edu.tr', office: 'HB-204', dept: 'Yazılım Mühendisliği', avatar: 'VŞ', color: '#8B5CF6' },
+];
 
 export const FacultyScreen: React.FC = () => {
     const navigation = useNavigation();
     const { theme } = useAppTheme();
     const insets = useSafeAreaInsets();
-    const { data: profiles, loading: profilesLoading, error: profilesError } = useFetch<Record<string, FacultyProfile>>('/faculty/profiles');
-    const { data: members, loading: membersLoading, error: membersError } = useFetch<FacultyMember[]>('/faculty/members');
     const s = styles(theme);
 
-    // Animations - Moved to top level to satisfy Rules of Hooks
+    // Animations
     const fadeAnim = useState(new Animated.Value(0))[0];
     const slideAnim = useState(new Animated.Value(20))[0];
-
     useEffect(() => {
-        if (!profilesLoading && !membersLoading && !profilesError && !membersError) {
-            Animated.parallel([
-                Animated.timing(fadeAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
-                Animated.timing(slideAnim, { toValue: 0, duration: 600, useNativeDriver: true }),
-            ]).start();
-        }
-    }, [profilesLoading, membersLoading, profilesError, membersError]);
+        Animated.parallel([
+            Animated.timing(fadeAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
+            Animated.timing(slideAnim, { toValue: 0, duration: 600, useNativeDriver: true }),
+        ]).start();
+    }, []);
 
-    if (profilesLoading || membersLoading) {
-        return (
-            <View style={[s.container, { justifyContent: 'center', alignItems: 'center' }]}>
-                <Text style={{ color: theme.colors.text }}>Hocalarımız yükleniyor...</Text>
-            </View>
-        );
-    }
-
-    if (profilesError || membersError) {
-        return (
-            <View style={[s.container, { justifyContent: 'center', alignItems: 'center' }]}>
-                <Text style={{ color: theme.colors.error }}>Hata: {profilesError || membersError}</Text>
-            </View>
-        );
-    }
-
-    const academicProfiles = profiles || {};
-    const facultyList = members || [];
+    // 🧠 Extract "Term Instructors" from Schedule
+    const termInstructors = useMemo(() => {
+        const names = [...new Set(MOCK_SCHEDULE.map(course => course.instructor))];
+        return FACULTY_DIRECTORY.filter(f => names.includes(f.name));
+    }, []);
 
     const handleEmailPress = async (email: string) => {
         const url = `mailto:${email}`;
-        try {
-            if (await Linking.canOpenURL(url)) {
-                await Linking.openURL(url);
-            }
-        } catch (error) {
-            console.error('Could not open email', error);
-        }
+        if (await Linking.canOpenURL(url)) await Linking.openURL(url);
     };
 
     const renderFacultyCard = (item: any, isPremium = false) => (
@@ -128,9 +145,10 @@ export const FacultyScreen: React.FC = () => {
 
     return (
         <View style={s.container}>
-            <StatusBar barStyle="light-content" backgroundColor="#182958" />
+            <StatusBar barStyle="light-content" backgroundColor="#0f172a" />
 
-            <LinearGradient colors={['#182958', '#2A3F7A']} style={[s.header, { paddingTop: insets.top + spacing.sm }]}>
+            {/* 👑 Senior Designer Header */}
+            <LinearGradient colors={['#0f172a', '#1e293b']} style={[s.header, { paddingTop: insets.top + spacing.sm }]}>
                 <View style={s.headerRow}>
                     <TouchableOpacity style={s.backBtn} onPress={() => navigation.goBack()}>
                         <Icon name="chevron-back" size={24} color="#FFF" />
@@ -146,11 +164,13 @@ export const FacultyScreen: React.FC = () => {
                 showsVerticalScrollIndicator={false}
             >
                 <Text style={[s.sectionHeader, { marginTop: 0 }]}>Akademik Danışman</Text>
-                {academicProfiles.ADVISOR && renderFeaturedCard(academicProfiles.ADVISOR, 'DANIŞMANIM')}
+                {renderFeaturedCard(ACADEMIC_PROFILES.ADVISOR, 'DANIŞMANIM')}
 
+                {/* 2. Bölüm Başkanı */}
                 <Text style={[s.sectionHeader, { marginTop: spacing.md }]}>Bölüm Yönetimi</Text>
-                {academicProfiles.DEPT_HEAD && renderFeaturedCard(academicProfiles.DEPT_HEAD, 'BÖLÜM BAŞKANI')}
+                {renderFeaturedCard(ACADEMIC_PROFILES.DEPT_HEAD, 'BÖLÜM BAŞKANI')}
 
+                {/* 3. Dönem Hocalarım */}
                 <View style={[s.sectionTitleRow, { marginTop: spacing.md }]}>
                     <Text style={s.sectionHeader}>Dönem Hocalarım</Text>
                     <View style={s.termBadge}>
@@ -158,7 +178,7 @@ export const FacultyScreen: React.FC = () => {
                     </View>
                 </View>
                 <View style={s.termList}>
-                    {facultyList.map(item => renderFacultyCard(item, true))}
+                    {termInstructors.map(item => renderFacultyCard(item, true))}
                 </View>
             </Animated.ScrollView>
         </View>
@@ -196,6 +216,26 @@ const styles = (theme: Theme) => StyleSheet.create({
         fontWeight: '900',
         color: '#FFFFFF',
         letterSpacing: -0.5,
+    },
+    searchContainer: {
+        paddingHorizontal: spacing.lg,
+    },
+    searchBar: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'rgba(255,255,255,0.08)',
+        borderRadius: 20,
+        paddingHorizontal: spacing.md,
+        height: 48,
+        borderWidth: 1,
+        borderColor: 'rgba(255,255,255,0.1)',
+    },
+    searchInput: {
+        flex: 1,
+        marginLeft: spacing.sm,
+        color: '#FFFFFF',
+        fontSize: moderateScale(14),
+        fontWeight: '500',
     },
     scrollContent: {
         padding: spacing.md,
@@ -327,7 +367,7 @@ const styles = (theme: Theme) => StyleSheet.create({
         marginBottom: spacing.md,
         padding: spacing.md,
         borderWidth: 1.5,
-        borderColor: '#CBD5E1',
+        borderColor: '#CBD5E1', // Darker grey border
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.02,
@@ -375,8 +415,20 @@ const styles = (theme: Theme) => StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    facultyGrid: {
+        gap: 0,
+    },
     termList: {
         marginBottom: spacing.md,
     },
+    emptyState: {
+        alignItems: 'center',
+        paddingVertical: spacing.xxl,
+        opacity: 0.5,
+    },
+    emptyText: {
+        fontSize: moderateScale(14),
+        fontWeight: '600',
+        marginTop: spacing.md,
+    },
 });
-

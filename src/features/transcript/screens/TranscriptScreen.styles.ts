@@ -1,5 +1,5 @@
-﻿import { StyleSheet } from 'react-native';
-import { Theme } from '@/app/theme/theme';
+import { StyleSheet } from 'react-native';
+import { Theme } from '@/core/theme/theme';
 import { moderateScale, verticalScale } from '@/shared/utils/responsive';
 
 export const styles = (_theme: Theme) => StyleSheet.create({
@@ -263,4 +263,3 @@ export const styles = (_theme: Theme) => StyleSheet.create({
         color: '#182958',
     },
 });
-

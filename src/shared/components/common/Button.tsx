@@ -1,4 +1,6 @@
-﻿
+/**
+ * Custom Button Component
+ */
 
 import React from 'react';
 import {
@@ -10,7 +12,7 @@ import {
     TextStyle,
     StyleProp,
 } from 'react-native';
-import { Theme } from '@/app/theme/theme';
+import { Theme } from '@/core/theme/theme';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { moderateScale, verticalScale } from '@/shared/utils/responsive';
 
@@ -23,6 +25,7 @@ interface ButtonProps {
     loading?: boolean;
     style?: ViewStyle;
     textStyle?: TextStyle;
+    themeOverride?: Theme;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -34,8 +37,10 @@ export const Button: React.FC<ButtonProps> = ({
     loading = false,
     style,
     textStyle,
+    themeOverride,
 }) => {
-    const { theme } = useAppTheme();
+    const { theme: globalTheme } = useAppTheme();
+    const theme = themeOverride || globalTheme;
     const s = styles(theme);
 
     const buttonStyle: StyleProp<ViewStyle> = [
@@ -78,6 +83,7 @@ const styles = (theme: Theme) => StyleSheet.create({
         flexDirection: 'row',
     } as ViewStyle,
 
+    // Variants
     primary: {
         backgroundColor: theme.colors.primary,
     } as ViewStyle,
@@ -90,6 +96,7 @@ const styles = (theme: Theme) => StyleSheet.create({
         borderColor: theme.colors.primary,
     } as ViewStyle,
 
+    // Sizes
     small: {
         paddingVertical: theme.spacing.xs,
         paddingHorizontal: theme.spacing.sm,
@@ -106,6 +113,7 @@ const styles = (theme: Theme) => StyleSheet.create({
         minHeight: verticalScale(56),
     } as ViewStyle,
 
+    // Text styles
     text: {
         fontWeight: '600',
     } as TextStyle,
@@ -135,4 +143,3 @@ const styles = (theme: Theme) => StyleSheet.create({
         opacity: 0.5,
     } as ViewStyle,
 });
-

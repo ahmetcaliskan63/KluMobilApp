@@ -1,6 +1,7 @@
-﻿import { View, Text, StyleSheet, Image, Platform } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, Image, Platform } from 'react-native';
 import { moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 
 interface DigitalPassportCardProps {
     user: any;
@@ -9,7 +10,7 @@ interface DigitalPassportCardProps {
 export const DigitalPassportCard: React.FC<DigitalPassportCardProps> = ({ user }) => {
     return (
         <View style={styles.container}>
-            {/* 🏗️ Core Card Structure with Metallic Edge */}
+            {/* ??? Core Card Structure with Metallic Edge */}
             <View style={styles.cardFrame}>
                 {/* Metallic Border Gradient */}
                 <LinearGradient
@@ -21,25 +22,25 @@ export const DigitalPassportCard: React.FC<DigitalPassportCardProps> = ({ user }
 
                 {/* Internal Card Surface */}
                 <View style={styles.cardContentWrapper}>
-                    {/* 🎨 Deep Mesh Gradient Background */}
+                    {/* ?? Deep Mesh Gradient Background */}
                     <LinearGradient
                         colors={['#0F172A', '#1E293B', '#0F172A']}
                         style={StyleSheet.absoluteFill}
                     />
 
-                    {/* 🌫️ Fine Noise Texture Overlay */}
+                    {/* ??? Fine Noise Texture Overlay */}
                     <View style={[StyleSheet.absoluteFill, { opacity: 0.05, backgroundColor: '#000' }]} />
 
-                    {/* 🏛️ University Seal Watermark */}
+                    {/* ??? University Seal Watermark */}
                     <View style={styles.sealContainer}>
                         <Image
-                            source={require('../../assets/logo.png')}
+                            source={require('@/shared/assets/logo.png')}
                             style={styles.sealLogo}
                             resizeMode="contain"
                         />
                     </View>
 
-                    {/* ✨ Advanced Multi-Layer Hologram */}
+                    {/* ? Advanced Multi-Layer Hologram */}
                     <LinearGradient
                         colors={['transparent', 'rgba(120, 150, 255, 0.15)', 'rgba(255, 120, 255, 0.15)', 'transparent']}
                         start={{ x: 0, y: 0 }}
@@ -47,26 +48,26 @@ export const DigitalPassportCard: React.FC<DigitalPassportCardProps> = ({ user }
                         style={styles.hologramLayer}
                     />
 
-                    {/* 🎫 Card Content Layout */}
+                    {/* ?? Card Content Layout */}
                     <View style={styles.mainLayout}>
                         {/* Header Section */}
                         <View style={styles.header}>
                             <View style={styles.brandInfo}>
                                 <View style={styles.logoBox}>
                                     <Image
-                                        source={require('../../assets/logo.png')}
+                                        source={require('@/shared/assets/logo.png')}
                                         style={styles.cardLogo}
                                         resizeMode="contain"
                                     />
                                 </View>
                                 <View>
-                                    <Text style={styles.uniTitle}>KIRKLARELİ ÜNİVERSİTESİ</Text>
-                                    <Text style={styles.brandSubtitle}>ÖĞRENCİ PASAPORTU</Text>
+                                    <Text style={styles.uniTitle}>KIRKLAREL NVERSTES</Text>
+                                    <Text style={styles.brandSubtitle}>RENC PASAPORTU</Text>
                                 </View>
                             </View>
                             <View style={styles.activePulseContainer}>
                                 <View style={styles.activePulse} />
-                                <Text style={styles.activeLabel}>AKTİF</Text>
+                                <Text style={styles.activeLabel}>AKTF</Text>
                             </View>
                         </View>
 
@@ -75,14 +76,21 @@ export const DigitalPassportCard: React.FC<DigitalPassportCardProps> = ({ user }
                             <View style={styles.photoArea}>
                                 <View style={styles.photoRim}>
                                     <View style={styles.photoBox}>
-                                        <Text style={styles.initials}>
-                                            {user?.firstName?.charAt(0)}{user?.lastName?.charAt(0)}
-                                        </Text>
+                                        {user?.profileImage ? (
+                                            <Image 
+                                                source={{ uri: user.profileImage }} 
+                                                style={styles.avatarImage} 
+                                            />
+                                        ) : (
+                                            <Text style={styles.initials}>
+                                                {user?.firstName?.charAt(0)}{user?.lastName?.charAt(0)}
+                                            </Text>
+                                        )}
                                     </View>
                                 </View>
                                 {/* Validity moved under photo per user request */}
                                 <View style={styles.validityInfo}>
-                                    <Text style={styles.dateLabel}>GEÇERLİLİK TARİHİ</Text>
+                                    <Text style={styles.dateLabel}>GEERLLK TARH</Text>
                                     <Text style={styles.dateValue}>06 / 2026</Text>
                                 </View>
                             </View>
@@ -93,16 +101,16 @@ export const DigitalPassportCard: React.FC<DigitalPassportCardProps> = ({ user }
                                     <Text style={styles.fieldValue}>{user?.firstName} {user?.lastName}</Text>
                                 </View>
                                 <View style={styles.infoRow}>
-                                    <Text style={styles.fieldLabel}>BÖLÜM</Text>
+                                    <Text style={styles.fieldLabel}>BLM</Text>
                                     <Text style={styles.fieldValueSmall} numberOfLines={1}>{user?.department}</Text>
                                 </View>
                                 <View style={styles.gridInfo}>
                                     <View style={{ flex: 1 }}>
-                                        <Text style={styles.fieldLabel}>ÖĞRENCİ NO</Text>
+                                        <Text style={styles.fieldLabel}>RENC NO</Text>
                                         <Text style={styles.fieldValueSmall}>{user?.studentNumber?.split('@')[0]}</Text>
                                     </View>
                                     <View style={{ flex: 1 }}>
-                                        <Text style={styles.fieldLabel}>DÖNEM</Text>
+                                        <Text style={styles.fieldLabel}>DNEM</Text>
                                         <Text style={styles.fieldValueSmall}>2025 - Bahar</Text>
                                     </View>
                                 </View>
@@ -123,7 +131,7 @@ export const DigitalPassportCard: React.FC<DigitalPassportCardProps> = ({ user }
                 </View>
             </View>
 
-            {/* 🎭 Shadow Casting */}
+            {/* ?? Shadow Casting */}
             <View style={styles.bottomGlow} />
         </View>
     );
@@ -133,12 +141,12 @@ const styles = StyleSheet.create({
     container: {
         width: '100%',
         paddingHorizontal: scale(15),
-        marginTop: verticalScale(5), // Daraltıldı
+        marginTop: verticalScale(5), // Daraltld
         alignItems: 'center',
     },
     cardFrame: {
         width: '100%',
-        height: verticalScale(180), // İçerik geri eklendiği için optimize edildi
+        height: verticalScale(180), // erik geri eklendii iin optimize edildi
         borderRadius: moderateScale(22),
         padding: 1.5,
         overflow: 'hidden',
@@ -182,7 +190,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: verticalScale(5), // Alt boşluk eklendi
+        marginBottom: verticalScale(5), // Alt boluk eklendi
     },
     brandInfo: {
         flexDirection: 'row',
@@ -190,7 +198,7 @@ const styles = StyleSheet.create({
         gap: scale(12),
     },
     logoBox: {
-        width: scale(32), // Hafif küçültüldü
+        width: scale(32), // Hafif kltld
         height: scale(32),
         backgroundColor: '#FFFFFF',
         borderRadius: scale(16),
@@ -207,13 +215,13 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     uniTitle: {
-        fontSize: moderateScale(9), // Yazı küçültüldü
+        fontSize: moderateScale(9), // Yaz kltld
         fontWeight: '900',
         color: '#FFFFFF',
         letterSpacing: 1.2,
     },
     brandSubtitle: {
-        fontSize: moderateScale(8), // Yazı küçültüldü
+        fontSize: moderateScale(8), // Yaz kltld
         fontWeight: '500',
         color: 'rgba(255,255,255,0.4)',
         marginTop: 1,
@@ -222,7 +230,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: scale(16),
-        marginTop: verticalScale(6), // Boşluk azaltıldı
+        marginTop: verticalScale(6), // Boluk azaltld
     },
     photoArea: {
         alignItems: 'center',
@@ -236,13 +244,18 @@ const styles = StyleSheet.create({
         borderColor: 'rgba(255,255,255,0.3)',
     },
     photoBox: {
-        width: scale(74), // Hafif küçültüldü
+        width: scale(74), // Hafif kltld
         height: scale(74),
         borderRadius: moderateScale(18),
         backgroundColor: '#0F172A',
         justifyContent: 'center',
         alignItems: 'center',
         overflow: 'hidden',
+    },
+    avatarImage: {
+        width: '100%',
+        height: '100%',
+        borderRadius: moderateScale(18),
     },
     initials: {
         fontSize: moderateScale(32),

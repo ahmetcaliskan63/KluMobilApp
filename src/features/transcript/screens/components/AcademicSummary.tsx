@@ -1,7 +1,7 @@
-﻿import React from 'react';
+import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons as Icon } from '@expo/vector-icons';
 import { styles } from '../TranscriptScreen.styles';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { AcademicSummary as AcademicSummaryType } from '../types';
@@ -25,8 +25,8 @@ export const AcademicSummary: React.FC<Props> = ({ data }) => {
                     <View style={s.semesterTitleWrapper}>
                         <View style={[s.semesterBlueIndicator, { backgroundColor: '#182958' }]} />
                         <View>
-                            <Text style={s.semesterTitleText}>GENEL AKADEMİK BİLGİLER</Text>
-                            <Text style={s.semesterSubtitleText}>Öğrenim Durumu Özeti</Text>
+                            <Text style={s.semesterTitleText}>GENEL AKADEMK BLGLER</Text>
+                            <Text style={s.semesterSubtitleText}>renim Durumu zeti</Text>
                         </View>
                     </View>
                     <Icon name="stats-chart" size={20} color="#182958" />
@@ -49,7 +49,7 @@ export const AcademicSummary: React.FC<Props> = ({ data }) => {
                     <View style={s.summaryDivider} />
 
                     <View style={s.summaryItem}>
-                        <Text style={s.summaryLabel}>AKTİF YARIYIL</Text>
+                        <Text style={s.summaryLabel}>AKTF YARIYIL</Text>
                         <Text style={s.summaryValue}>{data.activeSemester}</Text>
                     </View>
                 </View>
@@ -58,7 +58,7 @@ export const AcademicSummary: React.FC<Props> = ({ data }) => {
                 <View style={s.semesterFooter}>
                     <View style={s.footerLeft}>
                         <Icon name="shield-checkmark-outline" size={14} color="#94A3B8" />
-                        <Text style={s.footerInfoText}>Resmi Veri Onaylı</Text>
+                        <Text style={s.footerInfoText}>Resmi Veri Onayl</Text>
                     </View>
                 </View>
             </View>

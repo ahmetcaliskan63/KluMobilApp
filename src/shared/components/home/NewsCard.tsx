@@ -1,17 +1,19 @@
-﻿import React, { memo } from 'react';
+import React, { memo } from 'react';
 import { View, Text, Image, Pressable, Animated, StyleSheet } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Ionicons as Icon } from '@expo/vector-icons';
 import { News } from '@/shared/types/models';
-import { Theme } from '@/app/theme/theme';
 import { moderateScale } from '@/shared/utils/responsive';
+import { useAppTheme } from '@/shared/hooks/useAppTheme';
+import { Theme } from '@/core/theme/theme';
 
 interface NewsCardProps {
     item: News;
-    theme: Theme;
     onPress: () => void;
 }
 
-const NewsCardComponent: React.FC<NewsCardProps> = ({ item, theme, onPress }) => {
+const NewsCardComponent: React.FC<NewsCardProps> = ({ item, onPress }) => {
+    const { theme, isDarkMode } = useAppTheme();
+    const s = styles(theme, isDarkMode);
     const scale = React.useRef(new Animated.Value(1)).current;
 
     const handlePressIn = () => {
@@ -33,26 +35,26 @@ const NewsCardComponent: React.FC<NewsCardProps> = ({ item, theme, onPress }) =>
     };
 
     return (
-        <Animated.View style={[styles.container, { transform: [{ scale }] }]}>
+        <Animated.View style={[s.container, { transform: [{ scale }] }]}>
             <Pressable
                 onPressIn={handlePressIn}
                 onPressOut={handlePressOut}
                 onPress={onPress}
-                style={styles.card}
+                style={s.card}
             >
-                <Image source={{ uri: item.image }} style={styles.image} resizeMode="cover" />
-                <View style={styles.overlay}>
-                    <View style={styles.contentBottom}>
-                        <Text style={styles.title} numberOfLines={2}>{item.title}</Text>
-                        <View style={styles.metaRow}>
-                            <View style={styles.metaItem}>
+                <Image source={{ uri: item.image }} style={s.image} resizeMode="cover" />
+                <View style={s.overlay}>
+                    <View style={s.contentBottom}>
+                        <Text style={s.title} numberOfLines={2}>{item.title}</Text>
+                        <View style={s.metaRow}>
+                            <View style={s.metaItem}>
                                 <Icon name="eye-outline" size={14} color="rgba(255,255,255,0.8)" />
-                                <Text style={styles.metaText}>{item.views}</Text>
+                                <Text style={s.metaText}>{item.views}</Text>
                             </View>
-                            <View style={styles.divider} />
-                            <View style={styles.metaItem}>
+                            <View style={s.divider} />
+                            <View style={s.metaItem}>
                                 <Icon name="calendar-outline" size={14} color="rgba(255,255,255,0.8)" />
-                                <Text style={styles.metaText}>{item.date}</Text>
+                                <Text style={s.metaText}>{item.date}</Text>
                             </View>
                         </View>
                     </View>
@@ -62,15 +64,14 @@ const NewsCardComponent: React.FC<NewsCardProps> = ({ item, theme, onPress }) =>
     );
 };
 
-const styles = StyleSheet.create({
+const styles = (_theme: Theme, isDarkMode: boolean) => StyleSheet.create({
     container: {
         marginBottom: 25,
         borderRadius: 32,
         backgroundColor: 'transparent',
-        // Shadow wrapper to prevent clipping
-        shadowColor: '#101D42',
+        shadowColor: isDarkMode ? '#000' : '#101D42',
         shadowOffset: { width: 0, height: 16 },
-        shadowOpacity: 0.28,
+        shadowOpacity: isDarkMode ? 0.4 : 0.28,
         shadowRadius: 22,
         elevation: 12,
     },
@@ -79,18 +80,18 @@ const styles = StyleSheet.create({
         borderRadius: 32,
         backgroundColor: '#000',
         overflow: 'hidden',
-        borderWidth: 2,
-        borderColor: 'rgba(24, 41, 88, 0.35)',
+        borderWidth: isDarkMode ? 1 : 2,
+        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.12)' : 'rgba(24, 41, 88, 0.35)',
     },
     image: {
         width: '100%',
         height: '100%',
         position: 'absolute',
-        opacity: 0.95,
+        opacity: isDarkMode ? 0.8 : 0.95,
     },
     overlay: {
         flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.25)',
+        backgroundColor: isDarkMode ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0.25)',
         justifyContent: 'flex-end',
         padding: 24,
     },

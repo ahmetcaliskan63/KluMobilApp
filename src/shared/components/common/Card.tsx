@@ -1,10 +1,10 @@
-﻿/**
+/**
  * Card Component
  */
 
 import React from 'react';
 import { View, StyleSheet, ViewStyle, StyleProp } from 'react-native';
-import { Theme } from '@/app/theme/theme';
+import { Theme } from '@/core/theme/theme';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { moderateScale } from '@/shared/utils/responsive';
 

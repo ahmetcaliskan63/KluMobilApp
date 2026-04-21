@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Common Components Barrel Export
  */
 

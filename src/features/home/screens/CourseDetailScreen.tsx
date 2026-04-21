@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import {
     View,
     Text,
@@ -7,15 +7,14 @@ import {
     TouchableOpacity,
     StatusBar,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Ionicons as Icon } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { HomeStackParamList } from '@/shared/types/navigation';
-import { Course } from '@/shared/types/models';
+import { theme as defaultTheme, Theme } from '@/core/theme/theme';
+import { MOCK_SCHEDULE } from '@/shared/services/mockData';
 import { Card } from '@/shared/components/common';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
-import { useFetch } from '@/shared/hooks/useFetch';
-import { Theme } from '@/app/theme/theme';
 
 type CourseDetailRouteProp = RouteProp<HomeStackParamList, 'CourseDetail'>;
 
@@ -27,22 +26,14 @@ export const CourseDetailScreen: React.FC = () => {
     const s = styles(theme);
     const { courseId } = route.params;
 
-    const { data: course, loading, error } = useFetch<Course>(`/courses/${courseId}`);
+    const course = MOCK_SCHEDULE.find(c => c.id === courseId);
 
-    if (loading && !course) {
-        return (
-            <View style={[s.errorContainer, { backgroundColor: theme.colors.background }]}>
-                <Text style={{ color: theme.colors.primary }}>Yükleniyor...</Text>
-            </View>
-        );
-    }
-
-    if (error || !course) {
+    if (!course) {
         return (
             <View style={s.errorContainer}>
                 <Text style={{ color: theme.colors.text }}>Ders bulunamadı.</Text>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginTop: 20 }}>
-                    <Text style={{ color: theme.colors.primary }}>Geri Dön</Text>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Text style={{ color: theme.colors.primary, marginTop: 10 }}>Geri Dön</Text>
                 </TouchableOpacity>
             </View>
         );
@@ -329,4 +320,3 @@ const styles = (theme: Theme) => StyleSheet.create({
         backgroundColor: theme.colors.background,
     }
 });
-

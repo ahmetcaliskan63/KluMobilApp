@@ -1,4 +1,4 @@
-﻿import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
     View,
     Text,
@@ -9,22 +9,22 @@ import {
     Linking,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import LinearGradient from 'react-native-linear-gradient';
+import { Ionicons as Icon } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { moderateScale, verticalScale } from '@/shared/utils/responsive';
 import { useFetch } from '@/shared/hooks/useFetch';
 import { UnitDetail } from '@/shared/types/models';
-import { theme as AppTheme } from '@/app/theme/theme';
+import { theme as AppTheme } from '@/core/theme/theme';
 
 const ROW_CONFIG: Record<string, { icon: string; label: string; color: string; bg: string }> = {
     phone: { icon: 'call', label: 'TELEFON HATTI', color: '#6366F1', bg: '#EEF2FF' },
     fax: { icon: 'print', label: 'FAKS NUMARASI', color: '#64748B', bg: '#F1F5F9' },
-    mail: { icon: 'mail', label: 'E-POSTA ADRESİ', color: '#10B981', bg: '#ECFDF5' },
-    staff: { icon: 'people', label: 'AKADEMİK & İDARİ KADRO', color: '#8B5CF6', bg: '#F5F3FF' },
-    web: { icon: 'globe', label: 'RESMİ WEB SİTESİ', color: '#06B6D4', bg: '#ECFEFF' },
-    address: { icon: 'location', label: 'YERLEŞKE BİLGİSİ', color: '#F43F5E', bg: '#FFF1F2' },
+    mail: { icon: 'mail', label: 'E-POSTA ADRES', color: '#10B981', bg: '#ECFDF5' },
+    staff: { icon: 'people', label: 'AKADEMK & DAR KADRO', color: '#8B5CF6', bg: '#F5F3FF' },
+    web: { icon: 'globe', label: 'RESM WEB STES', color: '#06B6D4', bg: '#ECFEFF' },
+    address: { icon: 'location', label: 'YERLEKE BLGS', color: '#F43F5E', bg: '#FFF1F2' },
 };
 
 export const UnitDetailScreen: React.FC = () => {
@@ -56,7 +56,7 @@ export const UnitDetailScreen: React.FC = () => {
     if (loading) {
         return (
             <View style={[s.container, { justifyContent: 'center', alignItems: 'center' }]}>
-                <Text style={{ color: '#182958', fontSize: 16, fontWeight: '700' }}>Bilgiler Hazırlanıyor...</Text>
+                <Text style={{ color: '#182958', fontSize: 16, fontWeight: '700' }}>Bilgiler Hazrlanyor...</Text>
             </View>
         );
     }
@@ -143,7 +143,7 @@ export const UnitDetailScreen: React.FC = () => {
                         style={s.mapBtnStyle}
                     >
                         <Icon name="map" size={22} color="#FFF" />
-                        <Text style={s.mapBtnTextStyle}>Haritada Konumu Görüntüle</Text>
+                        <Text style={s.mapBtnTextStyle}>Haritada Konumu Grntle</Text>
                         <Icon name="chevron-forward" size={18} color="rgba(255,255,255,0.5)" />
                     </LinearGradient>
                 </TouchableOpacity>

@@ -1,6 +1,6 @@
-﻿import React from 'react';
+import React from 'react';
 import { View, Text } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Ionicons as Icon } from '@expo/vector-icons';
 import { styles } from './AcademicCalendarScreen.styles';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { AcademicEvent } from './types';
@@ -40,7 +40,7 @@ export const AcademicEventCard: React.FC<Props> = ({ event, isCurrent }) => {
 
             <View style={s.dateRow}>
                 <Icon name="calendar-outline" size={16} color="#64748B" />
-                <Text style={s.dateLabel}>TARİH:</Text>
+                <Text style={s.dateLabel}>TARH:</Text>
                 <Text style={s.dateValue}>
                     {event.startDate}
                     {event.endDate ? ` - ${event.endDate}` : ''}

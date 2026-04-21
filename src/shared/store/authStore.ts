@@ -1,4 +1,4 @@
-﻿import { create } from 'zustand';
+import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { User, LoginCredentials } from '@/shared/types/models';
@@ -52,7 +52,7 @@ export const useAuthStore = create<AuthState>()(
                 } catch (error: any) {
                     set({
                         isLoading: false,
-                        error: error.message || 'Giriş yapılamadı. Lütfen bilgilerinizi kontrol edin.'
+                        error: error.message || 'Giri yaplamad. Ltfen bilgilerinizi kontrol edin.'
                     });
                 }
             },

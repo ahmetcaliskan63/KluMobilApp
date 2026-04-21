@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { styles } from '@/features/academic/screens/AcademicCalendarScreen.styles';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
