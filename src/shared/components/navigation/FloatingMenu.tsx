@@ -12,13 +12,10 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Ionicons as Icon } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 
-const MENU_ITEMS = [
-    { id: 'calendar', icon: 'calendar', label: 'Akademik Takvim', screen: 'AcademicCalendar', type: 'Root', color: '#2196F3' },
-    { id: 'email', icon: 'mail', label: 'E-Posta ifre lemleri', screen: 'EmailSettings', type: 'Root', color: '#E91E63' },
-    { id: 'wifi', icon: 'wifi', label: 'Wifi lemleri', screen: 'WifiSettings', type: 'Root', color: '#4CAF50' },
-];
+
 
 interface MenuItemComponentProps {
     item: typeof MENU_ITEMS[0];
@@ -64,9 +61,16 @@ const MenuItemComponent: React.FC<MenuItemComponentProps> = ({ item, index, anim
 };
 
 export const FloatingMenu: React.FC = () => {
+    const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const animation = useSharedValue(0);
     const navigation = useNavigation<any>();
+
+    const MENU_ITEMS = [
+        { id: 'calendar', icon: 'calendar', label: t('profile.quickActions.academicCalendar'), screen: 'AcademicCalendar', type: 'Root', color: '#2196F3' },
+        { id: 'email', icon: 'mail', label: t('profile.quickActions.email'), screen: 'EmailSettings', type: 'Root', color: '#E91E63' },
+        { id: 'wifi', icon: 'wifi', label: t('profile.quickActions.wifi'), screen: 'WifiSettings', type: 'Root', color: '#4CAF50' },
+    ];
 
     const toggleMenu = () => {
         const toValue = isOpen ? 0 : 1;
