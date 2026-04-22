@@ -1,42 +1,41 @@
-import React, { useRef, useEffect, ComponentProps } from 'react';
-import {
-    View,
-    Text,
-    StyleSheet,
-    TouchableOpacity,
-    StatusBar,
-    Animated,
-    Linking,
-    ActivityIndicator,
-} from 'react-native';
+import React, { useRef, useEffect, useMemo } from 'react';
+import { View, Text, TouchableOpacity, StatusBar, Animated, Linking, ActivityIndicator } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Ionicons as Icon } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
-import { moderateScale, verticalScale } from '@/shared/utils/responsive';
-import { useFetch } from '@/shared/hooks/useFetch';
-import { UnitDetail } from '@/shared/types/models';
+import { moderateScale } from '@/shared/utils/responsive';
+import { MOCK_UNIT_DETAIL } from '@/shared/services/mockData';
+import { useTranslation } from 'react-i18next';
+import { styles } from './UnitDetailScreen.styles';
 
-const ROW_CONFIG: Record<string, { icon: ComponentProps<typeof Icon>['name']; label: string; color: string; bg: string }> = {
-    phone: { icon: 'call', label: 'TELEFON HATTI', color: '#6366F1', bg: '#EEF2FF' },
-    fax: { icon: 'print', label: 'FAKS NUMARASI', color: '#64748B', bg: '#F1F5F9' },
-    mail: { icon: 'mail', label: 'E-POSTA ADRESİ', color: '#10B981', bg: '#ECFDF5' },
-    staff: { icon: 'people', label: 'AKADEMİK & İDARİ KADRO', color: '#8B5CF6', bg: '#F5F3FF' },
-    web: { icon: 'globe', label: 'RESMİ WEB SİTESİ', color: '#06B6D4', bg: '#ECFEFF' },
-    address: { icon: 'location', label: 'YERLEŞKE BİLGİSİ', color: '#F43F5E', bg: '#FFF1F2' },
-};
+// Modular Components
+import { UnitInfoRow } from '../components/UnitInfoRow';
+import { UnitMapButton } from '../components/UnitMapButton';
 
 export const UnitDetailScreen: React.FC = () => {
     const navigation = useNavigation<any>();
     const route = useRoute<any>();
     const { unitId } = route.params;
     const { theme, isDarkMode } = useAppTheme();
+    const { t } = useTranslation();
     const insets = useSafeAreaInsets();
-
-    const { data: unit, loading } = useFetch<UnitDetail>(`/faculty/units/${unitId}`);
-
     const s = styles(theme, isDarkMode);
+
+    // Using MOCK_UNIT_DETAIL for realistic integration
+    const unit = useMemo(() => MOCK_UNIT_DETAIL(t, unitId), [t, unitId]);
+    const loading = false; // Mock data is instant
+
+    const ROW_CONFIG = useMemo(() => ({
+        phone: { icon: 'call' as const, label: t('profile.phone').toUpperCase(), color: '#6366F1', bg: '#EEF2FF' },
+        fax: { icon: 'print' as const, label: t('university.units.fax').toUpperCase(), color: '#64748B', bg: '#F1F5F9' },
+        mail: { icon: 'mail' as const, label: t('profile.email').toUpperCase(), color: '#10B981', bg: '#ECFDF5' },
+        staff: { icon: 'people' as const, label: t('faculty.title').toUpperCase(), color: '#8B5CF6', bg: '#F5F3FF' },
+        web: { icon: 'globe' as const, label: t('university.units.website').toUpperCase(), color: '#06B6D4', bg: '#ECFEFF' },
+        address: { icon: 'location' as const, label: t('profile.address').toUpperCase(), color: '#F43F5E', bg: '#FFF1F2' },
+    }), [t]);
+
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const slideAnim = useRef(new Animated.Value(40)).current;
 
@@ -47,53 +46,27 @@ export const UnitDetailScreen: React.FC = () => {
                 Animated.timing(slideAnim, { toValue: 0, duration: 600, useNativeDriver: true })
             ]).start();
         }
-    }, [loading, unit]);
+    }, [loading, unit, fadeAnim, slideAnim]);
 
     const handleLink = async (url: string) => {
-        if (await Linking.canOpenURL(url)) await Linking.openURL(url);
+        try {
+            const canOpen = await Linking.canOpenURL(url);
+            if (canOpen) await Linking.openURL(url);
+        } catch (error) {
+            console.error('Linking error:', error);
+        }
     };
 
     if (loading) {
         return (
-            <View style={[s.container, { justifyContent: 'center', alignItems: 'center', gap: 15 }]}>
-                <Animated.View style={{ opacity: fadeAnim }}>
-                    <ActivityIndicator size="large" color={theme.colors.primary} />
-                </Animated.View>
-                <Text style={{
-                    color: isDarkMode ? theme.colors.textSecondary : '#1E293B',
-                    fontSize: moderateScale(15),
-                    fontWeight: '600',
-                    letterSpacing: 0.5
-                }}>
-                    Bilgiler Hazırlanıyor...
-                </Text>
+            <View style={s.loaderContainer}>
+                <ActivityIndicator size="large" color={theme.colors.primary} />
+                <Text style={s.loaderText}>{t('common.loading')}...</Text>
             </View>
         );
     }
 
     if (!unit) return null;
-
-    const renderActionRow = (type: keyof typeof ROW_CONFIG, value: string, isLink = false, onPress?: () => void) => {
-        const config = ROW_CONFIG[type];
-        return (
-            <TouchableOpacity
-                style={s.infoRow}
-                onPress={onPress}
-                activeOpacity={onPress ? 0.7 : 1}
-            >
-                <View style={[s.rowIconContainer, { backgroundColor: isDarkMode ? config.color + '20' : config.bg }]}>
-                    <Icon name={config.icon} size={20} color={config.color} />
-                </View>
-                <View style={s.rowTextContent}>
-                    <Text style={s.rowLabelText}>{config.label}</Text>
-                    <Text style={[s.rowValueText, isLink && s.linkTextDecoration]} numberOfLines={2}>
-                        {value}
-                    </Text>
-                </View>
-                {onPress && <Icon name="chevron-forward" size={18} color={isDarkMode ? 'rgba(255, 255, 255, 0.2)' : '#CBD5E1'} />}
-            </TouchableOpacity>
-        );
-    };
 
     return (
         <View style={s.container}>
@@ -110,7 +83,7 @@ export const UnitDetailScreen: React.FC = () => {
                         <TouchableOpacity style={s.backCircle} onPress={() => navigation.goBack()}>
                             <Icon name="arrow-back" size={24} color="#FFF" />
                         </TouchableOpacity>
-                        <Text style={s.headerMainTitle}>{unit.type}</Text>
+                        <Text style={s.headerMainTitle}>{unit?.type || ''}</Text>
                         <View style={{ width: 44 }} />
                     </View>
                 </LinearGradient>
@@ -132,186 +105,68 @@ export const UnitDetailScreen: React.FC = () => {
                     </View>
 
                     <View style={s.identityInfo}>
-                        <Text style={s.unitFullName}>{unit.name}</Text>
+                        <Text style={s.unitFullName}>{unit?.name || ''}</Text>
                     </View>
                 </View>
 
                 <View style={s.dataBox}>
-                    {renderActionRow('phone', unit.phones.join(' / '), false, () => handleLink(`tel:${unit.phones[0]}`))}
-                    {unit.fax && renderActionRow('fax', unit.fax)}
-                    {renderActionRow('staff', 'Personel ve Akademik Kadro', false, () => navigation.navigate('Faculty'))}
-                    {renderActionRow('mail', unit.email, true, () => handleLink(`mailto:${unit.email}`))}
-                    {renderActionRow('web', unit.website, true, () => handleLink(unit.website))}
-                    {renderActionRow('address', unit.address)}
+                    <UnitInfoRow
+                        config={ROW_CONFIG.phone}
+                        value={unit?.phones?.join(' / ') || ''}
+                        onPress={() => unit?.phones?.[0] && handleLink(`tel:${unit.phones[0]}`)}
+                        theme={theme}
+                        isDarkMode={isDarkMode}
+                    />
+                    {unit?.fax && (
+                        <UnitInfoRow
+                            config={ROW_CONFIG.fax}
+                            value={unit.fax}
+                            theme={theme}
+                            isDarkMode={isDarkMode}
+                        />
+                    )}
+                    <UnitInfoRow
+                        config={ROW_CONFIG.staff}
+                        value={t('faculty.myInstructors')}
+                        onPress={() => navigation.navigate('Faculty')}
+                        theme={theme}
+                        isDarkMode={isDarkMode}
+                    />
+                    <UnitInfoRow
+                        config={ROW_CONFIG.mail}
+                        value={unit?.email || ''}
+                        isLink
+                        onPress={() => unit?.email && handleLink(`mailto:${unit.email}`)}
+                        theme={theme}
+                        isDarkMode={isDarkMode}
+                    />
+                    <UnitInfoRow
+                        config={ROW_CONFIG.web}
+                        value={unit?.website || ''}
+                        isLink
+                        onPress={() => unit?.website && handleLink(unit.website)}
+                        theme={theme}
+                        isDarkMode={isDarkMode}
+                    />
+                    <UnitInfoRow
+                        config={ROW_CONFIG.address}
+                        value={unit?.address || ''}
+                        theme={theme}
+                        isDarkMode={isDarkMode}
+                    />
                 </View>
 
-                <TouchableOpacity
-                    style={[s.mapBtnShadow, { shadowColor: isDarkMode ? theme.colors.primary : '#182958' }]}
-                    onPress={() => handleLink(`https://www.google.com/maps/search/?api=1&query=${unit.location.latitude},${unit.location.longitude}`)}
-                >
-                    <LinearGradient
-                        colors={isDarkMode ? [theme.colors.primary, '#4F46E5'] : ['#182958', '#3B82F6']}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
-                        style={s.mapBtnStyle}
-                    >
-                        <Icon name="map" size={22} color="#FFF" />
-                        <Text style={s.mapBtnTextStyle}>Haritada Konumu Görüntüle</Text>
-                        <Icon name="chevron-forward" size={18} color="rgba(255,255,255,0.5)" />
-                    </LinearGradient>
-                </TouchableOpacity>
+                {unit?.location && (
+                    <UnitMapButton
+                        onPress={() => handleLink(`https://www.google.com/maps/search/?api=1&query=${unit.location.latitude},${unit.location.longitude}`)}
+                        theme={theme}
+                        isDarkMode={isDarkMode}
+                    />
+                )}
             </Animated.ScrollView>
         </View>
     );
 };
 
-const styles = (theme: any, isDarkMode: boolean) => StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: theme.colors.background,
-    },
-    headerContainer: {
-        height: verticalScale(110),
-    },
-    headerGradient: {
-        flex: 1,
-        borderBottomLeftRadius: 36,
-        borderBottomRightRadius: 36,
-        paddingHorizontal: 20,
-    },
-    headerTopRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-    },
-    backCircle: {
-        width: 44,
-        height: 44,
-        borderRadius: 22,
-        backgroundColor: 'rgba(255,255,255,0.15)',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    headerMainTitle: {
-        fontSize: moderateScale(18),
-        fontWeight: '800',
-        color: '#FFFFFF',
-        letterSpacing: -0.5,
-    },
-    scrollContent: {
-        marginTop: verticalScale(15),
-        paddingHorizontal: 20,
-    },
-    identityCard: {
-        backgroundColor: theme.colors.card,
-        borderRadius: 24,
-        padding: 20,
-        alignItems: 'center',
-        elevation: 12,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: isDarkMode ? 0.3 : 0.15,
-        shadowRadius: 15,
-        marginBottom: 16,
-        borderWidth: 1.2,
-        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.08)' : '#E2E8F0',
-    },
-    unitIconHousing: {
-        width: moderateScale(70),
-        height: moderateScale(70),
-        borderRadius: 24,
-        padding: 3,
-        backgroundColor: theme.colors.card,
-        marginTop: verticalScale(-35),
-        elevation: 8,
-        borderWidth: 1.5,
-        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.15)' : '#E2E8F0',
-    },
-    iconInner: {
-        flex: 1,
-        borderRadius: 20,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    identityInfo: {
-        alignItems: 'center',
-        marginTop: 12,
-    },
-    unitFullName: {
-        fontSize: moderateScale(19),
-        fontWeight: '900',
-        color: theme.colors.text,
-        textAlign: 'center',
-        lineHeight: 26,
-    },
-    dataBox: {
-        backgroundColor: theme.colors.card,
-        borderRadius: 24,
-        padding: 10,
-        elevation: 6,
-        shadowColor: '#000',
-        shadowOpacity: isDarkMode ? 0.2 : 0.1,
-        shadowRadius: 12,
-        borderWidth: 1.2,
-        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.08)' : '#E2E8F0',
-    },
-    infoRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingVertical: 16,
-        paddingHorizontal: 12,
-        borderBottomWidth: 1,
-        borderBottomColor: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : '#F1F5F9',
-    },
-    rowIconContainer: {
-        width: 44,
-        height: 44,
-        borderRadius: 14,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: 16,
-    },
-    rowTextContent: {
-        flex: 1,
-        gap: 2,
-    },
-    rowLabelText: {
-        fontSize: moderateScale(9),
-        fontWeight: '800',
-        color: theme.colors.textSecondary,
-        letterSpacing: 1,
-    },
-    rowValueText: {
-        fontSize: moderateScale(14),
-        fontWeight: '700',
-        color: theme.colors.text,
-        lineHeight: 20,
-    },
-    linkTextDecoration: {
-        color: isDarkMode ? theme.colors.primary : '#182958',
-        textDecorationLine: 'underline',
-    },
-    mapBtnShadow: {
-        marginTop: 20,
-        borderRadius: 20,
-        overflow: 'hidden',
-        elevation: 8,
-        shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.3,
-        shadowRadius: 12,
-    },
-    mapBtnStyle: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingVertical: verticalScale(18),
-        paddingHorizontal: 24,
-    },
-    mapBtnTextStyle: {
-        flex: 1,
-        color: '#FFFFFF',
-        fontSize: moderateScale(15),
-        fontWeight: '800',
-        marginLeft: 12,
-    },
-});
+export default UnitDetailScreen;
 
