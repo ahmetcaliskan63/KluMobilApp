@@ -60,7 +60,7 @@ const AnnouncementCardComponent: React.FC<AnnouncementCardProps> = ({ item, onPr
 
                     <View style={s.bottomRow}>
                         <View style={s.metaItem}>
-                            <Icon name="eye-outline" size={14} color={isDarkMode ? '#94A3B8' : '#64748B'} />
+                            <Icon name="eye-outline" size={14} color={theme.colors.textSecondary} />
                             <Text style={s.viewsText}>{item.views} {t('dashboard.views')}</Text>
                         </View>
                         <Icon name="chevron-forward-circle" size={20} color={categoryColor} />
@@ -128,7 +128,7 @@ const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
     },
     dateText: {
         fontSize: 10,
-        color: isDarkMode ? '#94A3B8' : '#64748B',
+        color: theme.colors.textSecondary,
         fontWeight: '700',
     },
     title: {
@@ -154,7 +154,7 @@ const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
     },
     viewsText: {
         fontSize: 11,
-        color: isDarkMode ? '#94A3B8' : '#64748B',
+        color: theme.colors.textSecondary,
         fontWeight: '700',
     },
 });
