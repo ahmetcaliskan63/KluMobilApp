@@ -12,20 +12,19 @@
         "confirm": "Onayla",
         "back": "Geri",
         "seeAll": "Tümünü Gör",
+        "on": "Açık",
+        "off": "Kapalı",
         "day": "Gün",
-        "days": "Gün",
-        "terms": {
-            "fall": "Güz",
-            "spring": "Bahar",
-            "summer": "Yaz"
-        },
         "share": "Paylaş",
         "download": "İndir",
         "date": "Tarih",
         "noData": "Veri bulunamadı.",
+        "general": "Genel",
+        "academic": "Akademik",
+        "event": "Etkinlik",
+        "details": "Detaylar",
         "errorTitle": "Hata!",
         "errorMessage": "Beklenmedik bir hata oluştu. Uygulamayı yeniden başlatmayı deneyebilirsiniz.",
-        "retry": "Tekrar Dene",
         "today": "Bugün",
         "previous": "Önceki",
         "next": "Sonraki",
@@ -37,6 +36,11 @@
             "friday": "Cuma",
             "saturday": "Cumartesi",
             "sunday": "Pazar"
+        },
+        "terms": {
+            "fall": "Güz",
+            "spring": "Bahar",
+            "summer": "Yaz"
         },
         "months": {
             "january": "Ocak",
@@ -52,10 +56,17 @@
             "november": "Kasım",
             "december": "Aralık"
         },
-        "terms": {
-            "fall": "Güz",
-            "spring": "Bahar",
-            "summer": "Yaz"
+        "campuses": {
+            "kayali": "Kayalı Kampüsü",
+            "merkez": "Merkez Kampüs",
+            "luleburgaz": "Lüleburgaz Kampüsü"
+        },
+        "titles": {
+            "prof": "Prof. Dr.",
+            "assocProf": "Doç. Dr.",
+            "asstProf": "Dr. Öğr. Üyesi",
+            "lecturer": "Öğr. Gör.",
+            "inst": "Okutman"
         }
     },
     "navigation": {
@@ -93,7 +104,7 @@
         "newsLocation2": "Mühendislik Fakültesi",
         "newsContent2": "Üniversitemiz Mühendislik Fakültesi öğretim üyeleri tarafından hazırlanan proje, TÜBİTAK 1001 programı kapsamında desteklenmeye hak kazandı.",
         "newsTitle3": "Kariyer Günleri Etkinliği",
-        "newsLocation2": "Kültür Merkezi",
+        "newsLocation3": "Kültür Merkezi",
         "newsContent3": "Öğrencilerimizi sektörün öncü firmalarıyla buluşturan 'KLU Kariyer Günleri' etkinliği büyük bir katılımla tamamlandı.",
         "announcementTitle1": "Öğretim Elemanı Sınav Sonuçları",
         "announcementSnippet1": "2024-2025 dönemi öğretim elemanı alımı sınav sonuçları ilan edilmiştir.",
@@ -188,7 +199,7 @@
         "annual": "Yıllık",
         "sick": "Hastalık",
         "excuse": "Mazeret",
-        "automationInfo": "Yeni izin taleplerinizi KLU Otomasyon Sistemi üzerinden gerçekleştirebilirsiniz."
+        "automationInfo": "Yeni izin taleplerinizi KLU Otomasyon Sistemi üzerinden gerçekleştirilebilirsiniz."
     },
     "onboarding": {
         "welcomeTitle": "KLU Mobil Dünyasına\nHoş Geldiniz",
@@ -218,35 +229,45 @@
     },
     "cafeteria": {
         "title": "Yemek Listesi",
-        "lentilSoup": "Mercimek Çorbası",
-        "chickenSote": "Tavuk Sote",
-        "bulgurPilaf": "Bulgur Pilavı",
-        "apple": "Elma",
-        "pastureSoup": "Yayla Çorbası",
-        "forestKebab": "Orman Kebabı",
-        "ricePilaf": "Pirinç Pilavı",
-        "yogurt": "Yoğurt",
-        "tarhanaSoup": "Tarhana Çorbası",
-        "beanStew": "Kıymalı Taze Fasulye",
-        "pasta": "Makarna",
-        "salad": "Salata",
-        "ezogelinSoup": "Ezogelin Çorbası",
-        "izmirMeatballs": "İzmir Köfte",
-        "tomatoSoup": "Domates Çorbası",
-        "ovenChicken": "Fırın Tavuk",
-        "riceWithVeg": "Sebzeli Pilav",
-        "dessert": "Tatlı",
         "todaysMenu": "GÜNÜN MENÜSÜ",
-        "weeklyInfo": "Menüler haftalık olarak güncellenmektedir. Kampüs yemekhanesi hafta içi 08:30 - 18:00 saatleri arasında hizmet vermektedir."
+        "weeklyInfo": "Menüler haftalık olarak güncellenmektedir. Kampüs yemekhanesi hafta içi 08:30 - 18:00 saatleri arasında hizmet vermektedir.",
+        "meals": {
+            "lentilSoup": "Süzme Mercimek Çorbası",
+            "ezogelinSoup": "Ezogelin Çorbası",
+            "tomatoSoup": "Domates Çorbası",
+            "tarhanaSoup": "Tarhana Çorbası",
+            "yaylaSoup": "Yayla Çorbası",
+            "izmirMeatballs": "İzmir Köfte",
+            "chickenSote": "Tavuk Sote",
+            "beanStew": "Kıymalı Bezelye",
+            "forestKebab": "Orman Kebabı",
+            "ovenChicken": "Fırın Tavuk Baget",
+            "ricePilaf": "Pirinç Pilavı",
+            "bulgurPilaf": "Bulgur Pilavı",
+            "pasta": "Peynirli Erişte",
+            "veggieRice": "Mısırlı Pilav",
+            "salad": "Mevsim Salatası",
+            "ayran": "Ayran",
+            "fruit": "Meyve",
+            "cacik": "Cacık",
+            "pudding": "Supangle"
+        }
     },
     "academic": {
-        "calendar": "Akademik Takvim",
-        "registration": "Kayıt Dönemi",
-        "vizes": "Ara Sınavlar (Vizeler)",
-        "finals": "Yıl Sonu Sınavları (Finaller)",
-        "butunleme": "Bütünleme Sınavları",
-        "start": "Derslerin Başlaması",
-        "end": "Derslerin Sona Ermesi",
+        "calendarTitle": "Akademik Takvim",
+        "calendar": {
+            "title": "Akademik Takvim",
+            "selectionDesc": "2024 - 2025 Eğitim Yılı Program Seçimi",
+            "undergrad": "Lisans Akademik Takvim",
+            "vocational": "Ön Lisans Akademik Takvim",
+            "graduate": "Lisansüstü Akademik Takvim",
+            "registration": "Kayıt Dönemi",
+            "vizes": "Ara Sınavlar (Vizeler)",
+            "finals": "Yıl Sonu Sınavları (Finaller)",
+            "butunleme": "Bütünleme Sınavları",
+            "start": "Derslerin Başlaması",
+            "end": "Derslerin Sona Ermesi"
+        },
         "examPeriod": "Sınav Dönemi",
         "holiday": "Resmi Tatil",
         "academicCycle": "Akademik Süreç",
@@ -256,12 +277,6 @@
         "status": {
             "passed": "Geçti",
             "pending": "Beklemede"
-        },
-        "calendar": {
-            "selectionDesc": "2024 - 2025 Eğitim Yılı Program Seçimi",
-            "undergrad": "Lisans Akademik Takvim",
-            "vocational": "Ön Lisans Akademik Takvim",
-            "graduate": "Lisansüstü Akademik Takvim"
         }
     },
     "courses": {
@@ -274,6 +289,10 @@
         "webProg": "Web Programlama",
         "database": "Veri Tabanı Yönetimi",
         "algoDesign": "Algoritma Tasarımı",
+        "microprocessors": "Mikroişlemciler",
+        "os": "İşletim Sistemleri",
+        "dataStructures": "Veri Yapıları ve Algoritmalar",
+        "softwareEng": "Yazılım Mühendisliği",
         "courseNotFound": "Ders bulunamadı.",
         "time": "Saat",
         "room": "Derslik",
@@ -308,7 +327,11 @@
         "myInstructors": "Dönem Hocalarım",
         "departmentHead": "Bölüm Başkanı",
         "titles": {
-            "advisor": "Akademik Danışman"
+            "advisor": "Akademik Danışman",
+            "professor": "Prof. Dr.",
+            "assocProf": "Doç. Dr.",
+            "asstProf": "Dr. Öğr. Üyesi",
+            "lecturer": "Öğr. Gör."
         },
         "roles": {
             "head": "Bölüm Başkanı",
@@ -316,14 +339,20 @@
         }
     },
     "university": {
-        "title": "Birimlerimiz",
-        "campus": "Yerleşke",
+        "title": "Üniversitemiz",
+        "history": "Kırklareli Üniversitesi, 2007 yılında kurulmuş olup, Trakya'nın parlayan yıldızı olma vizyonuyla eğitim hayatına devam etmektedir.",
+        "rectorMessage": "Değerli öğrencilerimiz, modern ve yenilikçi eğitim anlayışımızla sizleri geleceğe hazırlıyoruz.",
+        "vision": "Evrensel değerlere sahip, yenilikçi ve girişimci bireyler yetiştirmek.",
+        "mission": "Bilimsel araştırmalarla topluma katkı sağlamak ve kaliteli eğitim sunmak.",
         "units": {
             "administrative": "İDARİ BİRİMLER",
             "institutes": "ENSTİTÜLER",
             "faculties": "FAKÜLTELER",
             "colleges": "YÜKSEKOKULLAR",
-            "vocational": "MESLEK YÜKSEKOKULLARI"
+            "vocational": "MESLEK YÜKSEKOKULLARI",
+            "fax": "FAKS NUMARASI",
+            "website": "WEB SİTESİ",
+            "viewOnMap": "Haritada Konumu Görüntüle"
         },
         "news": {
             "guideTitle": "Kırklareli Üniversitesi Yeni Kayıt Kılavuzu Yayınlandı",
@@ -343,20 +372,21 @@
         "facultyArts": "Fen Edebiyat Fakültesi",
         "facultyEconomics": "İktisadi ve İdari Bilimler Fakültesi",
         "facultyLaw": "Hukuk Fakültesi",
+        "facultyMedicine": "Tıp Fakültesi",
+        "facultyArchitecture": "Mimarlık Fakültesi",
+        "facultyHealth": "Sağlık Bilimleri Fakültesi",
         "instituteScience": "Fen Bilimleri Enstitüsü",
         "instituteSocial": "Sosyal Bilimler Enstitüsü",
-        "collegeTechnical": "Teknik Bilimler Meslek Yüksekokulu",
-        "collegeSocial": "Sosyal Bilimler Meslek Yüksekokulu",
-        "collegeHealth": "Sağlık Hizmetleri Meslek Yüksekokulu",
+        "instituteHealth": "Sağlık Bilimleri Enstitüsü",
+        "collegeTechnical": "Teknik Bilimler MYO",
+        "collegeSocial": "Sosyal Bilimler MYO",
+        "collegeHealth": "Sağlık Hizmetleri MYO",
         "rectorate": "Rektörlük",
         "studentAffairs": "Öğrenci İşleri Daire Başkanlığı",
+        "libraryUnit": "Kütüphane ve Dokümantasyon",
+        "officeA312": "A Blok - Kat 3 - No: 312",
+        "officeB205": "B Blok - Kat 2 - No: 205",
         "softwareEngineering": "Yazılım Mühendisliği",
-        "mathDept": "Matematik Bölümü",
-        "foreignLanguages": "Yabancı Diller",
-        "turkishLanguage": "Türk Dili",
-        "officeA312": "A Blok, Kat 3, No: 312",
-        "officeB205": "B Blok, Kat 2, No: 205",
-        "culturalCenter": "Kültür Merkezi",
         "types": {
             "faculty": "Fakülte",
             "institute": "Enstitü",
@@ -374,14 +404,38 @@
         "warning": "Yaklaşıyor",
         "overdue": "Gecikmiş",
         "loan": "Ödünç Verme",
-        "remoteAccess": "Veri Tabanı\nUzaktan Erişim",
-        "catalog": "Merkez Kütüphane\nKataloğu",
-        "memberLogin": "Kütüphane\nÜye Girişi",
-        "forms": "Formlar",
-        "archive": "Kurumsal Arşiv\nAçık Erişim",
-        "mobileApp": "Cep\nKütüphanem",
+        "remoteAccess": "Uzaktan Erişim",
+        "catalog": "Katalog Tarama",
+        "memberLogin": "Üye Girişi",
+        "forms": "E-Formlar",
+        "archive": "Açık Erişim",
+        "mobileApp": "Cep Kütüphanem",
         "announcements": "Duyurular",
-        "feedback": "Soru, İstek\nve Önerileriniz"
+        "feedback": "Bize Yazın"
+    },
+    "notifications": {
+        "title": "Bildirimler",
+        "categories": {
+            "all": "Hepsi",
+            "academic": "Akademik",
+            "social": "Sosyal",
+            "urgent": "Acil"
+        },
+        "sections": {
+            "today": "Bugün",
+            "yesterday": "Dün",
+            "older": "Daha Eski"
+        },
+        "empty": {
+            "title": "Henüz Bildirim Yok",
+            "subtitle": "Yerleşke yaşamıyla ilgili güncellemeler ve duyurular burada görünecektir."
+        },
+        "examTitle": "Sınav Programı Açıklandı",
+        "examDesc": "2024-2025 Güz Dönemi Vize sınav programı yayımlandı. Kontrol etmeyi unutmayın.",
+        "cafeteriaTitle": "Yemek Menüsü Güncellendi",
+        "cafeteriaDesc": "Bugünün öğle yemeği: Mercimek Çorbası, Orman Kebabı, Pirinç Pilavı ve Meyve.",
+        "libraryTitle": "Kütüphane Duyurusu",
+        "libraryDesc": "Kütüphanemiz sınav haftası nedeniyle 7/24 hizmet verecektir."
     },
     "transcript": {
         "title": "Transkript",
