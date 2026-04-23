@@ -15,38 +15,53 @@ import { moderateScale, verticalScale } from '@/shared/utils/responsive';
 import { Theme, spacing } from '@/core/theme/theme';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { useAuthStore } from '@/shared/store/authStore';
+import { useTranslation } from 'react-i18next';
 
 export const LeaveStatusScreen: React.FC = () => {
     const navigation = useNavigation();
     const { user } = useAuthStore();
     const { theme } = useAppTheme();
+    const { t } = useTranslation();
     const insets = useSafeAreaInsets();
     const s = styles(theme);
 
     const balances = user?.leaveBalances || [];
     const requests = user?.leaveRequests || [];
-    const totalRemaining = balances.find(b => b.type === 'Yıllık')?.remaining || 0;
+    const annualBalance = balances.find(b => b.type === 'annual' || b.type === 'Yıllık');
+    const totalRemaining = annualBalance?.remaining || 0;
 
     const StatusBadge = ({ status }: { status: string }) => {
         let bgColor = '#F1F5F9';
         let textColor = '#64748B';
+        let label = status;
 
-        if (status === 'Onaylandı') {
+        if (status === 'approved' || status === 'Onaylandı') {
             bgColor = '#DCFCE7';
             textColor = '#15803D';
-        } else if (status === 'Beklemede') {
+            label = t('leave.approved');
+        } else if (status === 'pending' || status === 'Beklemede') {
             bgColor = '#FEF3C7';
             textColor = '#B45309';
-        } else if (status === 'Reddedildi') {
+            label = t('leave.pending');
+        } else if (status === 'rejected' || status === 'Reddedildi') {
             bgColor = '#FEE2E2';
             textColor = '#B91C1C';
+            label = t('leave.rejected');
         }
 
         return (
             <View style={[s.badge, { backgroundColor: bgColor }]}>
-                <Text style={[s.badgeText, { color: textColor }]}>{status}</Text>
+                <Text style={[s.badgeText, { color: textColor }]}>{label}</Text>
             </View>
         );
+    };
+
+    const getLeaveTypeLabel = (type: string) => {
+        const lowerType = type.toLowerCase();
+        if (lowerType === 'annual' || lowerType === 'yıllık') return t('leave.annual');
+        if (lowerType === 'sick' || lowerType === 'hastalık') return t('leave.sick');
+        if (lowerType === 'excuse' || lowerType === 'mazeret') return t('leave.excuse');
+        return type;
     };
 
     return (
@@ -54,26 +69,26 @@ export const LeaveStatusScreen: React.FC = () => {
             <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
             
             {/* Header */}
-            <LinearGradient colors={['#182958', '#0F172A']} style={[s.header, { paddingTop: insets.top }]}>
-                <View style={[s.navBar, { marginTop: insets.top }]}>
+            <LinearGradient colors={['#182958', '#0F172A']} style={[s.header, { paddingTop: Math.max(insets.top, 20) }]}>
+                <View style={s.navBar}>
                     <TouchableOpacity onPress={() => navigation.goBack()} style={s.backBtn}>
                         <Icon name="arrow-back" size={24} color="#FFFFFF" />
                     </TouchableOpacity>
-                    <Text style={s.headerTitle}>İzin durumu</Text>
+                    <Text style={s.headerTitle}>{t('leave.title')}</Text>
                     <View style={{ width: 40 }} />
                 </View>
 
                 {/* Main Balance Card */}
                 <View style={s.mainBalanceContainer}>
-                    <Text style={s.mainBalanceLabel}>Kalan Yıllık İzin</Text>
+                    <Text style={s.mainBalanceLabel}>{t('leave.annualRemaining')}</Text>
                     <View style={s.mainBalanceRow}>
                         <Text style={s.mainBalanceValue}>{totalRemaining}</Text>
-                        <Text style={s.mainBalanceUnit}>GÜN</Text>
+                        <Text style={s.mainBalanceUnit}>{t('common.days').toUpperCase()}</Text>
                     </View>
                     <View style={s.progressBarBg}>
                         <View style={[s.progressBarFill, { width: `${(totalRemaining / 30) * 100}%` }]} />
                     </View>
-                    <Text style={s.progressText}>Toplam Hak: 30 Gün</Text>
+                    <Text style={s.progressText}>{t('leave.totalCredit', { count: 30 })}</Text>
                 </View>
             </LinearGradient>
 
@@ -83,7 +98,7 @@ export const LeaveStatusScreen: React.FC = () => {
             >
                 {/* Secondary Balances */}
                 <View style={s.sectionHeader}>
-                    <Text style={s.sectionTitle}>İzin Dağılımı</Text>
+                    <Text style={s.sectionTitle}>{t('leave.distribution')}</Text>
                 </View>
                 
                 <View style={s.balanceGrid}>
@@ -92,17 +107,17 @@ export const LeaveStatusScreen: React.FC = () => {
                             <View style={[s.statIconCircle, { backgroundColor: b.color + '15' }]}>
                                 <Icon name="calendar" size={18} color={b.color} />
                             </View>
-                            <Text style={s.statType}>{b.type}</Text>
-                            <Text style={[s.statValue, { color: b.color }]}>{b.remaining} Gün</Text>
+                            <Text style={s.statType} numberOfLines={1}>{getLeaveTypeLabel(b.type)}</Text>
+                            <Text style={[s.statValue, { color: b.color }]}>{b.remaining} {t('common.days')}</Text>
                         </View>
                     ))}
                 </View>
 
                 {/* History */}
                 <View style={s.sectionHeader}>
-                    <Text style={s.sectionTitle}>İzin Talepleri</Text>
+                    <Text style={s.sectionTitle}>{t('leave.history')}</Text>
                     <TouchableOpacity>
-                        <Text style={s.seeAllText}>Tümünü Gör</Text>
+                        <Text style={s.seeAllText}>{t('common.seeAll')}</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -111,7 +126,7 @@ export const LeaveStatusScreen: React.FC = () => {
                         <View style={s.requestCardHeader}>
                             <View style={s.requestTypeWrapper}>
                                 <View style={s.requestTypeIndicator} />
-                                <Text style={s.requestType}>{r.type} İzni</Text>
+                                <Text style={s.requestType}>{getLeaveTypeLabel(r.type)}</Text>
                             </View>
                             <StatusBadge status={r.status} />
                         </View>
@@ -123,12 +138,12 @@ export const LeaveStatusScreen: React.FC = () => {
                             </View>
                             <View style={s.detailItem}>
                                 <Icon name="calendar-outline" size={14} color="#64748B" />
-                                <Text style={s.detailText}>{r.days} G\u00fcn</Text>
+                                <Text style={s.detailText}>{r.days} {t('common.days')}</Text>
                             </View>
                         </View>
 
                         <View style={s.reasonBox}>
-                            <Text style={s.reasonLabel}>Sebep:</Text>
+                            <Text style={s.reasonLabel}>{t('leave.reason')}:</Text>
                             <Text style={s.reasonText} numberOfLines={1}>{r.reason}</Text>
                         </View>
                     </View>
@@ -138,12 +153,11 @@ export const LeaveStatusScreen: React.FC = () => {
                 <View style={s.infoBox}>
                     <Icon name="information-circle-outline" size={20} color="#1E293B" />
                     <Text style={s.infoText}>
-                        Yeni izin taleplerinizi KLU Otomasyon Sistemi \u00fczerinden ger\u00e7ekle\u015ftirebilirsiniz.
+                        {t('leave.automationInfo')}
                     </Text>
                 </View>
             </ScrollView>
 
-            {/* Floating Request Button (Design Only) */}
             <TouchableOpacity style={s.fab}>
                 <LinearGradient
                     colors={['#10B981', '#059669']}
@@ -287,13 +301,14 @@ const styles = (_theme: Theme) => StyleSheet.create({
         marginBottom: 8,
     },
     statType: {
-        fontSize: moderateScale(10),
+        fontSize: moderateScale(9),
         color: '#64748B',
-        fontWeight: '700',
+        fontWeight: '800',
         marginBottom: 4,
+        textTransform: 'uppercase',
     },
     statValue: {
-        fontSize: moderateScale(13),
+        fontSize: moderateScale(12),
         fontWeight: '800',
     },
     requestCard: {
