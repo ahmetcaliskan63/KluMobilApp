@@ -22,13 +22,16 @@ import { useAppSettingsStore } from '@/shared/store/appSettingsStore';
 import { Theme, spacing, borderRadius, shadows } from '@/core/theme/theme';
 import { moderateScale, verticalScale } from '@/shared/utils/responsive';
 
+import { useTranslation } from 'react-i18next';
+
 export const SettingsScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
-    const { theme } = useAppTheme();
-    const { isDarkMode, toggleDarkMode } = useThemeStore();
+    const { theme, isDarkMode } = useAppTheme();
+    const { t, i18n } = useTranslation();
+    const { toggleDarkMode } = useThemeStore();
     const { logout } = useAuthStore();
     const { language, setLanguage } = useAppSettingsStore();
-    const s = styles(theme);
+    const s = styles(theme, isDarkMode);
 
     const [showLangModal, setShowLangModal] = useState(false);
     const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -51,12 +54,12 @@ export const SettingsScreen: React.FC = () => {
 
     const handleLogout = () => {
         Alert.alert(
-            "Oturumu Kapat",
-            "Hesabınızdan çıkış yapmak istediğinize emin misiniz?",
+            t('profile.logout'),
+            t('profile.logoutConfirm'),
             [
-                { text: "Vazgeç", style: "cancel" },
+                { text: t('common.cancel'), style: "cancel" },
                 {
-                    text: "Çıkış Yap",
+                    text: t('profile.logout'),
                     style: "destructive",
                     onPress: () => {
                         logout();
@@ -108,7 +111,7 @@ export const SettingsScreen: React.FC = () => {
 
     return (
         <View style={s.container}>
-            <StatusBar barStyle="light-content" backgroundColor="#182958" />
+            <StatusBar barStyle="light-content" backgroundColor="#182958" translucent={false} />
 
 
 
@@ -118,40 +121,40 @@ export const SettingsScreen: React.FC = () => {
             >
                 <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY }] }}>
                     {/* ACCOUNT SECTION */}
-                    <Text style={s.sectionHeader}>HESAP VE GÜVENLİK</Text>
+                    <Text style={s.sectionHeader}>{t('settings.accountSecurity')}</Text>
                     {renderSettingItem(
                         "lock-closed-outline",
-                        "Şifre Değiştir",
-                        "Hesap güvenliğini artırın",
+                        t('settings.changePassword'),
+                        t('settings.comingSoon'),
                         undefined,
                         undefined,
-                        () => Alert.alert("Bilgi", "Şifre değiştirme ekranı yakında eklenecek.")
+                        () => Alert.alert(t('common.info'), t('settings.comingSoon'))
                     )}
 
                     {/* APP SETTINGS SECTION */}
-                    <Text style={[s.sectionHeader, { marginTop: spacing.xl }]}>UYGULAMA TERCİHLERİ</Text>
+                    <Text style={[s.sectionHeader, { marginTop: spacing.xl }]}>{t('settings.appPreferences')}</Text>
                     {renderSettingItem(
                         "moon-outline",
-                        "Koyu Tema",
-                        isDarkMode ? "Koyu mod aktif" : "Aydınlık mod aktif",
+                        t('settings.darkMode'),
+                        isDarkMode ? t('common.on') : t('common.off'),
                         "#8B5CF6",
                         <Switch
                             value={isDarkMode}
                             onValueChange={toggleDarkMode}
-                            trackColor={{ false: '#CBD5E1', true: theme.colors.primary }}
+                            trackColor={{ false: isDarkMode ? '#334155' : '#CBD5E1', true: theme.colors.primary }}
                             thumbColor={Platform.OS === 'android' ? '#FFFFFF' : undefined}
                         />
                     )}
                     {renderSettingItem(
                         "notifications-outline",
-                        "Bildirimler",
-                        "Duyuru ve hatırlatıcıları yönet",
+                        t('settings.notifications'),
+                        t('settings.comingSoon'),
                         "#F59E0B"
                     )}
                     {renderSettingItem(
                         "language-outline",
-                        "Dil Seçimi",
-                        language === 'tr' ? "Türkçe (TR)" : "English (EN)",
+                        t('settings.language'),
+                        language === 'tr' ? t('settings.langTr') : t('settings.langEn'),
                         "#10B981",
                         undefined,
                         () => setShowLangModal(true)
@@ -159,11 +162,11 @@ export const SettingsScreen: React.FC = () => {
 
 
                     {/* SUPPORT SECTION */}
-                    <Text style={[s.sectionHeader, { marginTop: spacing.xl }]}>BİLGİ VE DESTEK</Text>
-                    {renderSettingItem("help-circle-outline", "Yardım Merkezi", "Sıkça sorulan sorular", "#3B82F6")}
-                    {renderSettingItem("send-outline", "Geri Bildirim", "Bize önerilerinizi iletin", "#EC4899")}
-                    {renderSettingItem("document-text-outline", "Kullanım Koşulları", "Yasal bilgilendirmeler", isDarkMode ? "#94A3B8" : "#475569")}
-                    {renderSettingItem("shield-checkmark-outline", "Gizlilik Politikası", "KVKK ve veri güvenliği", "#10B981")}
+                    <Text style={[s.sectionHeader, { marginTop: spacing.xl }]}>{t('settings.helpSupport')}</Text>
+                    {renderSettingItem("help-circle-outline", t('settings.helpCenter'), t('settings.comingSoon'), "#3B82F6")}
+                    {renderSettingItem("send-outline", t('settings.feedback'), t('settings.comingSoon'), "#EC4899")}
+                    {renderSettingItem("document-text-outline", t('settings.terms'), t('settings.comingSoon'), isDarkMode ? "#94A3B8" : "#475569")}
+                    {renderSettingItem("shield-checkmark-outline", t('settings.privacy'), t('settings.comingSoon'), "#10B981")}
 
                     {/* LOGOUT */}
                     <TouchableOpacity
@@ -176,12 +179,12 @@ export const SettingsScreen: React.FC = () => {
                             style={s.logoutGradient}
                         >
                             <Icon name="log-out-outline" size={20} color="#FFFFFF" />
-                            <Text style={s.logoutText}>Oturumu Kapat</Text>
+                            <Text style={s.logoutText}>{t('profile.logout')}</Text>
                         </LinearGradient>
                     </TouchableOpacity>
 
-                    <Text style={s.appVersion}>KLU Mobile v1.0.5 (Build 2026)</Text>
-                    <Text style={s.copyright}>© 2026 Kırklareli Üniversitesi</Text>
+                    <Text style={s.appVersion}>{t('settings.version')} v1.0.5 (Build 2026)</Text>
+                    <Text style={s.copyright}>{t('settings.copyright')}</Text>
                 </Animated.View>
             </ScrollView>
 
@@ -198,19 +201,27 @@ export const SettingsScreen: React.FC = () => {
                     onPress={() => setShowLangModal(false)}
                 >
                     <View style={s.modalContent}>
-                        <Text style={s.modalTitle}>Dil Seçimi</Text>
+                        <Text style={s.modalTitle}>{t('settings.language')}</Text>
                         <TouchableOpacity
                             style={[s.langOption, language === 'tr' && s.langOptionActive]}
-                            onPress={() => { setLanguage('tr'); setShowLangModal(false); }}
+                            onPress={() => { 
+                                setLanguage('tr'); 
+                                i18n.changeLanguage('tr');
+                                setShowLangModal(false); 
+                            }}
                         >
-                            <Text style={[s.langText, language === 'tr' && s.langTextActive]}>Türkçe (TR)</Text>
+                            <Text style={[s.langText, language === 'tr' && s.langTextActive]}>{t('settings.langTr')}</Text>
                             {language === 'tr' && <Icon name="checkmark-circle" size={20} color="#10B981" />}
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={[s.langOption, language === 'en' && s.langOptionActive]}
-                            onPress={() => { setLanguage('en'); setShowLangModal(false); }}
+                            onPress={() => { 
+                                setLanguage('en'); 
+                                i18n.changeLanguage('en');
+                                setShowLangModal(false); 
+                            }}
                         >
-                            <Text style={[s.langText, language === 'en' && s.langTextActive]}>English (EN)</Text>
+                            <Text style={[s.langText, language === 'en' && s.langTextActive]}>{t('settings.langEn')}</Text>
                             {language === 'en' && <Icon name="checkmark-circle" size={20} color="#10B981" />}
                         </TouchableOpacity>
                     </View>
@@ -220,7 +231,7 @@ export const SettingsScreen: React.FC = () => {
     );
 };
 
-const styles = (theme: Theme) => StyleSheet.create({
+const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: theme.colors.background,
@@ -263,6 +274,7 @@ const styles = (theme: Theme) => StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: spacing.md,
+        opacity: isDarkMode ? 0.9 : 1,
     },
     settingInfo: {
         flex: 1,
