@@ -25,7 +25,7 @@ export interface GPATrend {
 }
 
 export interface LeaveBalance {
-    type: 'Yıllık' | 'Sağlık' | 'Mazeret' | 'İdari' | string;
+    type: 'annual' | 'sick' | 'excuse' | 'administrative' | string;
     total: number;
     used: number;
     remaining: number;
@@ -38,7 +38,7 @@ export interface LeaveRequest {
     endDate: string;
     days: number;
     type: string;
-    status: 'Onaylandı' | 'Beklemede' | 'Reddedildi';
+    status: 'approved' | 'pending' | 'rejected';
     reason: string;
 }
 
@@ -259,3 +259,17 @@ export interface UnitDetail extends Unit {
     };
 }
 
+export interface AcademicCalendarEvent {
+    id: string;
+    title: string;
+    description?: string;
+    startDate: string;
+    endDate?: string;
+    type: 'REGISTRATION' | 'EXAM' | 'HOLIDAY' | 'ACADEMIC' | 'GRADUATION';
+}
+
+export interface AcademicSemesterCalendar {
+    id: string;
+    name: string;
+    events: AcademicCalendarEvent[];
+}
