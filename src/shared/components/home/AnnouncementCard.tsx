@@ -4,6 +4,7 @@ import { Ionicons as Icon } from '@expo/vector-icons';
 import { Theme, spacing } from '@/core/theme/theme';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { Announcement } from '@/shared/types/models';
+import { useTranslation } from 'react-i18next';
 
 interface AnnouncementCardProps {
     item: Announcement;
@@ -12,6 +13,7 @@ interface AnnouncementCardProps {
 
 const AnnouncementCardComponent: React.FC<AnnouncementCardProps> = ({ item, onPress }) => {
     const { theme, isDarkMode } = useAppTheme();
+    const { t } = useTranslation();
     const s = styles(theme, isDarkMode);
     const scale = React.useRef(new Animated.Value(1)).current;
     const opacity = React.useRef(new Animated.Value(1)).current;
@@ -30,8 +32,9 @@ const AnnouncementCardComponent: React.FC<AnnouncementCardProps> = ({ item, onPr
         ]).start();
     };
 
-    const isAcademic = item.category.toUpperCase() === 'AKADEMİK';
-    const categoryColor = isAcademic ? (isDarkMode ? '#0A84FF' : '#1976D2') : theme.colors.primary;
+    const isAcademic = item.category === t('dashboard.categories.academic');
+    const isUrgent = item.category === t('dashboard.categories.urgent');
+    const categoryColor = isUrgent ? '#EF4444' : (isAcademic ? (isDarkMode ? '#0A84FF' : '#182958') : (isDarkMode ? '#10B981' : '#059669'));
 
     return (
         <Animated.View style={[s.container, { transform: [{ scale }], opacity }]}>
@@ -46,7 +49,7 @@ const AnnouncementCardComponent: React.FC<AnnouncementCardProps> = ({ item, onPr
 
                 <View style={s.inner}>
                     <View style={s.topRow}>
-                        <View style={[s.tag, { backgroundColor: `${categoryColor}20` }]}>
+                        <View style={[s.tag, { backgroundColor: `${categoryColor}15`, borderColor: `${categoryColor}30`, borderWidth: 1 }]}>
                             <View style={[s.dot, { backgroundColor: categoryColor }]} />
                             <Text style={[s.categoryText, { color: categoryColor }]}>{item.category}</Text>
                         </View>
@@ -57,8 +60,8 @@ const AnnouncementCardComponent: React.FC<AnnouncementCardProps> = ({ item, onPr
 
                     <View style={s.bottomRow}>
                         <View style={s.metaItem}>
-                            <Icon name="eye-outline" size={12} color={isDarkMode ? '#94A3B8' : '#8E8E93'} />
-                            <Text style={s.viewsText}>{item.views}</Text>
+                            <Icon name="eye-outline" size={14} color={isDarkMode ? '#94A3B8' : '#64748B'} />
+                            <Text style={s.viewsText}>{item.views} {t('dashboard.views')}</Text>
                         </View>
                         <Icon name="chevron-forward-circle" size={20} color={categoryColor} />
                     </View>
@@ -118,14 +121,14 @@ const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
         marginRight: 6,
     },
     categoryText: {
-        fontSize: 9,
+        fontSize: 10,
         fontWeight: '900',
         textTransform: 'uppercase',
         letterSpacing: 0.5,
     },
     dateText: {
         fontSize: 10,
-        color: isDarkMode ? '#94A3B8' : '#8E8E93',
+        color: isDarkMode ? '#94A3B8' : '#64748B',
         fontWeight: '700',
     },
     title: {
@@ -151,10 +154,9 @@ const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
     },
     viewsText: {
         fontSize: 11,
-        color: isDarkMode ? '#94A3B8' : '#8E8E93',
+        color: isDarkMode ? '#94A3B8' : '#64748B',
         fontWeight: '700',
     },
 });
 
 export const AnnouncementCard = memo(AnnouncementCardComponent);
-
