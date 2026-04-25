@@ -10,7 +10,7 @@ import {
 import { Ionicons as Icon } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Theme } from '@/core/theme/theme';
-import { MOCK_GRADES, MOCK_STATS, Grade } from '@/shared/services/mockData';
+import { MOCK_GRADES, MOCK_STATS, MOCK_GRADUATION_PROGRESS, Grade } from '@/shared/services/mockData';
 import { Card } from '@/shared/components/common';
 import { useNavigation } from '@react-navigation/native';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
@@ -114,7 +114,7 @@ export const OBSScreen: React.FC = () => {
                     </View>
                     <View style={s.summaryBox}>
                         <Icon name="calendar-outline" size={moderateScale(24)} color="#FFFFFF" style={{ marginBottom: verticalScale(4) }} />
-                        <Text style={s.summaryValue}>Güz 2025</Text>
+                        <Text style={s.summaryValue}>{MOCK_STATS.activeSemester}. Yarıyıl</Text>
                         <Text style={s.summaryLabel}>DÖNEM</Text>
                     </View>
                 </View>
@@ -125,11 +125,11 @@ export const OBSScreen: React.FC = () => {
                 <Card style={s.progressCard}>
                     <Text style={s.progressTitle}>Mezuniyet İlerlemesi</Text>
                     <View style={s.progressBarBg}>
-                        <View style={[s.progressBarFill, { width: '75%' }]} />
+                        <View style={[s.progressBarFill, { width: `${(MOCK_GRADUATION_PROGRESS.completedCredits / MOCK_GRADUATION_PROGRESS.totalRequiredCredits) * 100}%` }]} />
                     </View>
                     <View style={s.progressDetails}>
-                        <Text style={s.progressText}>Tamamlanan: {MOCK_STATS.totalCredits} AKTS</Text>
-                        <Text style={s.progressText}>Hedef: 240 AKTS</Text>
+                        <Text style={s.progressText}>Tamamlanan: {MOCK_GRADUATION_PROGRESS.completedCredits} AKTS</Text>
+                        <Text style={s.progressText}>Hedef: {MOCK_GRADUATION_PROGRESS.totalRequiredCredits} AKTS</Text>
                     </View>
                 </Card>
                 <View style={s.sectionHeader}>

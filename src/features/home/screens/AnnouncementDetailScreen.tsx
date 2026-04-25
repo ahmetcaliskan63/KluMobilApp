@@ -16,6 +16,7 @@ import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { Theme } from '@/core/theme/theme';
 import { MOCK_ANNOUNCEMENTS } from '@/shared/services/mockData';
 import { moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
+import { useTranslation } from 'react-i18next';
 
 type AnnouncementDetailRouteProp = RouteProp<HomeStackParamList, 'AnnouncementDetail'>;
 
@@ -28,12 +29,13 @@ export const AnnouncementDetailScreen: React.FC = () => {
     const navigation = useNavigation();
     const route = useRoute<AnnouncementDetailRouteProp>();
     const { theme, isDarkMode } = useAppTheme();
+    const { t } = useTranslation();
     const { announcementId } = route.params;
     const [imageError, setImageError] = React.useState(false);
     const scrollY = useRef(new Animated.Value(0)).current;
     const fadeAnim = useRef(new Animated.Value(0)).current;
 
-    const announcement = MOCK_ANNOUNCEMENTS.find(a => a.id === announcementId);
+    const announcement = MOCK_ANNOUNCEMENTS(t).find(a => a.id === announcementId);
 
     useEffect(() => {
         Animated.timing(fadeAnim, {
@@ -108,10 +110,10 @@ export const AnnouncementDetailScreen: React.FC = () => {
                     <Animated.Image
                         source={{
                             uri: imageError
-                                ? (announcement.category === 'Akademik'
+                                ? (announcement.category === t('dashboard.categories.academic')
                                     ? 'https://images.unsplash.com/photo-1541339907198-e08759dfc3ef?q=80&w=2070&auto=format&fit=crop'
                                     : 'https://images.unsplash.com/photo-1523240318241-70e192ce93bd?q=80&w=2070&auto=format&fit=crop')
-                                : (announcement.image || (announcement.category === 'Akademik'
+                                : (announcement.image || (announcement.category === t('dashboard.categories.academic')
                                     ? 'https://images.unsplash.com/photo-1541339907198-e08759dfc3ef?q=80&w=2070&auto=format&fit=crop'
                                     : 'https://images.unsplash.com/photo-1523240318241-70e192ce93bd?q=80&w=2070&auto=format&fit=crop'))
                         }}
@@ -146,7 +148,7 @@ export const AnnouncementDetailScreen: React.FC = () => {
 
                     <View style={s.viewCount}>
                         <Icon name="eye-outline" size={moderateScale(13)} color={theme.colors.textSecondary} />
-                        <Text style={s.viewText}>{announcement.views} görüntülenme</Text>
+                        <Text style={s.viewText}>{announcement.views} {t('dashboard.views')}</Text>
                     </View>
                 </View>
 
@@ -155,11 +157,9 @@ export const AnnouncementDetailScreen: React.FC = () => {
                     <Text style={s.contentText}>
                         {announcement.content}
                         {"\n\n"}
-                        Kırklareli Üniversitesi Rektörlüğü tarafından yayımlanan bu duyuru, ilgili tüm birimler ve öğrencilerimiz için geçerlidir.
+                        {t('dashboard.announcementSummary')}
                         {"\n\n"}
-                        Duyuru kapsamında belirtilen hususlara uyulması, akademik takvim ve uygulama süreçleri açısından büyük önem arz etmektedir.
-                        {"\n\n"}
-                        Detaylı bilgi için ilgili birimlere başvurulabilir veya üniversitemizin resmi web sitesi ziyaret edilebilir.
+                        {t('dashboard.announcementBody')}
                     </Text>
                 </View>
 

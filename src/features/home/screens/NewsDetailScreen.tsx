@@ -16,6 +16,7 @@ import { MOCK_NEWS } from '@/shared/services/mockData';
 import { viewport, moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { Theme } from '@/core/theme/theme';
+import { useTranslation } from 'react-i18next';
 
 type NewsDetailRouteProp = RouteProp<HomeStackParamList, 'NewsDetail'>;
 
@@ -25,10 +26,11 @@ export const NewsDetailScreen: React.FC = () => {
     const route = useRoute<NewsDetailRouteProp>();
     const { newsId } = route.params;
     const { theme, isDarkMode } = useAppTheme();
+    const { t } = useTranslation();
     const s = styles(theme, isDarkMode);
     const [imageError, setImageError] = React.useState(false);
     const scrollY = React.useRef(new Animated.Value(0)).current;
-    const news = MOCK_NEWS.find(n => n.id === newsId);
+    const news = MOCK_NEWS(t).find(n => n.id === newsId);
 
     if (!news) return null;
 
@@ -106,25 +108,24 @@ export const NewsDetailScreen: React.FC = () => {
                     <Text style={s.title}>{news.title}</Text>
                     <View style={s.metaRow}>
                         <View style={s.metaItem}>
-                            <Icon name="eye-outline" size={16} color="#8E8E93" />
-                            <Text style={s.metaText}>{news.views}</Text>
+                            <Icon name="eye-outline" size={16} color={theme.colors.textSecondary} />
+                            <Text style={s.metaText}>{news.views} {t('dashboard.views')}</Text>
                         </View>
                         <View style={s.divider} />
                         <View style={s.metaItem}>
-                            <Icon name="calendar-outline" size={16} color="#8E8E93" />
+                            <Icon name="calendar-outline" size={16} color={theme.colors.textSecondary} />
                             <Text style={s.metaText}>{news.date}</Text>
                         </View>
                     </View>
 
                     <View style={s.contentDivider} />
                     <Text style={s.summary}>
-                        Üniversitemiz tarafından düzenlenen bu önemli gelişme, akademik ve yerel topluluklar için büyük önem taşımaktadır.
+                        {t('dashboard.newsSummary')}
                     </Text>
                     <Text style={s.body}>
                         {news.content}
                         {"\n\n"}
-                        Ziyaret kapsamında iki üniversite arasında akademik iş birliği, ortak projeler ve bölgesel kalkınma odaklı strategic çalışmalar ele alındı. Rektörümüz, nazik ziyaretlerinden dolayı konuk heyete teşekkürlerini ileterek, bölgemizin eğitim kalitesini artırmak için dayanışma içerisinde çalışmaya devam edeceklerini belirtti.{"\n\n"}
-                        Görüşmede ayrıca üniversite kampüslerinin geliştirilmesi, öğrenci değişim programlarının kapsamının genişletilmesi ve teknolojik altyapı paylaşımı gibi konular üzerinde fikir alışverişinde bulunuldu. Ziyaret, karşılıklı hediye takdimi ve günün anısına çekilen hatıra fotoğrafı ile sona erdi.
+                        {t('dashboard.newsBody')}
                     </Text>
                 </View>
                 <View style={{ height: 100 }} />
@@ -252,7 +253,7 @@ const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
         top: 0,
         left: 0,
         right: 0,
-        backgroundColor: isDarkMode ? theme.colors.background : '#182958',
+        backgroundColor: isDarkMode ? theme.colors.background : theme.colors.primary,
         zIndex: 100,
         justifyContent: 'center',
         alignItems: 'center',
