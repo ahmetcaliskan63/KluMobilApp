@@ -14,30 +14,14 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Theme, spacing, borderRadius } from '@/core/theme/theme';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
-import { useThemeStore } from '@/shared/store/themeStore';
 
-const LIBRARY_SERVICES: {
-    id: string;
-    title: string;
-    icon: React.ComponentProps<typeof Icon>['name'];
-    color: string;
-    link: string;
-}[] = [
-        { id: '1', title: 'Ödünç Verme', icon: 'book', color: '#1976D2', link: 'https://kutuphane.klu.edu.tr' },
-        { id: '2', title: 'Veri Tabanı\nUzaktan Erişim', icon: 'cloud-done', color: '#388E3C', link: 'https://kutuphane.klu.edu.tr' },
-        { id: '3', title: 'Merkez Kütüphane\nKataloğu', icon: 'library', color: '#F57C00', link: 'https://kutuphane.klu.edu.tr' },
-        { id: '4', title: 'Kütüphane\nÜye Girişi', icon: 'person', color: '#D32F2F', link: 'https://kutuphane.klu.edu.tr' },
-        { id: '5', title: 'Formlar', icon: 'document-text', color: '#7B1FA2', link: 'https://kutuphane.klu.edu.tr' },
-        { id: '6', title: 'Kurumsal Arşiv\nAçık Erişim', icon: 'folder-open', color: '#0288D1', link: 'https://kutuphane.klu.edu.tr' },
-        { id: '7', title: 'Cep\nKütüphanem', icon: 'phone-portrait', color: '#00796B', link: 'https://kutuphane.klu.edu.tr' },
-        { id: '8', title: 'Duyurular', icon: 'megaphone', color: '#C2185B', link: 'https://kutuphane.klu.edu.tr' },
-        { id: '9', title: 'Soru, İstek\nve Önerileriniz', icon: 'chatbubbles', color: '#455A64', link: 'https://kutuphane.klu.edu.tr' },
-    ];
+import { MOCK_LIBRARY_SERVICES } from '@/shared/services/mockData';
+import { useTranslation } from 'react-i18next';
 
 export const LibraryScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
-    const { theme } = useAppTheme();
-    const { isDarkMode } = useThemeStore();
+    const { theme, isDarkMode } = useAppTheme();
+    const { t } = useTranslation();
     const s = styles(theme, isDarkMode);
 
     const getAdjustedColor = (color: string) => {
@@ -57,11 +41,14 @@ export const LibraryScreen: React.FC = () => {
     };
 
     const handlePress = async (url: string) => {
+        if (!url) return;
         const supported = await Linking.canOpenURL(url);
         if (supported) {
             await Linking.openURL(url);
         }
     };
+
+    const libraryServices = MOCK_LIBRARY_SERVICES(t);
 
     return (
         <View style={s.container}>
@@ -79,8 +66,8 @@ export const LibraryScreen: React.FC = () => {
                         style={s.heroOverlay}
                     >
                         <View style={s.heroTextContainer}>
-                            <Text style={s.heroTitle}>Kütüphane</Text>
-                            <Text style={s.heroSubtitle}>Sınırları aşan bilgi ağınız</Text>
+                            <Text style={s.heroTitle}>{t('library.title')}</Text>
+                            <Text style={s.heroSubtitle}>{t('library.subtitle')}</Text>
                         </View>
                     </LinearGradient>
                 </ImageBackground>
@@ -93,15 +80,15 @@ export const LibraryScreen: React.FC = () => {
             >
                 <View style={s.servicesContainer}>
                     <View style={s.servicesGrid}>
-                        {LIBRARY_SERVICES.map((service) => (
+                        {libraryServices.map((service) => (
                             <TouchableOpacity
                                 key={service.id}
                                 style={s.serviceCard}
                                 activeOpacity={0.8}
-                                onPress={() => handlePress(service.link)}
+                                onPress={() => handlePress(service.url)}
                             >
                                 <View style={[s.iconWrapper, { backgroundColor: `${getAdjustedColor(service.color)}20` }]}>
-                                    <Icon name={service.icon} size={28} color={getAdjustedColor(service.color)} />
+                                    <Icon name={service.icon as any} size={28} color={getAdjustedColor(service.color)} />
                                 </View>
                                 <Text style={s.serviceTitle}>{service.title}</Text>
                             </TouchableOpacity>
