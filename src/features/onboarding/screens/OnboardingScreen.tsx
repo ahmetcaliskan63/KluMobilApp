@@ -11,38 +11,16 @@ import { useAppStore } from '@/shared/store/appStore';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/shared/types/navigation';
+import { useTranslation } from 'react-i18next';
 
-const slides = [
-    {
-        id: '1',
-        title: "KLU Mobil Dünyasına\nHoş Geldiniz",
-        description: "Kırklareli Üniversitesi'nin yenilikçi, hızlı ve kullanıcı dostu resmi mobil uygulamasıyla tanışın.",
-        image: require('@/shared/assets/welcome.png'),
-    },
-    {
-        id: '2',
-        title: "Akademik Başarı\nCebinizde",
-        description: "Sınav sonuçlarınıza, transkriptinize ve ders programınıza anında, tek dokunuşla ulaşın.",
-        image: require('@/shared/assets/academic.png'),
-    },
-    {
-        id: '3',
-        title: "Kampüs Hayatını\nKolaylaştırın",
-        description: "Yemekhane menülerini takip edin, kütüphanede arama yapın ve Dijital Kimlik ile kampüse güvenle girin.",
-        image: require('@/shared/assets/services.png'),
-    },
-    {
-        id: '4',
-        title: "Her An\nHaberdar Olun",
-        description: "Duyurular, haberler ve etkinlikler için anlık bildirimler alın. Üniversite hayatını kaçırmayın.",
-        image: require('@/shared/assets/communication.png'),
-    },
-];
+import { MOCK_ONBOARDING_SLIDES } from '@/shared/services/mockData';
 
 type OnboardingNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Onboarding'>;
 
 export const OnboardingScreen: React.FC = () => {
     const { theme } = useAppTheme();
+    const { t } = useTranslation();
+    const slides = MOCK_ONBOARDING_SLIDES(t);
     const navigation = useNavigation<OnboardingNavigationProp>();
     const setCompletedOnboarding = useAppStore(state => state.setCompletedOnboarding);
 
