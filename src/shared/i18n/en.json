@@ -12,22 +12,22 @@
         "confirm": "Confirm",
         "back": "Back",
         "seeAll": "See All",
+        "on": "On",
+        "off": "Off",
         "day": "Day",
-        "days": "Days",
-        "terms": {
-            "fall": "Fall",
-            "spring": "Spring",
-            "summer": "Summer"
-        },
         "share": "Share",
         "download": "Download",
         "date": "Date",
         "noData": "No data found.",
-        "errorTitle": "Oops!",
+        "general": "General",
+        "academic": "Academic",
+        "event": "Event",
+        "details": "Details",
+        "errorTitle": "Error!",
         "errorMessage": "An unexpected error occurred. You can try restarting the application.",
-        "day": "Day",
-        "days": "Days",
-        "retry": "Try Again",
+        "today": "Today",
+        "previous": "Previous",
+        "next": "Next",
         "days": {
             "monday": "Monday",
             "tuesday": "Tuesday",
@@ -36,6 +36,11 @@
             "friday": "Friday",
             "saturday": "Saturday",
             "sunday": "Sunday"
+        },
+        "terms": {
+            "fall": "Fall",
+            "spring": "Spring",
+            "summer": "Summer"
         },
         "months": {
             "january": "January",
@@ -51,10 +56,17 @@
             "november": "November",
             "december": "December"
         },
-        "terms": {
-            "fall": "Fall",
-            "spring": "Spring",
-            "summer": "Summer"
+        "campuses": {
+            "kayali": "Kayali Campus",
+            "merkez": "Central Campus",
+            "luleburgaz": "Luleburgaz Campus"
+        },
+        "titles": {
+            "prof": "Prof. Dr.",
+            "assocProf": "Assoc. Prof. Dr.",
+            "asstProf": "Asst. Prof. Dr.",
+            "lecturer": "Lecturer",
+            "inst": "Instructor"
         }
     },
     "navigation": {
@@ -204,47 +216,82 @@
         "rectorMessage": "Dear students, we prepare you for the future with our modern and innovative educational approach.",
         "vision": "To raise innovative and entrepreneurial individuals with universal values.",
         "mission": "To contribute to society with scientific research and provide quality education.",
-        "units": "Our Units"
+        "drawer": {
+            "title": "KIRKLARELI",
+            "subtitle": "UNIVERSITY",
+            "quickAccess": "QUICK ACCESS",
+            "ourUniversity": "Our University",
+            "candidateStudent": "Candidate Student",
+            "contact": "Contact",
+            "kluSocial": "KLU Social",
+            "infoBox": "With Kırklareli University Mobile Application, campus life is at your fingertips.",
+            "copyright": "© 2026 Kırklareli University"
+        },
+        "units": {
+            "administrative": "ADMINISTRATIVE UNITS",
+            "institutes": "INSTITUTES",
+            "faculties": "FACULTIES",
+            "colleges": "COLLEGES",
+            "vocational": "VOCATIONAL SCHOOLS",
+            "fax": "FAX NUMBER",
+            "website": "OFFICIAL WEBSITE",
+            "viewOnMap": "View Location on Map"
+        },
+        "news": {
+            "guideTitle": "Kırklareli University New Registration Guide Published",
+            "guideContent": "The registration guide for new students has been published. Click for detailed information.",
+            "festivalTitle": "Spring Festival Program Announced",
+            "festivalContent": "Many artists and groups will perform during this year's Spring Festival."
+        },
+        "info": {
+            "history": "Kırklareli University was founded in 2007 and continues its academic life as the shining star of Thrace.",
+            "rectorMessage": "Dear students, we prepare you for the future with our modern and innovative educational approach.",
+            "vision": "To raise innovative and entrepreneurial individuals with universal values.",
+            "mission": "To contribute to society with scientific research and provide quality education."
+        }
     },
     "library": {
         "title": "Library",
-        "subtitle": "Your knowledge network beyond borders",
-        "borrowedBooks": "My Borrowed Books",
+        "subtitle": "Knowledge network beyond borders",
+        "borrowedBooks": "Borrowed Books",
         "dueDate": "Due Date",
         "books": "Books",
         "onTime": "On Time",
-        "warning": "Warning",
+        "warning": "Upcoming",
         "overdue": "Overdue",
-        "loan": "Lending",
-        "remoteAccess": "Database\nRemote Access",
-        "catalog": "Central Library\nCatalog",
-        "memberLogin": "Library\nMember Login",
-        "forms": "Forms",
-        "archive": "Institutional Archive\nOpen Access",
-        "mobileApp": "My Mobile\nLibrary",
+        "loan": "Lending Policy",
+        "remoteAccess": "Remote Access",
+        "catalog": "Catalog Search",
+        "memberLogin": "Member Login",
+        "forms": "E-Forms",
+        "archive": "Open Access",
+        "mobileApp": "Mobile App",
         "announcements": "Announcements",
-        "feedback": "Questions, Requests\nand Suggestions"
+        "feedback": "Contact Us"
     },
     "notifications": {
         "title": "Notifications",
+        "categories": {
+            "all": "All",
+            "academic": "Academic",
+            "social": "Social",
+            "urgent": "Urgent"
+        },
+        "sections": {
+            "today": "Today",
+            "yesterday": "Yesterday",
+            "older": "Older"
+        },
+        "empty": {
+            "title": "No Notifications Yet",
+            "subtitle": "Updates and announcements about campus life will appear here."
+        },
         "examTitle": "Exam Schedule Announced",
         "examDesc": "2024-2025 Fall Semester Midterm exam schedule has been published. Don't forget to check it.",
         "cafeteriaTitle": "Cafeteria Menu Updated",
         "cafeteriaDesc": "Today's lunch menu: Lentil Soup, Forest Kebab, Rice and Fruit.",
         "libraryTitle": "Library Announcement",
         "libraryDesc": "Our library will provide 24/7 service due to exam week."
-    },
-    "leave": {
-        "title": "Leave Status",
-        "annualRemaining": "Remaining Annual Leave",
-        "totalCredit": "Total Credit: {{count}} Days",
-        "history": "Leave Requests",
-        "distribution": "Leave Distribution",
-        "reason": "Reason",
-        "approved": "Approved",
-        "pending": "Pending",
-        "rejected": "Rejected",
-        "automationInfo": "You can make new leave requests via KLU Automation System."
     },
     "exams": {
         "scheduleTitle": "Exam Schedule",
@@ -265,33 +312,45 @@
     },
     "cafeteria": {
         "title": "Weekly Menu",
-        "lentilSoup": "Lentil Soup",
-        "chickenSote": "Chicken Sote",
-        "bulgurPilaf": "Bulgur Pilaf",
-        "apple": "Apple",
-        "pastureSoup": "Yayla Soup",
-        "forestKebab": "Forest Kebab",
-        "ricePilaf": "Rice Pilaf",
-        "yogurt": "Yogurt",
-        "tarhanaSoup": "Tarhana Soup",
-        "beanStew": "Bean Stew",
-        "pasta": "Pasta",
-        "salad": "Salad",
-        "ezogelinSoup": "Ezogelin Soup",
-        "izmirMeatballs": "Izmir Meatballs",
-        "tomatoSoup": "Tomato Soup",
-        "ovenChicken": "Oven Chicken",
-        "riceWithVeg": "Rice with Veggies",
-        "dessert": "Dessert"
+        "todaysMenu": "TODAY'S MENU",
+        "weeklyInfo": "Menus are updated weekly. The campus cafeteria serves between 08:30 - 18:00 on weekdays.",
+        "meals": {
+            "lentilSoup": "Lentil Soup",
+            "ezogelinSoup": "Ezogelin Soup",
+            "tomatoSoup": "Tomato Soup",
+            "tarhanaSoup": "Tarhana Soup",
+            "yaylaSoup": "Yayla Soup",
+            "izmirMeatballs": "Izmir Meatballs",
+            "chickenSote": "Chicken Sote",
+            "beanStew": "Bean Stew",
+            "forestKebab": "Forest Kebab",
+            "ovenChicken": "Oven Baked Chicken",
+            "ricePilaf": "Rice Pilaf",
+            "bulgurPilaf": "Bulgur Pilaf",
+            "pasta": "Cheese Pasta",
+            "veggieRice": "Rice with Corn",
+            "salad": "Seasonal Salad",
+            "ayran": "Ayran",
+            "fruit": "Fruit",
+            "cacik": "Tzatziki",
+            "pudding": "Chocolate Pudding"
+        }
     },
     "academic": {
-        "calendar": "Academic Calendar",
-        "registration": "Registration",
-        "vizes": "Midterm Exams",
-        "finals": "Final Exams",
-        "butunleme": "Makeup Exams",
-        "start": "Classes Start",
-        "end": "Classes End",
+        "calendarTitle": "Academic Calendar",
+        "calendar": {
+            "title": "Academic Calendar",
+            "selectionDesc": "2024 - 2025 Education Year Program Selection",
+            "undergrad": "Undergraduate Academic Calendar",
+            "vocational": "Vocational Academic Calendar",
+            "graduate": "Graduate Academic Calendar",
+            "registration": "Registration",
+            "vizes": "Midterm Exams",
+            "finals": "Final Exams",
+            "butunleme": "Makeup Exams",
+            "start": "Classes Start",
+            "end": "Classes End"
+        },
         "examPeriod": "Exam Period",
         "holiday": "Public Holiday",
         "academicCycle": "Academic Cycle",
@@ -301,12 +360,6 @@
         "status": {
             "passed": "Passed",
             "pending": "Pending"
-        },
-        "calendar": {
-            "selectionDesc": "2024 - 2025 Education Year Program Selection",
-            "undergrad": "Undergraduate Academic Calendar",
-            "vocational": "Vocational Academic Calendar",
-            "graduate": "Graduate Academic Calendar"
         }
     },
     "courses": {
@@ -319,6 +372,10 @@
         "webProg": "Web Programming",
         "database": "Database Management",
         "algoDesign": "Algorithm Design",
+        "microprocessors": "Microprocessors",
+        "os": "Operating Systems",
+        "dataStructures": "Data Structures and Algorithms",
+        "softwareEng": "Software Engineering",
         "courseNotFound": "Course not found.",
         "time": "Time",
         "room": "Room",
@@ -353,34 +410,15 @@
         "myInstructors": "My Instructors",
         "departmentHead": "Head of Department",
         "titles": {
-            "advisor": "Academic Advisor"
+            "advisor": "Academic Advisor",
+            "professor": "Prof. Dr.",
+            "assocProf": "Assoc. Prof. Dr.",
+            "asstProf": "Asst. Prof. Dr.",
+            "lecturer": "Lecturer"
         },
         "roles": {
             "head": "Head of Department",
             "softwareHead": "Head of Software Engineering"
-        }
-    },
-    "university": {
-        "title": "Our Units",
-        "campus": "Campus",
-        "units": {
-            "administrative": "ADMINISTRATIVE UNITS",
-            "institutes": "INSTITUTES",
-            "faculties": "FACULTIES",
-            "colleges": "COLLEGES",
-            "vocational": "VOCATIONAL SCHOOLS"
-        },
-        "news": {
-            "guideTitle": "Kırklareli University New Registration Guide Published",
-            "guideContent": "The registration guide for new students has been published. Click for detailed information.",
-            "festivalTitle": "Spring Festival Program Announced",
-            "festivalContent": "Many artists and groups will perform during this year's Spring Festival."
-        },
-        "info": {
-            "history": "Kırklareli University was founded in 2007 and continues its academic life as the shining star of Thrace.",
-            "rectorMessage": "Dear students, we prepare you for the future with our modern and innovative educational approach.",
-            "vision": "To raise innovative and entrepreneurial individuals with universal values.",
-            "mission": "To contribute to society with scientific research and provide quality education."
         }
     },
     "units": {
@@ -388,19 +426,24 @@
         "facultyArts": "Faculty of Arts and Sciences",
         "facultyEconomics": "Faculty of Economics and Administrative Sciences",
         "facultyLaw": "Faculty of Law",
-        "instituteScience": "Institute of Science",
-        "instituteSocial": "Institute of Social Sciences",
-        "collegeTechnical": "Vocational School of Technical Sciences",
-        "collegeSocial": "Vocational School of Social Sciences",
-        "collegeHealth": "Vocational School of Health Services",
+        "facultyMedicine": "Faculty of Medicine",
+        "facultyArchitecture": "Faculty of Architecture",
+        "facultyHealth": "Faculty of Health Sciences",
+        "instituteScience": "Graduate School of Natural and Applied Sciences",
+        "instituteSocial": "Graduate School of Social Sciences",
+        "instituteHealth": "Graduate School of Health Sciences",
+        "collegeTechnical": "Technical Sciences Vocational School",
+        "collegeSocial": "Social Sciences Vocational School",
+        "collegeHealth": "Health Services Vocational School",
         "rectorate": "Rectorate",
-        "studentAffairs": "Student Affairs Department",
+        "studentAffairs": "Department of Student Affairs",
+        "libraryUnit": "Library and Documentation",
         "softwareEngineering": "Software Engineering",
         "mathDept": "Department of Mathematics",
         "foreignLanguages": "Foreign Languages",
         "turkishLanguage": "Turkish Language",
-        "officeA312": "Block A, Floor 3, No: 312",
-        "officeB205": "Block B, Floor 2, No: 205",
+        "officeA312": "Block A - Floor 3 - No: 312",
+        "officeB205": "Block B - Floor 2 - No: 205",
         "culturalCenter": "Cultural Center",
         "types": {
             "faculty": "Faculty",

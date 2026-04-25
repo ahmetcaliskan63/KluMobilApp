@@ -146,6 +146,7 @@ export interface Event {
 export interface DailyMenu {
     day: string;
     date: string;
+    totalCalories?: string;
     items: string[];
 }
 
@@ -248,6 +249,7 @@ export interface Unit {
 }
 
 export interface UnitDetail extends Unit {
+    description?: string;
     phones: string[];
     fax?: string;
     email: string;

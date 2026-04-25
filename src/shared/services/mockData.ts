@@ -13,7 +13,8 @@ import {
     Grade,
     SemesterData as SemesterDataModel,
     ExamResult,
-    Course as CourseModel
+    Course as CourseModel,
+    UnitDetail
 } from '@/shared/types/models';
 
 export type { Announcement, News, Event, MenuItem, BorrowedBook, Unit, AcademicSemesterCalendar, Grade, SemesterDataModel, ExamResult, CourseModel };
@@ -158,41 +159,86 @@ export const MOCK_ANNOUNCEMENTS = (t: any): Announcement[] => [
     },
 ];
 
-export const MOCK_WEEKLY_MENU = (t: any) => [
-    { day: t('common.days.monday'), date: '23 Şubat', items: [t('cafeteria.lentilSoup'), t('cafeteria.chickenSote'), t('cafeteria.bulgurPilaf'), t('cafeteria.apple')] },
-    { day: t('common.days.tuesday'), date: '24 Şubat', items: [t('cafeteria.pastureSoup'), t('cafeteria.forestKebab'), t('cafeteria.ricePilaf'), t('cafeteria.yogurt')] },
-    { day: t('common.days.wednesday'), date: '25 Şubat', items: [t('cafeteria.tarhanaSoup'), t('cafeteria.beanStew'), t('cafeteria.pasta'), t('cafeteria.salad')] },
-    { day: t('common.days.thursday'), date: '26 Şubat', items: [t('cafeteria.ezogelinSoup'), t('cafeteria.izmirMeatballs'), t('cafeteria.ricePilaf'), t('cafeteria.salad')] },
-    { day: t('common.days.friday'), date: '27 Şubat', items: [t('cafeteria.tomatoSoup'), t('cafeteria.ovenChicken'), t('cafeteria.riceWithVeg'), t('cafeteria.dessert')] },
+export const MOCK_WEEKLY_MENU = (t: any): MenuItem[] => [
+    {
+        day: t('common.days.monday'),
+        date: `28 ${t('common.months.april')}`,
+        items: [
+            t('cafeteria.meals.lentilSoup'),
+            t('cafeteria.meals.izmirMeatballs'),
+            t('cafeteria.meals.ricePilaf'),
+            t('cafeteria.meals.salad')
+        ]
+    },
+    {
+        day: t('common.days.tuesday'),
+        date: `29 ${t('common.months.april')}`,
+        items: [
+            t('cafeteria.meals.ezogelinSoup'),
+            t('cafeteria.meals.chickenSote'),
+            t('cafeteria.meals.bulgurPilaf'),
+            t('cafeteria.meals.ayran')
+        ]
+    },
+    {
+        day: t('common.days.wednesday'),
+        date: `30 ${t('common.months.april')}`,
+        items: [
+            t('cafeteria.meals.tarhanaSoup'),
+            t('cafeteria.meals.beanStew'),
+            t('cafeteria.meals.pasta'),
+            t('cafeteria.meals.fruit')
+        ]
+    },
+    {
+        day: t('common.days.thursday'),
+        date: `1 ${t('common.months.may')}`,
+        items: [
+            t('cafeteria.meals.yaylaSoup'),
+            t('cafeteria.meals.forestKebab'),
+            t('cafeteria.meals.ricePilaf'),
+            t('cafeteria.meals.cacik')
+        ]
+    },
+    {
+        day: t('common.days.friday'),
+        date: `2 ${t('common.months.may')}`,
+        items: [
+            t('cafeteria.meals.tomatoSoup'),
+            t('cafeteria.meals.ovenChicken'),
+            t('cafeteria.meals.veggieRice'),
+            t('cafeteria.meals.pudding')
+        ]
+    },
 ];
 
 export const MOCK_BOOKS = (t: any): BorrowedBook[] => [
-    { id: '1', title: 'Veri Yapıları ve Algoritmalar', author: 'Rifat Çölkesen', isbn: '978-605-123-123-4', dueDate: `20 Mart 2026`, status: t('library.onTime') },
-    { id: '2', title: 'Clean Code', author: 'Robert C. Martin', isbn: '978-013-235-088-4', dueDate: `15 Mart 2026`, status: t('library.warning') },
+    { id: '1', title: t('courses.dataStructures'), author: 'Rifat Çölkesen', isbn: '978-605-123-123-4', dueDate: `20 ${t('common.months.march')} 2026`, status: t('library.onTime') },
+    { id: '2', title: 'Clean Code', author: 'Robert C. Martin', isbn: '978-013-235-088-4', dueDate: `15 ${t('common.months.march')} 2026`, status: t('library.warning') },
 ];
 
 export const MOCK_SCHEDULE = (t: any): CourseModel[] => [
     // Pazartesi
-    { id: '2', code: 'FIZ101', name: 'Physics I', room: 'HB105', instructor: 'Doç. Dr. M. Kaya', startTime: '09:00', endTime: '11:50', day: t('common.days.monday'), color: '#50E3C2', syllabus: ['Vektörler', 'Tek Boyutta Hareket', 'Newton Kanunları', 'İş ve Enerji'], attendance: 92, location: 'Kayalı Kampüsü' },
-    { id: '6', code: 'BIL201', name: 'Veri Yapıları', room: 'Lab 2', instructor: 'Dr. Öğr. Üyesi A. Demir', startTime: '13:00', endTime: '15:50', day: t('common.days.monday'), color: '#3B82F6', location: 'Kayalı Kampüsü' },
+    { id: '2', code: 'FIZ101', name: t('courses.physics'), room: 'HB105', instructor: `${t('common.titles.assocProf')} M. Kaya`, startTime: '09:00', endTime: '11:50', day: t('common.days.monday'), color: '#50E3C2', syllabus: ['Vektörler', 'Tek Boyutta Hareket', 'Newton Kanunları', 'İş ve Enerji'], attendance: 92, location: t('common.campuses.kayali') },
+    { id: '6', code: 'BIL201', name: t('courses.dataStructures'), room: 'Lab 2', instructor: `${t('common.titles.asstProf')} A. Demir`, startTime: '13:00', endTime: '15:50', day: t('common.days.monday'), color: '#3B82F6', location: t('common.campuses.kayali') },
 
     // Salı
-    { id: '3', code: 'BIL101', name: 'Intro to Programming', room: 'Lab 1', instructor: 'Dr. Öğr. Üyesi S. Demir', startTime: '09:00', endTime: '11:50', day: t('common.days.tuesday'), color: '#F5A623', syllabus: ['Algoritma Kavramı', 'Değişkenler ve Veri Tipleri', 'Koşullu İfadeler', 'Diziler'], attendance: 100, location: 'Kayalı Kampüsü' },
-    { id: '7', code: 'MAT201', name: 'Diferansiyel Denklemler', room: 'HB202', instructor: 'Prof. Dr. L. Aksoy', startTime: '13:00', endTime: '15:50', day: t('common.days.tuesday'), color: '#10B981', location: 'Kayalı Kampüsü' },
-    { id: '8', code: 'ENG201', name: 'Teknik İngilizce', room: 'HB305', instructor: 'Okutman M. Yılmaz', startTime: '16:00', endTime: '17:50', day: t('common.days.tuesday'), color: '#6366F1', location: 'Kayalı Kampüsü' },
+    { id: '3', code: 'BIL101', name: t('courses.introProg'), room: 'Lab 1', instructor: `${t('common.titles.asstProf')} S. Demir`, startTime: '09:00', endTime: '11:50', day: t('common.days.tuesday'), color: '#F5A623', syllabus: ['Algoritma Kavramı', 'Değişkenler ve Veri Tipleri', 'Koşullu İfadeler', 'Diziler'], attendance: 100, location: t('common.campuses.kayali') },
+    { id: '7', code: 'MAT201', name: 'Diferansiyel Denklemler', room: 'HB202', instructor: `${t('common.titles.prof')} L. Aksoy`, startTime: '13:00', endTime: '15:50', day: t('common.days.tuesday'), color: '#10B981', location: t('common.campuses.kayali') },
+    { id: '8', code: 'ENG201', name: 'Teknik İngilizce', room: 'HB305', instructor: `${t('common.titles.inst')} M. Yılmaz`, startTime: '16:00', endTime: '17:50', day: t('common.days.tuesday'), color: '#6366F1', location: t('common.campuses.kayali') },
 
     // Çarşamba
-    { id: '1', code: 'MAT101', name: 'Calculus', room: 'HB202', instructor: 'Prof. Dr. A. Yılmaz', startTime: '10:00', endTime: '12:50', day: t('common.days.wednesday'), color: '#4A90E2', syllabus: ['Limit ve Süreklilik', 'Türev Kuralları', 'Türevin Uygulamaları', 'İntegral'], attendance: 85, location: 'Kayalı Kampüsü' },
-    { id: '9', code: 'BIL203', name: 'Nesne Yönelimli Programlama', room: 'Lab 1', instructor: 'Dr. Öğr. Üyesi C. Can', startTime: '14:00', endTime: '16:50', day: t('common.days.wednesday'), color: '#F43F5E', location: 'Kayalı Kampüsü' },
+    { id: '1', code: 'MAT101', name: t('courses.calculus'), room: 'HB202', instructor: `${t('common.titles.prof')} A. Yılmaz`, startTime: '10:00', endTime: '12:50', day: t('common.days.wednesday'), color: '#4A90E2', syllabus: ['Limit ve Süreklilik', 'Türev Kuralları', 'Türevin Uygulamaları', 'İntegral'], attendance: 85, location: t('common.campuses.kayali') },
+    { id: '9', code: 'BIL203', name: 'Nesne Yönelimli Programlama', room: 'Lab 1', instructor: `${t('common.titles.asstProf')} C. Can`, startTime: '14:00', endTime: '16:50', day: t('common.days.wednesday'), color: '#F43F5E', location: t('common.campuses.kayali') },
 
     // Perşembe
-    { id: '4', code: 'TUR101', name: 'Türk Dili I', room: 'HB301', instructor: 'Öğr. Gör. H. Arslan', startTime: '10:00', endTime: '11:50', day: t('common.days.thursday'), color: '#D0021B', location: 'Merkez Kampüs' },
-    { id: '10', code: 'BIL205', name: 'Ayrık Matematik', room: 'HB204', instructor: 'Doç. Dr. V. Şahin', startTime: '13:00', endTime: '15:50', day: t('common.days.thursday'), color: '#8B5CF6', location: 'Kayalı Kampüsü' },
+    { id: '4', code: 'TUR101', name: t('courses.turkish'), room: 'HB301', instructor: `${t('common.titles.lecturer')} H. Arslan`, startTime: '10:00', endTime: '11:50', day: t('common.days.thursday'), color: '#D0021B', location: t('common.campuses.merkez') },
+    { id: '10', code: 'BIL205', name: 'Ayrık Matematik', room: 'HB204', instructor: `${t('common.titles.assocProf')} V. Şahin`, startTime: '13:00', endTime: '15:50', day: t('common.days.thursday'), color: '#8B5CF6', location: t('common.campuses.kayali') },
 
     // Cuma
-    { id: '5', code: 'ING101', name: 'English I', room: 'HB202', instructor: 'Okutman E. Aksoy', startTime: '09:00', endTime: '10:50', day: t('common.days.friday'), color: '#9013FE', location: 'Merkez Kampüs' },
-    { id: '11', code: 'AIT101', name: 'Atatürk İlkeleri ve İnkılap Tarihi I', room: 'Amfi 1', instructor: 'Öğr. Gör. T. Güneş', startTime: '11:00', endTime: '12:50', day: t('common.days.friday'), color: '#EC4899', location: 'Merkez Kampüs' },
-    { id: '12', code: 'ETK101', name: 'Müh. Etiği ve Sosyal Sorumluluk', room: 'HB202', instructor: 'Dr. K. Özdemir', startTime: '14:00', endTime: '15:50', day: t('common.days.friday'), color: '#F97316', location: 'Kayalı Kampüsü' },
+    { id: '5', code: 'ING101', name: t('courses.english'), room: 'HB202', instructor: `${t('common.titles.inst')} E. Aksoy`, startTime: '09:00', endTime: '10:50', day: t('common.days.friday'), color: '#9013FE', location: t('common.campuses.merkez') },
+    { id: '11', code: 'AIT101', name: 'Atatürk İlkeleri ve İnkılap Tarihi I', room: 'Amfi 1', instructor: `${t('common.titles.lecturer')} T. Güneş`, startTime: '11:00', endTime: '12:50', day: t('common.days.friday'), color: '#EC4899', location: t('common.campuses.merkez') },
+    { id: '12', code: 'ETK101', name: 'Müh. Etiği ve Sosyal Sorumluluk', room: 'HB202', instructor: `${t('common.titles.asstProf')} K. Özdemir`, startTime: '14:00', endTime: '15:50', day: t('common.days.friday'), color: '#F97316', location: t('common.campuses.kayali') },
 ];
 
 // Grade interface removed as it's imported from models.ts
@@ -239,18 +285,18 @@ export const MOCK_ACADEMIC_STATS = (t: any, role?: string) => {
         // Named keys for display
         stat1Label: t('profile.gpa'),
         stat1Value: '3.52',
-        stat2Label: t('profile.balance'),
-        stat2Value: `₺42.50`,
+        stat2Label: t('profile.ects'),
+        stat2Value: '120',
         stat3Label: t('profile.activeSemester'),
         stat3Value: '5',
     };
 };
 
-export const MOCK_ATTENDANCE = [
-    { courseName: 'Calculus I', courseCode: 'MAT101', attended: 24, total: 28, limit: 8, risk: 'low' },
-    { courseName: 'Physics I', courseCode: 'FIZ101', attended: 18, total: 28, limit: 8, risk: 'medium' },
-    { courseName: 'Algorithms', courseCode: 'BIL201', attended: 26, total: 28, limit: 8, risk: 'low' },
-    { courseName: 'Literature', courseCode: 'TUR101', attended: 20, total: 28, limit: 8, risk: 'high' },
+export const MOCK_ATTENDANCE = (t: any) => [
+    { courseName: t('courses.calculus'), courseCode: 'MAT101', attended: 24, total: 28, limit: 8, risk: 'low' },
+    { courseName: t('courses.physics'), courseCode: 'FIZ101', attended: 18, total: 28, limit: 8, risk: 'medium' },
+    { courseName: t('courses.dataStructures'), courseCode: 'BIL201', attended: 26, total: 28, limit: 8, risk: 'low' },
+    { courseName: t('courses.turkish'), courseCode: 'TUR101', attended: 20, total: 28, limit: 8, risk: 'high' },
 ];
 
 export const MOCK_GRADUATION_PROGRESS = {
@@ -273,9 +319,9 @@ export const MOCK_GPA_HISTORY = (t: any) => [
 export const MOCK_FACULTY_PROFILES = (t: any) => [
     {
         id: 'adv_1',
-        name: 'Prof. Dr. Ayşe Yılmaz',
+        name: `Prof. Dr. Ayşe Yılmaz`,
         title: t('faculty.titles.advisor'),
-        role: t('faculty.roles.head'),
+        role: t('faculty.titles.professor'),
         department: t('units.softwareEngineering'),
         email: 'ayse.yilmaz@klu.edu.tr',
         office: t('units.officeA312'),
@@ -285,9 +331,9 @@ export const MOCK_FACULTY_PROFILES = (t: any) => [
     },
     {
         id: 'dept_1',
-        name: 'Prof. Dr. Ahmet Demir',
+        name: `Prof. Dr. Ahmet Demir`,
         title: t('faculty.roles.head'),
-        role: t('faculty.roles.softwareHead'),
+        role: t('faculty.titles.professor'),
         department: t('units.softwareEngineering'),
         email: 'ahmet.demir@klu.edu.tr',
         office: t('units.officeB205'),
@@ -298,23 +344,20 @@ export const MOCK_FACULTY_PROFILES = (t: any) => [
 ];
 
 export const MOCK_FACULTY_MEMBERS = (t: any) => [
-    { id: 'f1', name: 'Doç. Dr. M. Kaya', email: 'm.kaya@klu.edu.tr', office: 'C-201', dept: t('units.softwareEngineering'), avatar: 'MK', color: '#3B82F6' },
-    { id: 'f2', name: 'Dr. Öğr. Üyesi A. Demir', email: 'a.demir@klu.edu.tr', office: 'Lab-2', dept: t('units.softwareEngineering'), avatar: 'AD', color: '#8B5CF6' },
-    { id: 'f3', name: 'Dr. Öğr. Üyesi S. Demir', email: 's.demir@klu.edu.tr', office: 'Lab-1', dept: t('units.softwareEngineering'), avatar: 'SD', color: '#10B981' },
-    { id: 'f4', name: 'Prof. Dr. L. Aksoy', email: 'l.aksoy@klu.edu.tr', office: 'HB-202', dept: t('units.mathDept'), avatar: 'LA', color: '#F59E0B' },
-    { id: 'f5', name: 'Okutman M. Yılmaz', email: 'm.yilmaz@klu.edu.tr', office: 'HB-305', dept: t('units.foreignLanguages'), avatar: 'MY', color: '#6366F1' },
-    { id: 'f6', name: 'Prof. Dr. A. Yılmaz', email: 'a.yilmaz@klu.edu.tr', office: 'HB-202', dept: t('units.mathDept'), avatar: 'AY', color: '#4A90E2' },
-    { id: 'f7', name: 'Dr. Öğr. Üyesi C. Can', email: 'c.can@klu.edu.tr', office: 'Lab-1', dept: t('units.softwareEngineering'), avatar: 'CC', color: '#F43F5E' },
-    { id: 'f8', name: 'Öğr. Gör. H. Arslan', email: 'h.arslan@klu.edu.tr', office: 'HB-301', dept: t('units.turkishLanguage'), avatar: 'HA', color: '#D0021B' },
-    { id: 'f9', name: 'Doç. Dr. V. Şahin', email: 'v.sahin@klu.edu.tr', office: 'HB-204', dept: t('units.softwareEngineering'), avatar: 'VŞ', color: '#8B5CF6' },
+    { id: '1', name: `${t('common.titles.assocProf')} M. Kaya`, dept: t('units.softwareEngineering'), email: 'm.kaya@klu.edu.tr', avatar: 'MK', color: '#3B82F6' },
+    { id: '2', name: `${t('common.titles.asstProf')} A. Demir`, dept: t('units.softwareEngineering'), email: 'a.demir@klu.edu.tr', avatar: 'AD', color: '#10B981' },
+    { id: '3', name: `${t('common.titles.asstProf')} S. Demir`, dept: t('units.softwareEngineering'), email: 's.demir@klu.edu.tr', avatar: 'SD', color: '#F59E0B' },
+    { id: '4', name: `${t('common.titles.prof')} M. Uzun`, dept: t('units.softwareEngineering'), email: 'm.uzun@klu.edu.tr', avatar: 'MU', color: '#6366F1' },
+    { id: '5', name: `${t('common.titles.lecturer')} E. Şahin`, dept: t('units.softwareEngineering'), email: 'e.sahin@klu.edu.tr', avatar: 'EŞ', color: '#EC4899' },
+    { id: '6', name: `${t('common.titles.assocProf')} V. Şahin`, dept: t('units.softwareEngineering'), email: 'v.sahin@klu.edu.tr', avatar: 'VŞ', color: '#8B5CF6' },
 ];
 
 export const MOCK_EXAM_SCHEDULE = (t: any) => [
     {
         id: '1',
-        courseName: 'Yazılım Tasarımı ve Mimarisi',
+        courseName: t('courses.softwareArch'),
         type: t('exams.midterm'),
-        date: '14 Nis',
+        date: `14 ${t('common.months.april').substring(0, 3)}`,
         day: t('common.days.monday'),
         time: '10:00',
         location: 'Amfi 1',
@@ -323,9 +366,9 @@ export const MOCK_EXAM_SCHEDULE = (t: any) => [
     },
     {
         id: '2',
-        courseName: 'Web Programlama',
+        courseName: t('courses.webProg'),
         type: t('exams.midterm'),
-        date: '15 Nis',
+        date: `15 ${t('common.months.april').substring(0, 3)}`,
         day: t('common.days.tuesday'),
         time: '13:00',
         location: 'Lab 2',
@@ -334,9 +377,9 @@ export const MOCK_EXAM_SCHEDULE = (t: any) => [
     },
     {
         id: '3',
-        courseName: 'Veritabanı Yönetim Sistemleri',
+        courseName: t('courses.database'),
         type: t('exams.midterm'),
-        date: '17 Nis',
+        date: `17 ${t('common.months.april').substring(0, 3)}`,
         day: t('common.days.thursday'),
         time: '15:00',
         location: 'B-302',
@@ -346,9 +389,10 @@ export const MOCK_EXAM_SCHEDULE = (t: any) => [
 ];
 
 export const MOCK_EXAM_RESULTS = (t: any) => [
-    { id: '1', courseName: 'Veri Yapıları ve Algoritmalar', type: t('exams.final'), grade: '72', letterGrade: 'BB', date: '12 Haz', status: t('exams.published'), color: '#7C3AED' },
-    { id: '2', courseName: 'Mikroişlemciler', type: t('exams.final'), grade: '95', letterGrade: 'AA', date: '15 Haz', status: t('exams.published'), color: '#D97706' },
-    { id: '3', courseName: 'İşletim Sistemleri', type: t('exams.final'), grade: '82', letterGrade: 'BA', date: '18 Haz', status: t('exams.published'), color: '#059669' },
+    { id: '1', courseName: t('courses.dataStructures'), type: t('exams.final'), grade: '72', letterGrade: 'BB', date: '12 Haz', status: t('exams.published'), color: '#3B82F6' },
+    { id: '2', courseName: t('courses.microprocessors'), type: t('exams.final'), grade: '95', letterGrade: 'AA', date: '15 Haz', status: t('exams.published'), color: '#059669' },
+    { id: '3', courseName: t('courses.os'), type: t('exams.final'), grade: '82', letterGrade: 'BA', date: '18 Haz', status: t('exams.published'), color: '#10B981' },
+    { id: '4', courseName: t('courses.softwareEng'), type: t('exams.midterm'), grade: '-', letterGrade: '-', date: '22 Haz', status: t('exams.marking'), color: '#64748B' },
 ];
 
 export const MOCK_TRANSCRIPT = (t: any) => [
@@ -374,8 +418,8 @@ export const MOCK_TRANSCRIPT = (t: any) => [
             { id: '6', code: 'MAT102', name: `${t('courses.calculus')} II`, grade: 'BA', credit: '4', akts: '6' },
             { id: '7', code: 'PHYS102', name: `${t('courses.physics')} II`, grade: 'BB', credit: '4', akts: '6' },
             { id: '8', code: 'ENG102', name: `${t('courses.english')} II`, grade: 'AA', credit: '2', akts: '4' },
-            { id: '9', code: 'YMH212', name: 'Software Engineering', grade: 'BA', credit: '4', akts: '7' },
-            { id: '10', code: 'YMH214', name: 'Operating Systems', grade: 'CB', credit: '4', akts: '7' },
+            { id: '9', code: 'YMH212', name: t('courses.softwareEng'), grade: 'BA', credit: '4', akts: '7' },
+            { id: '10', code: 'YMH214', name: t('courses.os'), grade: 'CB', credit: '4', akts: '7' },
         ],
     }
 ];
@@ -390,18 +434,46 @@ export const MOCK_SEMESTER_CALENDAR = (t: any) => [
 export const MOCK_STATS = MOCK_ACADEMIC_STATS;
 export const MOCK_SEMESTER_DATA = [];
 export const MOCK_UNITS = (t: any): Unit[] => [
-    { id: '1', name: t('units.facultyEngineering'), type: t('units.types.faculty') },
-    { id: '2', name: t('units.facultyArts'), type: t('units.types.faculty') },
-    { id: '3', name: t('units.facultyEconomics'), type: t('units.types.faculty') },
-    { id: '4', name: t('units.facultyLaw'), type: t('units.types.faculty') },
-    { id: '5', name: t('units.instituteScience'), type: t('units.types.institute') },
-    { id: '6', name: t('units.instituteSocial'), type: t('units.types.institute') },
-    { id: '7', name: t('units.collegeTechnical'), type: t('units.types.vocational') },
-    { id: '8', name: t('units.collegeSocial'), type: t('units.types.vocational') },
-    { id: '9', name: t('units.collegeHealth'), type: t('units.types.vocational') },
-    { id: '10', name: t('units.rectorate'), type: t('units.types.unit') },
-    { id: '11', name: t('units.studentAffairs'), type: t('units.types.unit') },
+    { id: '1', name: t('units.facultyEngineering'), type: 'Fakülte' },
+    { id: '2', name: t('units.facultyArts'), type: 'Fakülte' },
+    { id: '3', name: t('units.facultyEconomics'), type: 'Fakülte' },
+    { id: '4', name: t('units.facultyLaw'), type: 'Fakülte' },
+    { id: '5', name: t('units.facultyMedicine'), type: 'Fakülte' },
+    { id: '6', name: t('units.facultyArchitecture'), type: 'Fakülte' },
+    { id: '7', name: t('units.facultyHealth'), type: 'Fakülte' },
+    { id: '8', name: t('units.instituteScience'), type: 'Enstitü' },
+    { id: '9', name: t('units.instituteSocial'), type: 'Enstitü' },
+    { id: '10', name: t('units.collegeTechnical'), type: 'Meslek Yüksekokulu' },
+    { id: '11', name: t('units.collegeSocial'), type: 'Meslek Yüksekokulu' },
+    { id: '12', name: t('units.collegeHealth'), type: 'Meslek Yüksekokulu' },
+    { id: '13', name: t('units.rectorate'), type: 'Birim' },
+    { id: '14', name: t('units.studentAffairs'), type: 'Birim' },
+    { id: '15', name: t('units.libraryUnit'), type: 'Birim' },
 ];
+
+export const MOCK_UNIT_DETAIL = (t: any, unitId: string): UnitDetail | null => {
+    const units = MOCK_UNITS(t);
+    const unit = units.find(u => u.id === unitId);
+    if (!unit) return null;
+
+    // KLU Campus Coordinates (Realistic)
+    const CAMPUS_LOCATIONS = {
+        kayali: { latitude: 41.7892, longitude: 27.2345 },
+        karahidir: { latitude: 41.7483, longitude: 27.2289 },
+        city: { latitude: 41.7351, longitude: 27.2241 },
+    };
+
+    return {
+        ...unit,
+        description: `${unit.name} detaylı bilgi ve iletişim sayfası.`,
+        email: `${unitId === '13' ? 'rektorluk' : 'bilgi'}@klu.edu.tr`,
+        phones: ['+90 (288) 214 33 00', '+90 (288) 214 33 01'],
+        fax: '+90 (288) 214 33 05',
+        website: 'https://klu.edu.tr',
+        address: unit.type === 'Birim' ? 'Karahıdır Yerleşkesi, Kırklareli' : 'Kayalı Yerleşkesi, Kırklareli',
+        location: unit.type === 'Birim' ? CAMPUS_LOCATIONS.karahidir : CAMPUS_LOCATIONS.kayali,
+    };
+};
 export const MOCK_CAFETERIA = MOCK_WEEKLY_MENU;
 export const MOCK_UNIVERSITY_NEWS = (t: any): News[] => [
     {
@@ -471,7 +543,8 @@ export const MOCK_NOTIFICATIONS = (t: any) => [
         id: '1',
         title: t('notifications.examTitle'),
         description: t('notifications.examDesc'),
-        time: '2 saat önce',
+        time: '09:30',
+        date: '2026-04-24', // Today
         type: 'exam',
         isRead: false,
     },
@@ -479,16 +552,45 @@ export const MOCK_NOTIFICATIONS = (t: any) => [
         id: '2',
         title: t('notifications.cafeteriaTitle'),
         description: t('notifications.cafeteriaDesc'),
-        time: '5 saat önce',
+        time: '11:15',
+        date: '2026-04-24', // Today
         type: 'cafeteria',
         isRead: false,
     },
     {
         id: '3',
+        title: 'Kariyer Günleri Başlıyor',
+        description: 'Üniversitemiz tarafından düzenlenen Kariyer Günleri etkinliği yarın başlıyor. Katılım için kaydınızı yapmayı unutmayın.',
+        time: 'Dün',
+        date: '2026-04-23', // Yesterday
+        type: 'event',
+        isRead: true,
+    },
+    {
+        id: '4',
         title: t('notifications.libraryTitle'),
         description: t('notifications.libraryDesc'),
-        time: '1 gün önce',
+        time: 'Dün',
+        date: '2026-04-23', // Yesterday
         type: 'library',
+        isRead: true,
+    },
+    {
+        id: '5',
+        title: 'Yeni Duyuru: Yaz Okulu',
+        description: '2025-2026 Yaz Okulu kayıt takvimi ve ders listesi yayımlanmıştır.',
+        time: '2 gün önce',
+        date: '2026-04-22', // Older
+        type: 'announcement',
+        isRead: true,
+    },
+    {
+        id: '6',
+        title: 'Önemli Hatırlatma: Şifre Yenileme',
+        description: 'E-posta şifrenizin süresi dolmak üzere. Güvenliğiniz için lütfen şifrenizi yenileyin.',
+        time: '3 gün önce',
+        date: '2026-04-21', // Older
+        type: 'announcement',
         isRead: true,
     },
 ];
@@ -599,14 +701,40 @@ export const MOCK_ACADEMIC_CALENDAR = (t: any): AcademicSemesterCalendar[] => [
             },
         ]
     }
-]; export const MOCK_LIBRARY_SERVICES = (t: any) => [
-    { id: '1', title: t('library.loan'), icon: 'book', color: '#1976D2', url: 'https://kutuphane.klu.edu.tr' },
-    { id: '2', title: t('library.remoteAccess'), icon: 'cloud-done', color: '#388E3C', url: 'https://kutuphane.klu.edu.tr' },
-    { id: '3', title: t('library.catalog'), icon: 'library', color: '#F57C00', url: 'https://kutuphane.klu.edu.tr' },
-    { id: '4', title: t('library.memberLogin'), icon: 'person', color: '#D32F2F', url: 'https://kutuphane.klu.edu.tr' },
-    { id: '5', title: t('library.forms'), icon: 'document-text', color: '#7B1FA2', url: 'https://kutuphane.klu.edu.tr' },
-    { id: '6', title: t('library.archive'), icon: 'folder-open', color: '#0288D1', url: 'https://kutuphane.klu.edu.tr' },
-    { id: '7', title: t('library.mobileApp'), icon: 'phone-portrait', color: '#00796B', url: 'https://kutuphane.klu.edu.tr' },
-    { id: '8', title: t('library.announcements'), icon: 'megaphone', color: '#C2185B', url: 'https://kutuphane.klu.edu.tr' },
-    { id: '9', title: t('library.feedback'), icon: 'chatbubbles', color: '#455A64', url: 'https://kutuphane.klu.edu.tr' },
+];
+
+export const MOCK_CALENDAR_PDFS = (t: any) => [
+    {
+        id: '1',
+        title: t('academic.calendar.undergrad'),
+        subtitle: t('university.units.faculties'),
+        colors: ['#0F172A', '#1E3A8A'],
+        url: 'https://www.klu.edu.tr/dosyalar/birimler/ogrenci_isleri/dosyalar/dokumanlar/2024-2025_AKADEMIK_TAKVIM_ONLISANS-LISANS.pdf'
+    },
+    {
+        id: '2',
+        title: t('academic.calendar.vocational'),
+        subtitle: t('university.units.vocational'),
+        colors: ['#064E3B', '#059669'],
+        url: 'https://www.klu.edu.tr/dosyalar/birimler/ogrenci_isleri/dosyalar/dokumanlar/2024-2025_AKADEMIK_TAKVIM_ONLISANS-LISANS.pdf'
+    },
+    {
+        id: '3',
+        title: t('academic.calendar.graduate'),
+        subtitle: t('university.units.institutes'),
+        colors: ['#312E81', '#4338CA'],
+        url: 'https://www.klu.edu.tr/dosyalar/birimler/ogrenci_isleri/dosyalar/dokumanlar/2024-2025_LISANSUSTU_AKADEMIK_TAKVIMI.pdf'
+    }
+];
+
+export const MOCK_LIBRARY_SERVICES = (t: any) => [
+    { id: '1', title: t('library.loan'), icon: 'book', color: '#1976D2', url: 'https://kutuphane.klu.edu.tr/sayfalar/odunc-verme-kurallari' },
+    { id: '2', title: t('library.remoteAccess'), icon: 'cloud-done', color: '#388E3C', url: 'https://kutuphane.klu.edu.tr/sayfalar/veritabanlari-uzaktan-erisim' },
+    { id: '3', title: t('library.catalog'), icon: 'library', color: '#F57C00', url: 'https://katalog.klu.edu.tr/' },
+    { id: '4', title: t('library.memberLogin'), icon: 'person', color: '#D32F2F', url: 'http://katalog.klu.edu.tr/yordambt/yordam.php?sayfa=uye_girisi' },
+    { id: '5', title: t('library.forms'), icon: 'document-text', color: '#7B1FA2', url: 'https://kutuphane.klu.edu.tr/sayfalar/formlar' },
+    { id: '6', title: t('library.archive'), icon: 'folder-open', color: '#0288D1', url: 'https://acikerisim.klu.edu.tr/xmlui/' },
+    { id: '7', title: t('library.mobileApp'), icon: 'phone-portrait', color: '#00796B', url: 'https://kutuphane.klu.edu.tr/sayfalar/cep-kutuphanem' },
+    { id: '8', title: t('library.announcements'), icon: 'megaphone', color: '#C2185B', url: 'https://kutuphane.klu.edu.tr/duyurular' },
+    { id: '9', title: t('library.feedback'), icon: 'chatbubbles', color: '#455A64', url: 'https://kutuphane.klu.edu.tr/sayfalar/iletisim' },
 ];

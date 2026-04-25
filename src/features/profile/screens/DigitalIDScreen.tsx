@@ -8,11 +8,13 @@ import { useAuthStore } from '@/shared/store/authStore';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTranslation } from 'react-i18next';
 
 export const DigitalIDScreen: React.FC = () => {
     const navigation = useNavigation<any>();
     const { user } = useAuthStore();
     const { theme } = useAppTheme();
+    const { t } = useTranslation();
 
     return (
         <View style={styles.container}>
@@ -33,20 +35,20 @@ export const DigitalIDScreen: React.FC = () => {
                     >
                         <Icon name="close" size={28} color="#FFFFFF" />
                     </TouchableOpacity>
-                    <Text style={styles.headerTitle}>DİJİTAL KİMLİK</Text>
+                    <Text style={styles.headerTitle}>{t('profile.digitalID')}</Text>
                     <View style={{ width: 44 }} />
                 </View>
 
                 {/* Centered Masterpiece Card */}
                 <View style={styles.content}>
                     <View style={styles.cardContainer}>
-                        <DigitalPassportCard user={user} theme={theme} />
+                        <DigitalPassportCard user={user} />
                     </View>
 
                     <View style={styles.infoBox}>
                         <Icon name="information-circle-outline" size={20} color="rgba(255,255,255,0.4)" />
                         <Text style={styles.infoText}>
-                            Bu kimlik kartı resmi Kırklareli Üniversitesi dijital öğrenci belgesi hükmündedir.
+                            {t('profile.digitalIDHint')}
                         </Text>
                     </View>
                 </View>
@@ -55,11 +57,11 @@ export const DigitalIDScreen: React.FC = () => {
                 <View style={styles.footer}>
                     <TouchableOpacity style={styles.actionButton}>
                         <Icon name="share-outline" size={22} color="#FFFFFF" />
-                        <Text style={styles.actionText}>Paylaş</Text>
+                        <Text style={styles.actionText}>{t('common.share')}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.actionButton}>
                         <Icon name="download-outline" size={22} color="#FFFFFF" />
-                        <Text style={styles.actionText}>İndir</Text>
+                        <Text style={styles.actionText}>{t('common.download')}</Text>
                     </TouchableOpacity>
                 </View>
             </SafeAreaView>

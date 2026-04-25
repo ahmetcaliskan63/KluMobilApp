@@ -16,36 +16,38 @@ import { Ionicons as Icon } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { moderateScale, verticalScale } from '@/shared/utils/responsive';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
+import { useTranslation } from 'react-i18next';
 
 export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
     const { theme, isDarkMode } = useAppTheme();
+    const { t } = useTranslation();
     const s = styles(theme, isDarkMode);
 
     const menuItems = [
         {
             id: 'university',
-            title: 'Üniversitemiz',
+            title: t('university.drawer.ourUniversity'),
             icon: 'business',
             color: '#3B82F6',
             url: 'https://www.klu.edu.tr/sayfa/32/universitemiz'
         },
         {
             id: 'candidate',
-            title: 'Aday Öğrenci',
+            title: t('university.drawer.candidateStudent'),
             icon: 'school',
             color: '#10B981',
             url: 'https://aday.klu.edu.tr/'
         },
         {
             id: 'contact',
-            title: 'İletişim',
+            title: t('university.drawer.contact'),
             icon: 'call',
             color: '#F59E0B',
             url: 'https://www.klu.edu.tr/iletisim'
         },
         {
             id: 'social',
-            title: 'KLÜ Sosyal',
+            title: t('university.drawer.kluSocial'),
             icon: 'share-social',
             color: '#EC4899',
             url: 'https://www.instagram.com/kirklareliedu/'
@@ -89,8 +91,8 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props
                         </View>
                     </View>
                     <View style={s.headerTextContainer}>
-                        <Text style={s.universityName}>KIRKLARELİ</Text>
-                        <Text style={s.subTitle}>ÜNİVERSİTESİ</Text>
+                        <Text style={s.universityName}>{t('university.drawer.title')}</Text>
+                        <Text style={s.subTitle}>{t('university.drawer.subtitle')}</Text>
                     </View>
                 </View>
             </LinearGradient>
@@ -98,7 +100,7 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props
             {/* Fixed Menu List */}
             <View style={s.mainContent}>
                 <View style={s.menuContainer}>
-                    <Text style={s.sectionTitle}>HIZLI ERİŞİM</Text>
+                    <Text style={s.sectionTitle}>{t('university.drawer.quickAccess')}</Text>
                     {menuItems.map((item) => {
                         const scaleAnim = useRef(new Animated.Value(1)).current;
 
@@ -145,7 +147,7 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props
                 >
                     <Icon name="information-circle" size={24} color={isDarkMode ? theme.colors.primary : '#1E293B'} />
                     <Text style={s.infoText}>
-                        Kırklareli Üniversitesi Mobil Uygulaması ile kampüs hayatı parmaklarınızın ucunda.
+                        {t('university.drawer.infoBox')}
                     </Text>
                 </LinearGradient>
             </View>
@@ -153,7 +155,7 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props
             {/* Drawer Footer */}
             <View style={s.footer}>
                 <View style={s.footerGlow} />
-                <Text style={s.footerText}>© 2026 Kırklareli Üniversitesi</Text>
+                <Text style={s.footerText}>{t('university.drawer.copyright')}</Text>
                 <View style={s.versionBadge}>
                     <Text style={s.versionText}>v1.0.0</Text>
                 </View>
@@ -306,6 +308,7 @@ const styles = (theme: any, isDarkMode: boolean) => StyleSheet.create({
     },
     infoCard: {
         margin: moderateScale(20),
+        marginTop: verticalScale(10), // Reduced marginTop to move it up
         padding: moderateScale(18),
         borderRadius: moderateScale(22),
         flexDirection: 'row',

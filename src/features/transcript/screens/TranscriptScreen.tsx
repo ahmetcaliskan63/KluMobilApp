@@ -1,41 +1,84 @@
-import React from 'react';
-import { View, ScrollView, StatusBar } from 'react-native';
+import React, { useMemo } from 'react';
+import { View, StatusBar } from 'react-native';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { styles } from './TranscriptScreen.styles';
-import { TRANSCRIPT_DATA, ACADEMIC_SUMMARY } from './constants';
+import { MOCK_TRANSCRIPT, MOCK_ACADEMIC_STATS } from '@/shared/services/mockData';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Animated, {
+    useSharedValue,
+    useAnimatedScrollHandler,
+    useAnimatedStyle,
+    interpolate,
+    Extrapolate
+} from 'react-native-reanimated';
 
 // Sub-components
 import { TranscriptHeader } from './components/TranscriptHeader';
 import { AcademicSummary } from './components/AcademicSummary';
 import { SemesterCard } from './components/SemesterCard';
 
-/**
- * TranscriptScreen
- * Senior-level modularized screen for viewing academic performance.
- */
+import { useTranslation } from 'react-i18next';
+
 export const TranscriptScreen: React.FC = () => {
     const { theme, isDarkMode } = useAppTheme();
+    const { t } = useTranslation();
     const s = styles(theme, isDarkMode);
+    const insets = useSafeAreaInsets();
+
+    // 🏎️ Animation Logic
+    const scrollY = useSharedValue(0);
+
+    const scrollHandler = useAnimatedScrollHandler({
+        onScroll: (event) => {
+            scrollY.value = event.contentOffset.y;
+        },
+    });
+
+    const stats = useMemo(() => MOCK_ACADEMIC_STATS(t), [t]);
+    const transcriptData = useMemo(() => MOCK_TRANSCRIPT(t), [t]);
+
+    const bodyAnimatedStyle = useAnimatedStyle(() => {
+        const translateY = interpolate(
+            scrollY.value,
+            [0, 100],
+            [0, -10],
+            Extrapolate.CLAMP
+        );
+        return {
+            transform: [{ translateY }],
+        };
+    });
 
     return (
         <View style={s.container}>
             <StatusBar
                 barStyle="light-content"
-                backgroundColor="#182958"
+                translucent
+                backgroundColor="transparent"
             />
 
-            <TranscriptHeader />
+            <TranscriptHeader scrollOffset={scrollY} />
 
-            <ScrollView
+            <Animated.ScrollView
+                onScroll={scrollHandler}
+                scrollEventThrottle={16}
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={s.scrollContent}
+                contentContainerStyle={[
+                    s.scrollContent,
+                    {
+                        paddingTop: insets.top + 70, // Header height + padding
+                        paddingBottom: insets.bottom + 40
+                    }
+                ]}
             >
-                <AcademicSummary data={ACADEMIC_SUMMARY} />
+                <Animated.View style={bodyAnimatedStyle}>
+                    <AcademicSummary data={stats} />
 
-                {TRANSCRIPT_DATA.map((semester, index) => (
-                    <SemesterCard key={index} semester={semester} />
-                ))}
-            </ScrollView>
+                    {transcriptData.map((semester, index) => (
+                        <SemesterCard key={index} semester={semester} />
+                    ))}
+                </Animated.View>
+            </Animated.ScrollView>
         </View>
     );
 };

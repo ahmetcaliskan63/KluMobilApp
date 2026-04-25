@@ -69,7 +69,7 @@ const EventCardComponent: React.FC<EventCardProps> = ({ item, onPress }) => {
                             <View style={s.metaDivider} />
                             <View style={s.metaItem}>
                                 <Icon name="location-outline" size={14} color="#FFFFFF" style={{ opacity: 0.9 }} />
-                                <Text style={s.metaText}>{t('dashboard.campus')}</Text>
+                                <Text style={s.metaText}>{item.location}</Text>
                             </View>
                         </View>
                     </View>
