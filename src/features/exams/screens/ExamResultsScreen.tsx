@@ -1,338 +1,54 @@
-import React from 'react';
-import {
-    View,
-    Text,
-    StyleSheet,
-    ScrollView,
-    TouchableOpacity,
-    StatusBar,
-} from 'react-native';
-import { Ionicons as Icon } from '@expo/vector-icons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
-import { LinearGradient } from 'expo-linear-gradient';
+import React, { useMemo } from 'react';
+import { View, Text, StyleSheet, ScrollView, StatusBar } from 'react-native';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
-import { moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
 import { Theme, spacing } from '@/core/theme/theme';
-
-const RESULTS_DATA = [
-    {
-        id: '1',
-        courseName: 'Veri Yapıları ve Algoritmalar',
-        type: 'FİNAL',
-        grade: '72',
-        letterGrade: 'BB',
-        date: '12 Haz',
-        status: 'Açıklandı',
-        color: '#7C3AED',
-    },
-    {
-        id: '2',
-        courseName: 'Mikroişlemciler',
-        type: 'FİNAL',
-        grade: '95',
-        letterGrade: 'AA',
-        date: '15 Haz',
-        status: 'Açıklandı',
-        color: '#D97706',
-    },
-    {
-        id: '3',
-        courseName: 'İşletim Sistemleri',
-        type: 'FİNAL',
-        grade: '82',
-        letterGrade: 'BA',
-        date: '18 Haz',
-        status: 'Açıklandı',
-        color: '#059669',
-    },
-    {
-        id: '4',
-        courseName: 'Yazılım Mühendisliği Güncel Konular',
-        type: 'FİNAL',
-        grade: '88',
-        letterGrade: 'AA',
-        date: '21 Haz',
-        status: 'Açıklandı',
-        color: '#2563EB',
-    },
-    {
-        id: '5',
-        courseName: 'Aritmetik Devreler',
-        type: 'FİNAL',
-        grade: '78',
-        letterGrade: 'BA',
-        date: '24 Haz',
-        status: 'Açıklandı',
-        color: '#6366F1',
-    },
-];
+import { moderateScale } from '@/shared/utils/responsive';
+import { useTranslation } from 'react-i18next';
+import { MOCK_EXAM_RESULTS } from '@/shared/services/mockData';
+import { ExamsHeader } from '../components/ExamsHeader';
+import { ResultCard } from '../components/ResultCard';
 
 export const ExamResultsScreen: React.FC = () => {
-    const insets = useSafeAreaInsets();
-    const navigation = useNavigation();
-    const { theme, isDarkMode } = useAppTheme();
-    const s = styles(theme, isDarkMode);
+    const { t } = useTranslation();
+    const { theme } = useAppTheme();
+    const s = styles(theme);
+
+    // Memoize results to prevent unnecessary re-renders
+    const examResults = useMemo(() => MOCK_EXAM_RESULTS(t), [t]);
 
     return (
         <View style={s.container}>
-            <StatusBar barStyle="light-content" backgroundColor="#182958" />
+            <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
-            <LinearGradient
-                colors={isDarkMode ? ['#0F172A', '#020617'] : ['#0B1120', '#101D42']}
-                style={[s.header, { paddingTop: insets.top + 10 }]}
-            >
-                <View style={s.headerTop}>
-                    <TouchableOpacity
-                        onPress={() => navigation.goBack()}
-                        style={s.backBtn}
-                    >
-                        <Icon name="chevron-back" size={20} color="#FFFFFF" />
-                    </TouchableOpacity>
-                    <View style={s.headerTitleContainer}>
-                        <Text style={s.headerTitle}>Sınav Sonuçları</Text>
-                        <Text style={s.termText}>2024 - 2025 Bahar Dönemi</Text>
-                    </View>
-                    <View style={{ width: 40 }} />
-                </View>
-            </LinearGradient>
+            <ExamsHeader title={t('exams.resultsTitle')} />
 
             <ScrollView
                 style={s.scrollView}
                 contentContainerStyle={s.scrollContent}
                 showsVerticalScrollIndicator={false}
             >
-                {RESULTS_DATA.map((item) => (
-                    <TouchableOpacity
-                        key={item.id}
-                        activeOpacity={0.85}
-                        style={s.resultCard}
-                    >
-                        <View style={[s.cardAccent, { backgroundColor: item.color }]} />
-
-                        <View style={s.cardContent}>
-                            <View style={s.cardTop}>
-                                <View style={s.typeWrapper}>
-                                    <View style={[s.typeBadge, { backgroundColor: item.color + '15' }]}>
-                                        <Text style={[s.examType, { color: item.color }]}>{item.type}</Text>
-                                    </View>
-                                    <View style={s.dotSeparator} />
-                                    <Text style={s.dateText}>{item.date}</Text>
-                                </View>
-                                <View style={[s.statusBadge, { backgroundColor: item.status === 'Okunuyor' ? '#F1F5F9' : '#DCFCE7' }]}>
-                                    <Text style={[s.statusText, { color: item.status === 'Okunuyor' ? '#64748B' : '#166534' }]}>
-                                        {item.status}
-                                    </Text>
-                                </View>
-                            </View>
-
-                            <View style={s.cardBody}>
-                                <View style={s.courseInfo}>
-                                    <Text style={s.courseName} numberOfLines={1}>{item.courseName}</Text>
-                                    <Text style={s.instructorName}>Fen Edebiyat Fakültesi</Text>
-                                </View>
-
-                                <View style={s.gradesWrapper}>
-                                    <View style={s.gradeContainer}>
-                                        <View style={s.numericBadge}>
-                                            <Text style={s.numericValue}>{item.grade}</Text>
-                                        </View>
-                                        <View style={s.letterGradeBox}>
-                                            <Text style={s.letterGradeValue}>{item.letterGrade}</Text>
-                                            <Text style={s.gradeLabel}>Harf</Text>
-                                        </View>
-                                    </View>
-                                </View>
-                            </View>
-                        </View>
-                    </TouchableOpacity>
+                {examResults.map((item) => (
+                    <ResultCard key={item.id} item={item} />
                 ))}
 
                 <View style={s.footerContainer}>
-                    <Text style={s.footerInfo}>Kırklareli Üniversitesi • Bilgi İşlem</Text>
+                    <Text style={s.footerInfo}>{t('academic.institution')} • {t('academic.itDepartment')}</Text>
                 </View>
             </ScrollView>
         </View>
     );
 };
 
-const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
+const styles = (theme: Theme) => StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: theme.colors.background,
-    },
-    header: {
-        paddingBottom: verticalScale(20),
-        borderBottomLeftRadius: moderateScale(24),
-        borderBottomRightRadius: moderateScale(24),
-    },
-    headerTop: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingHorizontal: spacing.xl,
-    },
-    backBtn: {
-        width: scale(36),
-        height: scale(36),
-        borderRadius: 10,
-        backgroundColor: 'rgba(255, 255, 255, 0.1)',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    headerTitleContainer: {
-        flex: 1,
-        alignItems: 'center',
-    },
-    headerTitle: {
-        fontSize: moderateScale(18),
-        fontWeight: '900',
-        color: '#FFFFFF',
-        letterSpacing: -0.5,
-    },
-    termText: {
-        color: 'rgba(255, 255, 255, 0.5)',
-        fontSize: moderateScale(11),
-        fontWeight: '600',
     },
     scrollView: {
         flex: 1,
     },
     scrollContent: {
         padding: spacing.lg,
-    },
-    resultCard: {
-        backgroundColor: theme.colors.card,
-        borderRadius: 16,
-        marginBottom: verticalScale(14),
-        flexDirection: 'row',
-        overflow: 'hidden',
-        borderWidth: 2,
-        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : '#E2E8F0',
-        elevation: 6,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: isDarkMode ? 0.3 : 0.12,
-        shadowRadius: 12,
-    },
-    cardAccent: {
-        width: 4,
-        height: '100%',
-    },
-    cardContent: {
-        flex: 1,
-        padding: spacing.lg,
-    },
-    cardTop: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 10,
-    },
-    typeWrapper: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    typeBadge: {
-        paddingHorizontal: 8,
-        paddingVertical: 2,
-        borderRadius: 6,
-    },
-    examType: {
-        fontSize: moderateScale(9),
-        fontWeight: '900',
-        letterSpacing: 0.5,
-    },
-    dotSeparator: {
-        width: 3,
-        height: 3,
-        borderRadius: 1.5,
-        backgroundColor: '#CBD5E1',
-        marginHorizontal: 8,
-    },
-    dateText: {
-        fontSize: moderateScale(10),
-        fontWeight: '700',
-        color: '#64748B',
-    },
-    statusBadge: {
-        paddingHorizontal: 8,
-        paddingVertical: 3,
-        borderRadius: 6,
-    },
-    statusText: {
-        fontSize: moderateScale(9),
-        fontWeight: '900',
-        textTransform: 'uppercase',
-    },
-    cardBody: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    },
-    courseInfo: {
-        flex: 1,
-        marginRight: spacing.md,
-    },
-    courseName: {
-        fontSize: moderateScale(15),
-        fontWeight: '800',
-        color: theme.colors.text,
-        marginBottom: 2,
-    },
-    instructorName: {
-        fontSize: moderateScale(11),
-        color: '#94A3B8',
-        fontWeight: '600',
-    },
-    gradesWrapper: {
-        flexDirection: 'row',
-    },
-    gradeContainer: {
-        alignItems: 'center',
-        minWidth: scale(54),
-    },
-    numericBadge: {
-        backgroundColor: isDarkMode ? '#1e293b' : '#FFFFFF',
-        paddingHorizontal: 8,
-        paddingVertical: 3,
-        borderRadius: 6,
-        marginBottom: -10, // Pull the letter box up
-        zIndex: 1,
-        borderWidth: 1.5,
-        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.2)' : '#94A3B8',
-        elevation: 2,
-    },
-    numericValue: {
-        fontSize: moderateScale(11),
-        fontWeight: '900',
-        color: isDarkMode ? '#FFFFFF' : '#1E293B', // Darker for better contrast
-    },
-    letterGradeBox: {
-        backgroundColor: isDarkMode ? '#0f172a' : '#101D42',
-        width: '100%',
-        paddingVertical: 6,
-        paddingHorizontal: 8,
-        borderRadius: 12,
-        alignItems: 'center',
-        borderWidth: 1.5,
-        borderColor: isDarkMode ? '#1e293b' : '#101D42',
-        elevation: 4,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 3,
-    },
-    letterGradeValue: {
-        fontSize: moderateScale(17),
-        fontWeight: '900',
-        color: '#FFFFFF',
-    },
-    gradeLabel: {
-        fontSize: moderateScale(7),
-        color: 'rgba(255, 255, 255, 0.6)',
-        fontWeight: '800',
-        textTransform: 'uppercase',
-        marginTop: -1,
     },
     footerContainer: {
         marginTop: 20,
@@ -345,3 +61,5 @@ const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
         fontWeight: '600',
     }
 });
+
+export default ExamResultsScreen;

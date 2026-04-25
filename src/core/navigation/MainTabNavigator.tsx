@@ -1,7 +1,7 @@
 import React from 'react';
 import { Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import { getFocusedRouteNameFromRoute, useNavigationState } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { DashboardScreen } from '@/features/home/screens/DashboardScreen';
@@ -156,11 +156,25 @@ export const MainTabNavigator: React.FC = () => {
                         ];
                         const hideHeader = detailScreens.includes(routeName);
 
+                        const isSchedule = routeName === 'Schedule';
+
                         return {
                             title: 'Ana Sayfa',
                             headerShown: !hideHeader,
                             unmountOnBlur: true,
                             tabBarLabel: () => null,
+                            tabBarStyle: isSchedule ? { display: 'none' } : {
+                                position: 'absolute',
+                                bottom: 0,
+                                left: 0,
+                                right: 0,
+                                height: Platform.OS === 'ios' ? 95 : 75,
+                                backgroundColor: '#101D42',
+                                borderTopWidth: 1,
+                                borderTopColor: 'rgba(255, 255, 255, 0.05)',
+                                paddingBottom: Platform.OS === 'ios' ? 35 : 12,
+                                paddingTop: 12,
+                            },
                         };
                     }}
                 />
@@ -193,8 +207,26 @@ export const MainTabNavigator: React.FC = () => {
                     })}
                 />
             </Tab.Navigator>
-            <FloatingMenu />
+            <FloatingMenuWrapper />
         </>
     );
+};
+
+// Senior Refactoring: Wrapper to handle conditional visibility of FloatingMenu
+const FloatingMenuWrapper: React.FC = () => {
+    const routeName = useNavigationState(state => {
+        const route = state?.routes[state.index];
+        if (route?.name === 'HomeStack') {
+            return getFocusedRouteNameFromRoute(route) ?? 'Dashboard';
+        }
+        return route?.name;
+    });
+
+    const hiddenScreens = ['Schedule'];
+    if (hiddenScreens.includes(routeName as string)) {
+        return null;
+    }
+
+    return <FloatingMenu />;
 };
 

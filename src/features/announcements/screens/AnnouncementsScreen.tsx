@@ -12,36 +12,45 @@ import {
     Animated,
 } from 'react-native';
 import { Ionicons as Icon } from '@expo/vector-icons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Card } from '@/shared/components/common';
-import { theme as defaultTheme, Theme } from '@/core/theme/theme';
+import { Theme } from '@/core/theme/theme';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { HomeStackParamList } from '@/shared/types/navigation';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { MOCK_ANNOUNCEMENTS, Announcement } from '@/shared/services/mockData';
-import { viewport, moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
-
-const CATEGORIES = ['Tümü', 'Genel', 'Akademik', 'Etkinlik'];
+import { moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
+import { useTranslation } from 'react-i18next';
 
 export const AnnouncementsScreen: React.FC = () => {
-    const insets = useSafeAreaInsets();
     const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
     const { theme, isDarkMode } = useAppTheme();
+    const { t } = useTranslation();
     const s = styles(theme, isDarkMode);
-    const [activeCategory, setActiveCategory] = useState('Tümü');
 
-    const filteredAnnouncements = activeCategory === 'Tümü'
-        ? MOCK_ANNOUNCEMENTS
-        : MOCK_ANNOUNCEMENTS.filter(a => a.category === activeCategory);
+    const CATEGORIES = [
+        { id: 'all', label: t('common.seeAll') },
+        { id: 'general', label: t('dashboard.categories.general') },
+        { id: 'academic', label: t('dashboard.categories.academic') },
+        { id: 'event', label: t('dashboard.categories.social') }
+    ];
 
-    // Manual header removed to use global glassmorphic header
+    const [activeCategory, setActiveCategory] = useState('all');
+
+    const announcements = MOCK_ANNOUNCEMENTS(t);
+
+    // Dynamic filtering based on translated labels found in mock data
+    const filteredAnnouncements = activeCategory === 'all'
+        ? announcements
+        : announcements.filter(a => {
+            const categoryLabel = activeCategory === 'general' ? t('dashboard.categories.general') :
+                                activeCategory === 'academic' ? t('dashboard.categories.academic') :
+                                activeCategory === 'event' ? t('dashboard.categories.social') : '';
+            return a.category === categoryLabel;
+        });
 
     const getCategoryColor = (category: string) => {
-        switch (category) {
-            case 'Akademik': return '#0A84FF'; // iOS Blue
-            case 'Etkinlik': return '#FF9500'; // iOS Orange
-            default: return '#101D42'; // KLU Blue
-        }
+        if (category === t('dashboard.categories.academic')) return isDarkMode ? '#0A84FF' : '#182958';
+        if (category === t('dashboard.categories.social')) return '#FF9500';
+        return isDarkMode ? theme.colors.primary : '#101D42';
     };
 
     const renderItem = ({ item, index }: { item: Announcement; index: number }) => {
@@ -87,10 +96,12 @@ export const AnnouncementsScreen: React.FC = () => {
                         <View style={s.cardMainHeader}>
                             <View style={[s.glassCategory, { backgroundColor: `${categoryColor}15` }]}>
                                 <View style={[s.categoryDot, { backgroundColor: categoryColor }]} />
-                                <Text style={[s.glassCategoryText, { color: categoryColor }]}>{item.category}</Text>
+                                <Text style={[s.glassCategoryText, { color: categoryColor }]}>
+                                    {item.category}
+                                </Text>
                             </View>
                             <View style={s.datePill}>
-                                <Icon name="time-outline" size={12} color="#8E8E93" />
+                                <Icon name="time-outline" size={12} color={theme.colors.textSecondary} />
                                 <Text style={s.datePillText}>{item.date}</Text>
                             </View>
                         </View>
@@ -101,13 +112,13 @@ export const AnnouncementsScreen: React.FC = () => {
                         <View style={s.crystalFooter}>
                             <View style={s.statBox}>
                                 <View style={s.statCircle}>
-                                    <Icon name="eye-outline" size={12} color="#8E8E93" />
+                                    <Icon name="eye-outline" size={12} color={theme.colors.textSecondary} />
                                 </View>
                                 <Text style={s.statLabel}>{item.views}</Text>
                             </View>
 
                             <View style={[s.actionPill, { backgroundColor: `${categoryColor}10` }]}>
-                                <Text style={[s.actionPillText, { color: categoryColor }]}>İncele</Text>
+                                <Text style={[s.actionPillText, { color: categoryColor }]}>{t('common.details')}</Text>
                                 <Icon name="chevron-forward-circle-outline" size={18} color={categoryColor} />
                             </View>
                         </View>
@@ -119,25 +130,25 @@ export const AnnouncementsScreen: React.FC = () => {
 
     return (
         <View style={s.container}>
-            <StatusBar barStyle="light-content" backgroundColor="#101D42" />
+            <StatusBar barStyle="light-content" backgroundColor="#182958" translucent={false} />
 
             {/* Category Filter */}
             <View style={s.categoryFilterWrapper}>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.categoryContainer}>
                     {CATEGORIES.map((cat) => (
                         <TouchableOpacity
-                            key={cat}
+                            key={cat.id}
                             style={[
                                 s.categoryChip,
-                                activeCategory === cat && s.categoryChipActive
+                                activeCategory === cat.id && s.categoryChipActive
                             ]}
-                            onPress={() => setActiveCategory(cat)}
+                            onPress={() => setActiveCategory(cat.id)}
                         >
                             <Text style={[
                                 s.categoryText,
-                                activeCategory === cat && s.categoryTextActive
+                                activeCategory === cat.id && s.categoryTextActive
                             ]}>
-                                {cat}
+                                {cat.label}
                             </Text>
                         </TouchableOpacity>
                     ))}
@@ -152,8 +163,8 @@ export const AnnouncementsScreen: React.FC = () => {
                 showsVerticalScrollIndicator={false}
                 ListEmptyComponent={
                     <View style={s.emptyContainer}>
-                        <Icon name="notifications-off-outline" size={64} color={theme.colors.textLight} />
-                        <Text style={s.emptyText}>Bu kategoride duyuru bulunamadı.</Text>
+                        <Icon name="notifications-off-outline" size={64} color={theme.colors.border} />
+                        <Text style={s.emptyText}>{t('common.noData')}</Text>
                     </View>
                 }
             />
@@ -164,13 +175,13 @@ export const AnnouncementsScreen: React.FC = () => {
 const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F2F2F7',
+        backgroundColor: theme.colors.background,
     },
     categoryFilterWrapper: {
         paddingVertical: verticalScale(14),
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
         borderBottomWidth: 1,
-        borderBottomColor: 'rgba(0,0,0,0.03)',
+        borderBottomColor: theme.colors.border,
     },
     categoryContainer: {
         paddingHorizontal: scale(20),
@@ -180,16 +191,16 @@ const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
         paddingHorizontal: scale(18),
         paddingVertical: verticalScale(9),
         borderRadius: moderateScale(22),
-        backgroundColor: '#F2F2F7',
+        backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : '#F2F2F7',
         borderWidth: 1,
         borderColor: 'transparent',
     },
     categoryChipActive: {
-        backgroundColor: '#101D42',
+        backgroundColor: theme.colors.primary,
         ...theme.shadows.small,
     },
     categoryText: {
-        color: '#8E8E93',
+        color: theme.colors.textSecondary,
         fontWeight: '700',
         fontSize: moderateScale(13),
     },
@@ -201,16 +212,16 @@ const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
         paddingBottom: verticalScale(120),
     },
     crystalCard: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
         borderRadius: moderateScale(32),
         overflow: 'hidden',
         borderWidth: 1,
-        borderColor: 'rgba(0,0,0,0.04)',
+        borderColor: isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.04)',
         ...Platform.select({
             ios: {
-                shadowColor: '#101D42',
+                shadowColor: '#000',
                 shadowOffset: { width: 0, height: verticalScale(10) },
-                shadowOpacity: 0.08,
+                shadowOpacity: isDarkMode ? 0.3 : 0.08,
                 shadowRadius: moderateScale(20),
             },
             android: {
@@ -220,7 +231,7 @@ const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
     },
     crystalGradientLayer: {
         ...StyleSheet.absoluteFillObject,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.card,
         opacity: 0.95,
         borderRadius: moderateScale(32),
     },
@@ -249,7 +260,7 @@ const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
         paddingVertical: verticalScale(6),
         borderRadius: moderateScale(14),
         borderWidth: 1,
-        borderColor: 'rgba(255,255,255,0.3)',
+        borderColor: isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
     },
     categoryDot: {
         width: scale(6),
@@ -266,7 +277,7 @@ const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
     datePill: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#F2F2F7',
+        backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : '#F2F2F7',
         paddingHorizontal: scale(10),
         paddingVertical: verticalScale(5),
         borderRadius: moderateScale(10),
@@ -274,20 +285,20 @@ const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
     },
     datePillText: {
         fontSize: moderateScale(10),
-        color: '#8E8E93',
+        color: theme.colors.textSecondary,
         fontWeight: '700',
     },
     crystalTitle: {
         fontSize: moderateScale(18),
         fontWeight: '900',
-        color: '#1C1C1E',
+        color: theme.colors.text,
         lineHeight: moderateScale(24),
         marginBottom: verticalScale(10),
         letterSpacing: -0.5,
     },
     crystalSnippet: {
         fontSize: moderateScale(14),
-        color: '#636366',
+        color: theme.colors.textSecondary,
         lineHeight: moderateScale(20),
         marginBottom: verticalScale(20),
         fontWeight: '500',
@@ -297,7 +308,7 @@ const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         borderTopWidth: 1,
-        borderTopColor: 'rgba(0,0,0,0.03)',
+        borderTopColor: theme.colors.border,
         paddingTop: verticalScale(16),
     },
     statBox: {
@@ -309,13 +320,13 @@ const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
         width: scale(24),
         height: scale(24),
         borderRadius: scale(12),
-        backgroundColor: '#F2F2F7',
+        backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : '#F2F2F7',
         justifyContent: 'center',
         alignItems: 'center',
     },
     statLabel: {
         fontSize: moderateScale(12),
-        color: '#8E8E93',
+        color: theme.colors.textSecondary,
         fontWeight: '700',
     },
     actionPill: {
@@ -338,7 +349,7 @@ const styles = (theme: Theme, isDarkMode: boolean) => StyleSheet.create({
     emptyText: {
         marginTop: verticalScale(16),
         fontSize: moderateScale(16),
-        color: '#8E8E93',
+        color: theme.colors.textSecondary,
         fontWeight: '700',
     },
 });

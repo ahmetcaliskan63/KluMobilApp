@@ -20,10 +20,11 @@ import {
     MOCK_NEWS,
     MOCK_EVENTS,
 } from '@/shared/services/mockData';
+import { useTranslation } from 'react-i18next';
+import { News, Announcement, Event as EventType } from '@/shared/types/models';
 import { NewsCard } from '@/shared/components/home/NewsCard';
 import { AnnouncementCard } from '@/shared/components/home/AnnouncementCard';
 import { EventCard } from '@/shared/components/home/EventCard';
-import { News, Announcement, Event as EventType } from '@/shared/types/models';
 
 type DashboardNavigationProp = CompositeNavigationProp<
     NativeStackNavigationProp<HomeStackParamList, 'Dashboard'>,
@@ -38,14 +39,26 @@ export const DashboardScreen: React.FC = () => {
     const navigation = useNavigation<DashboardNavigationProp>();
     const route = useRoute<DashboardRouteProp>();
     const { theme } = useAppTheme();
+    const { t } = useTranslation();
     const s = styles(theme);
-    const [activeTab, setActiveTab] = React.useState<'Duyurular' | 'Haberler' | 'Etkinlikler'>('Haberler');
+    
+    // Internal keys for tabs
+    const TABS = {
+        ANNOUNCEMENTS: 'announcements',
+        NEWS: 'news',
+        EVENTS: 'events'
+    } as const;
+
+    type TabKey = typeof TABS[keyof typeof TABS];
+
+    const [activeTab, setActiveTab] = React.useState<TabKey>(TABS.NEWS);
+    
     // Segmented control metrics
     const SEGMENT_PADDING = 4;
     const SEGMENT_WIDTH = (viewport.width - spacing.md * 2 - SEGMENT_PADDING * 2) / 3;
     const translateX = React.useRef(new Animated.Value(SEGMENT_WIDTH)).current;
 
-    const handleTabPress = React.useCallback((tab: 'Duyurular' | 'Haberler' | 'Etkinlikler', index: number) => {
+    const handleTabPress = React.useCallback((tab: TabKey, index: number) => {
         setActiveTab(tab);
         Animated.spring(translateX, {
             toValue: index * SEGMENT_WIDTH,
@@ -58,7 +71,7 @@ export const DashboardScreen: React.FC = () => {
     // Listen for tab reset parameter from navigation
     React.useEffect(() => {
         if (route.params?.resetToNews) {
-            handleTabPress('Haberler', 1);
+            handleTabPress(TABS.NEWS, 1);
         }
     }, [route.params?.resetToNews, handleTabPress]);
 
@@ -68,7 +81,7 @@ export const DashboardScreen: React.FC = () => {
             item={item}
             onPress={() => navigation.navigate('NewsDetail', { newsId: item.id })}
         />
-    ), [navigation, theme]);
+    ), [navigation]);
 
     const renderAnnouncementCard = React.useCallback((item: Announcement) => (
         <AnnouncementCard
@@ -76,7 +89,7 @@ export const DashboardScreen: React.FC = () => {
             item={item}
             onPress={() => navigation.navigate('AnnouncementDetail', { announcementId: item.id })}
         />
-    ), [navigation, theme]);
+    ), [navigation]);
 
     const renderEventCard = React.useCallback((item: EventType) => (
         <EventCard
@@ -84,11 +97,17 @@ export const DashboardScreen: React.FC = () => {
             item={item}
             onPress={() => navigation.navigate('EventDetail', { eventId: item.id })}
         />
-    ), [navigation, theme]);
+    ), [navigation]);
+
+    const tabsData = [
+        { key: TABS.ANNOUNCEMENTS, label: t('dashboard.announcements') },
+        { key: TABS.NEWS, label: t('dashboard.news') },
+        { key: TABS.EVENTS, label: t('dashboard.events') },
+    ];
 
     return (
         <View style={s.container}>
-            <StatusBar barStyle="light-content" backgroundColor="#182958" />
+            <StatusBar barStyle="light-content" backgroundColor="#182958" translucent={false} />
 
             <View style={s.fixedTabContainer}>
                 <View style={s.segmentedControl}>
@@ -101,20 +120,20 @@ export const DashboardScreen: React.FC = () => {
                             }
                         ]}
                     />
-                    {(['Duyurular', 'Haberler', 'Etkinlikler'] as const).map((tab, index) => {
-                        const isActive = activeTab === tab;
+                    {tabsData.map((tab, index) => {
+                        const isActive = activeTab === tab.key;
                         return (
                             <TouchableOpacity
-                                key={tab}
+                                key={tab.key}
                                 style={s.segmentButton}
-                                onPress={() => handleTabPress(tab, index)}
+                                onPress={() => handleTabPress(tab.key, index)}
                                 activeOpacity={0.8}
                             >
                                 <Text style={[
                                     s.segmentText,
                                     isActive && s.segmentTextActive
                                 ]}>
-                                    {tab}
+                                    {tab.label}
                                 </Text>
                             </TouchableOpacity>
                         );
@@ -128,12 +147,11 @@ export const DashboardScreen: React.FC = () => {
                 showsVerticalScrollIndicator={false}
             >
                 <View style={s.contentList}>
-                    {activeTab === 'Duyurular' && MOCK_ANNOUNCEMENTS.map(renderAnnouncementCard)}
-                    {activeTab === 'Haberler' && MOCK_NEWS.map(renderNewsCard)}
-                    {activeTab === 'Etkinlikler' && MOCK_EVENTS.map(renderEventCard)}
+                    {activeTab === TABS.ANNOUNCEMENTS && MOCK_ANNOUNCEMENTS(t).map(renderAnnouncementCard)}
+                    {activeTab === TABS.NEWS && MOCK_NEWS(t).map(renderNewsCard)}
+                    {activeTab === TABS.EVENTS && MOCK_EVENTS(t).map(renderEventCard)}
                 </View>
 
-                <View style={{ height: spacing.xl }} />
             </ScrollView>
         </View >
     );
@@ -150,6 +168,7 @@ const styles = (theme: Theme) => StyleSheet.create({
     scrollContent: {
         padding: spacing.md,
         paddingTop: spacing.md,
+        paddingBottom: verticalScale(120), // Increased bottom padding
     },
     fixedTabContainer: {
         backgroundColor: theme.colors.background,

@@ -14,6 +14,7 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { HomeStackParamList } from '@/shared/types/navigation';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { MOCK_EVENTS } from '@/shared/services/mockData';
+import { useTranslation } from 'react-i18next';
 import { viewport, moderateScale, scale, verticalScale } from '@/shared/utils/responsive';
 import { Theme } from '@/core/theme/theme';
 
@@ -21,19 +22,19 @@ type EventDetailRouteProp = RouteProp<HomeStackParamList, 'EventDetail'>;
 
 /**
  * EventDetailScreen - Modern & Organized Highlights Redesign
- * Bilgi alanları (Konum, Düzenleyen vb.) ultra-premium ve düzenli bir yapıda.
  */
 export const EventDetailScreen: React.FC = () => {
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
     const route = useRoute<EventDetailRouteProp>();
     const { theme, isDarkMode } = useAppTheme();
+    const { t } = useTranslation();
     const { eventId } = route.params;
 
     const scrollY = useRef(new Animated.Value(0)).current;
     const fadeAnim = useRef(new Animated.Value(0)).current;
 
-    const event = MOCK_EVENTS.find(e => e.id === eventId);
+    const event = MOCK_EVENTS(t).find(e => e.id === eventId);
     const [imageError, setImageError] = React.useState(false);
 
     useEffect(() => {
@@ -47,7 +48,25 @@ export const EventDetailScreen: React.FC = () => {
     if (!event) return null;
 
     const headerHeight = viewport.height * 0.45;
-    const corporateColor = '#182958';
+    const primaryColor = isDarkMode ? theme.colors.primary : '#182958';
+
+    // Date parsing for Localization
+    const dateParts = event.date.split('-');
+    const year = dateParts[0];
+    const month = dateParts[1];
+    const day = dateParts[2];
+
+    const monthKeys: { [key: string]: string } = {
+        '01': 'january', '02': 'february', '03': 'march', '04': 'april',
+        '05': 'may', '06': 'june', '07': 'july', '08': 'august',
+        '09': 'september', '10': 'october', '11': 'november', '12': 'december'
+    };
+
+    const getLocalizedFullDate = () => {
+        const key = monthKeys[month];
+        if (!key) return event.date;
+        return `${day} ${t(`common.months.${key}`)} ${year}`;
+    };
 
     // Animations
     const imageTranslate = scrollY.interpolate({
@@ -70,11 +89,11 @@ export const EventDetailScreen: React.FC = () => {
 
     const backButtonBg = scrollY.interpolate({
         inputRange: [0, headerHeight - 100],
-        outputRange: ['rgba(0,0,0,0.35)', isDarkMode ? theme.colors.background : corporateColor],
+        outputRange: ['rgba(0,0,0,0.35)', isDarkMode ? theme.colors.background : primaryColor],
         extrapolate: 'clamp',
     });
 
-    const s = styles(theme, corporateColor, headerHeight);
+    const s = styles(theme, isDarkMode, primaryColor, headerHeight);
 
     return (
         <View style={s.container}>
@@ -138,12 +157,12 @@ export const EventDetailScreen: React.FC = () => {
                     <View style={s.highlightsWrapper}>
                         <View style={s.highlightsRow}>
                             <View style={s.highlightCard}>
-                                <View style={[s.iconCircle, { backgroundColor: isDarkMode ? 'rgba(0, 102, 255, 0.1)' : '#F0F7FF' }]}>
-                                    <Icon name="calendar-outline" size={moderateScale(18)} color={isDarkMode ? '#66A3FF' : '#0066FF'} />
+                                <View style={[s.iconCircle, { backgroundColor: isDarkMode ? `${theme.colors.primary}15` : `${theme.colors.primary}10` }]}>
+                                    <Icon name="calendar-outline" size={moderateScale(18)} color={theme.colors.primary} />
                                 </View>
                                 <View style={s.highlightInfo}>
-                                    <Text style={s.highlightLabel}>TARİH</Text>
-                                    <Text style={s.highlightValue}>{event.date}</Text>
+                                    <Text style={s.highlightLabel}>{t('dashboard.eventMetaDate')}</Text>
+                                    <Text style={s.highlightValue}>{getLocalizedFullDate()}</Text>
                                 </View>
                             </View>
 
@@ -152,7 +171,7 @@ export const EventDetailScreen: React.FC = () => {
                                     <Icon name="time-outline" size={moderateScale(18)} color={isDarkMode ? '#FF944D' : '#FF6600'} />
                                 </View>
                                 <View style={s.highlightInfo}>
-                                    <Text style={s.highlightLabel}>SAAT</Text>
+                                    <Text style={s.highlightLabel}>{t('dashboard.eventMetaTime')}</Text>
                                     <Text style={s.highlightValue}>{event.time}</Text>
                                 </View>
                             </View>
@@ -163,7 +182,7 @@ export const EventDetailScreen: React.FC = () => {
                                 <Icon name="location-outline" size={moderateScale(20)} color={isDarkMode ? '#34D399' : '#10B981'} />
                             </View>
                             <View style={s.highlightInfo}>
-                                <Text style={s.highlightLabel}>ETKİNLİK KONUMU</Text>
+                                <Text style={s.highlightLabel}>{t('dashboard.eventMetaLocation')}</Text>
                                 <Text style={s.highlightValue} numberOfLines={2}>{event.location}</Text>
                             </View>
                         </View>
@@ -174,7 +193,7 @@ export const EventDetailScreen: React.FC = () => {
                                     <Icon name="business-outline" size={moderateScale(18)} color={isDarkMode ? '#94A3B8' : '#64748B'} />
                                 </View>
                                 <View style={s.highlightInfo}>
-                                    <Text style={s.highlightLabel}>DÜZENLEYEN BİRİM</Text>
+                                    <Text style={s.highlightLabel}>{t('dashboard.eventMetaOrganizer')}</Text>
                                     <Text style={s.organizerText}>{event.organizer}</Text>
                                 </View>
                             </View>
@@ -189,15 +208,13 @@ export const EventDetailScreen: React.FC = () => {
                     {/* Description Section */}
                     <View style={s.sectionHeader}>
                         <View style={s.sectionIndicator} />
-                        <Text style={s.sectionTitle}>Etkinlik Hakkında</Text>
+                        <Text style={s.sectionTitle}>{t('dashboard.aboutEvent')}</Text>
                     </View>
 
                     <Text style={s.description}>
-                        Kırklareli Üniversitesi'nin vizyonu doğrultusunda düzenlenen bu etkinlik, akademik paylaşımı teşvik etmek ve sosyal etkileşimi artırmak amacıyla planlanmıştır.
+                        {t('dashboard.eventSummary')}
                         {"\n\n"}
-                        Gerekli tüm teknik altyapı ve hazırlıklar ilgili birimler tarafından tamamlanmış olup, tüm dış paydaşlarımız ve öğrencilerimizin katılımı beklenmektedir.
-                        {"\n\n"}
-                        Program akışında oluşabilecek güncellemeler mobil uygulamamız üzerinden anlık olarak bildirilecektir. Kayıt gerektirmeyen bu etkinlikte sizleri de aramızda görmekten mutluluk duyarız.
+                        {t('dashboard.eventBody')}
                     </Text>
 
                     <View style={{ height: verticalScale(100) }} />
@@ -207,7 +224,7 @@ export const EventDetailScreen: React.FC = () => {
     );
 };
 
-const styles = (theme: Theme, corporateColor: string, headerHeight: number) => StyleSheet.create({
+const styles = (theme: Theme, isDarkMode: boolean, _primaryColor: string, headerHeight: number) => StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: theme.colors.background,
@@ -217,7 +234,7 @@ const styles = (theme: Theme, corporateColor: string, headerHeight: number) => S
         top: 0,
         left: 0,
         right: 0,
-        backgroundColor: corporateColor,
+        backgroundColor: isDarkMode ? theme.colors.background : theme.colors.primary,
         zIndex: 100,
         justifyContent: 'center',
         alignItems: 'center',
@@ -253,7 +270,7 @@ const styles = (theme: Theme, corporateColor: string, headerHeight: number) => S
     heroContainer: {
         height: headerHeight,
         overflow: 'hidden',
-        backgroundColor: corporateColor,
+        backgroundColor: isDarkMode ? theme.colors.background : theme.colors.primary,
     },
     heroImage: {
         width: '100%',
@@ -404,7 +421,7 @@ const styles = (theme: Theme, corporateColor: string, headerHeight: number) => S
     sectionIndicator: {
         width: scale(4),
         height: verticalScale(20),
-        backgroundColor: corporateColor,
+        backgroundColor: theme.colors.primary,
         borderRadius: 2,
         marginRight: scale(12),
     },

@@ -15,6 +15,7 @@ import { Theme } from '@/core/theme/theme';
 import { MOCK_SCHEDULE } from '@/shared/services/mockData';
 import { Card } from '@/shared/components/common';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
+import { useTranslation } from 'react-i18next';
 
 type CourseDetailRouteProp = RouteProp<HomeStackParamList, 'CourseDetail'>;
 
@@ -23,17 +24,18 @@ export const CourseDetailScreen: React.FC = () => {
     const navigation = useNavigation();
     const route = useRoute<CourseDetailRouteProp>();
     const { theme, isDarkMode } = useAppTheme();
+    const { t } = useTranslation();
     const s = styles(theme);
     const { courseId } = route.params;
 
-    const course = MOCK_SCHEDULE.find(c => c.id === courseId);
+    const course = MOCK_SCHEDULE(t).find(c => c.id === courseId);
 
     if (!course) {
         return (
             <View style={s.errorContainer}>
-                <Text style={{ color: theme.colors.text }}>Ders bulunamadı.</Text>
+                <Text style={{ color: theme.colors.text }}>{t('courses.courseNotFound')}</Text>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Text style={{ color: theme.colors.primary, marginTop: 10 }}>Geri Dön</Text>
+                    <Text style={{ color: theme.colors.primary, marginTop: 10 }}>{t('common.previous')}</Text>
                 </TouchableOpacity>
             </View>
         );
@@ -76,7 +78,7 @@ export const CourseDetailScreen: React.FC = () => {
                                 <Icon name="time-outline" size={20} color={isDarkMode ? '#3B82F6' : '#1976D2'} />
                             </View>
                             <View>
-                                <Text style={s.infoLabel}>Saat</Text>
+                                <Text style={s.infoLabel}>{t('courses.time')}</Text>
                                 <Text style={s.infoValue}>{course.startTime} - {course.endTime}</Text>
                             </View>
                         </View>
@@ -86,7 +88,7 @@ export const CourseDetailScreen: React.FC = () => {
                                 <Icon name="location-outline" size={20} color={isDarkMode ? '#A855F7' : '#7B1FA2'} />
                             </View>
                             <View>
-                                <Text style={s.infoLabel}>Derslik</Text>
+                                <Text style={s.infoLabel}>{t('courses.room')}</Text>
                                 <Text style={s.infoValue}>{course.room}</Text>
                             </View>
                         </View>
@@ -96,11 +98,11 @@ export const CourseDetailScreen: React.FC = () => {
                 {/* Attendance Section */}
                 {course.attendance !== undefined && (
                     <View style={s.section}>
-                        <Text style={s.sectionTitle}>Devamsızlık Durumu</Text>
+                        <Text style={s.sectionTitle}>{t('courses.attendanceStatus')}</Text>
                         <Card style={s.attendanceCard}>
                             <View style={s.attendanceHeader}>
                                 <Text style={s.attendancePercent}>{course.attendance}%</Text>
-                                <Text style={s.attendanceLabel}>Katılım Oranı</Text>
+                                <Text style={s.attendanceLabel}>{t('courses.attendanceRate')}</Text>
                             </View>
                             <View style={s.progressBarBg}>
                                 <View style={[
@@ -108,7 +110,7 @@ export const CourseDetailScreen: React.FC = () => {
                                     { width: `${course.attendance}%`, backgroundColor: course.attendance < 70 ? theme.colors.error : theme.colors.success }
                                 ]} />
                             </View>
-                            <Text style={s.attendanceHint}>Kritik sınır: %70</Text>
+                            <Text style={s.attendanceHint}>{t('courses.attendanceCritical')}</Text>
                         </Card>
                     </View>
                 )}
@@ -116,7 +118,7 @@ export const CourseDetailScreen: React.FC = () => {
                 {/* Syllabus Section */}
                 {course.syllabus && (
                     <View style={s.section}>
-                        <Text style={s.sectionTitle}>Ders İçeriği</Text>
+                        <Text style={s.sectionTitle}>{t('courses.syllabus')}</Text>
                         {course.syllabus.map((item, index) => (
                             <View key={index} style={s.syllabusItem}>
                                 <View style={[s.syllabusNumber, { backgroundColor: course.color + (isDarkMode ? '30' : '20') }]}>

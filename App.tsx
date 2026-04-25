@@ -6,6 +6,10 @@ import { theme } from '@/core/theme/theme';
 import { useAuthStore } from '@/shared/store/authStore';
 import { setApiCallbacks } from '@/shared/services/apiClient';
 
+// Initialize i18n
+import i18n from '@/shared/i18n/i18n';
+import { useAppSettingsStore } from '@/shared/store/appSettingsStore';
+
 import { ErrorBoundary } from '@/shared/components/common/ErrorBoundary';
 
 function App(): React.JSX.Element {
@@ -15,6 +19,12 @@ function App(): React.JSX.Element {
       () => useAuthStore.getState().logout()
     );
     useAuthStore.getState().initialize();
+    
+    // Set initial language from store
+    const savedLanguage = useAppSettingsStore.getState().language;
+    if (savedLanguage) {
+      i18n.changeLanguage(savedLanguage);
+    }
   }, []);
 
   return (
