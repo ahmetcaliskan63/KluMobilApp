@@ -179,6 +179,7 @@
             "wifi": "WiFi Operations",
             "instructors": "Faculty Members",
             "units": "Units",
+            "attendance": "Attendance Information",
             "leaveManagement": "Leave Management"
         },
         "annualLeave": "Annual Leave",
@@ -382,7 +383,12 @@
         "attendanceStatus": "Attendance Status",
         "attendanceRate": "Attendance Rate",
         "attendanceCritical": "Critical threshold: %70",
-        "syllabus": "Syllabus"
+        "syllabus": "Syllabus",
+        "riskLevels": {
+            "low": "Low",
+            "medium": "Medium",
+            "high": "High"
+        }
     },
     "settings": {
         "title": "Settings",
