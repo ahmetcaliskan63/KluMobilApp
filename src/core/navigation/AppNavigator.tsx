@@ -19,7 +19,8 @@ import {
     ProfileScreen,
     DigitalIDScreen,
     ProfileDetailScreen,
-    LeaveStatusScreen
+    LeaveStatusScreen,
+    AttendanceScreen
 } from '@/features/profile/screens';
 import { TranscriptScreen } from '@/features/transcript/screens/TranscriptScreen';
 import { AnnouncementsScreen } from '@/features/announcements/screens/AnnouncementsScreen';
@@ -145,8 +146,15 @@ export const AppNavigator: React.FC = () => {
                         animation: 'slide_from_right'
                     }}
                 />
+                <Stack.Screen
+                    name="Attendance"
+                    component={AttendanceScreen}
+                    options={{
+                        headerShown: false,
+                        animation: 'slide_from_right'
+                    }}
+                />
             </Stack.Navigator>
         </NavigationContainer>
     );
 };
-
