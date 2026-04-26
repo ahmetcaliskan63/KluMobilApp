@@ -22,6 +22,7 @@ export type RootStackParamList = {
     Units: undefined;
     UnitDetail: { unitId: string };
     LeaveStatus: undefined;
+    Attendance: undefined;
 };
 
 export type DrawerParamList = {
