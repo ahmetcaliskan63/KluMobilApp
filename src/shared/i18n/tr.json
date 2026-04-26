@@ -179,6 +179,7 @@
             "wifi": "WiFi İşlemleri",
             "instructors": "Hocalarımız",
             "units": "Birimler",
+            "attendance": "Devamsızlık Bilgisi",
             "leaveManagement": "İzin Yönetimi"
         },
         "annualLeave": "Yıllık İzin",
@@ -299,7 +300,12 @@
         "attendanceStatus": "Devamsızlık Durumu",
         "attendanceRate": "Katılım Oranı",
         "attendanceCritical": "Kritik sınır: %70",
-        "syllabus": "Ders İçeriği"
+        "syllabus": "Ders İçeriği",
+        "riskLevels": {
+            "low": "Düşük",
+            "medium": "Orta",
+            "high": "Yüksek"
+        }
     },
     "settings": {
         "title": "Ayarlar",
