@@ -14,10 +14,11 @@ import {
     SemesterData as SemesterDataModel,
     ExamResult,
     Course as CourseModel,
-    UnitDetail
+    UnitDetail,
+    Attendance
 } from '@/shared/types/models';
 
-export type { Announcement, News, Event, MenuItem, BorrowedBook, Unit, AcademicSemesterCalendar, Grade, SemesterDataModel, ExamResult, CourseModel };
+export type { Announcement, News, Event, MenuItem, BorrowedBook, Unit, AcademicSemesterCalendar, Grade, SemesterDataModel, ExamResult, CourseModel, Attendance };
 
 export const MOCK_USER_IMAGE = 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=1000&auto=format&fit=crop'; // High quality male studio portrait
 
@@ -292,12 +293,6 @@ export const MOCK_ACADEMIC_STATS = (t: any, role?: string) => {
     };
 };
 
-export const MOCK_ATTENDANCE = (t: any) => [
-    { courseName: t('courses.calculus'), courseCode: 'MAT101', attended: 24, total: 28, limit: 8, risk: 'low' },
-    { courseName: t('courses.physics'), courseCode: 'FIZ101', attended: 18, total: 28, limit: 8, risk: 'medium' },
-    { courseName: t('courses.dataStructures'), courseCode: 'BIL201', attended: 26, total: 28, limit: 8, risk: 'low' },
-    { courseName: t('courses.turkish'), courseCode: 'TUR101', attended: 20, total: 28, limit: 8, risk: 'high' },
-];
 
 export const MOCK_GRADUATION_PROGRESS = {
     completedCredits: 180,
@@ -429,6 +424,14 @@ export const MOCK_SEMESTER_CALENDAR = (t: any) => [
     { id: '2', event: t('academic.calendar.start'), startDate: '2026-02-16', endDate: '2026-02-16' },
     { id: '3', event: t('academic.calendar.vizes'), startDate: '2026-04-06', endDate: '2026-04-12' },
     { id: '4', event: t('academic.calendar.finals'), startDate: '2026-06-08', endDate: '2026-06-19' },
+];
+
+export const MOCK_ATTENDANCE = (t: any): Attendance[] => [
+    { courseCode: 'YMH311', courseName: t('courses.softwareArch'), attended: 24, total: 28, limit: 8, risk: 'low' as const },
+    { courseCode: 'YMH313', courseName: t('courses.webProg'), attended: 20, total: 32, limit: 9, risk: 'medium' as const },
+    { courseCode: 'YMH315', courseName: t('courses.database'), attended: 14, total: 30, limit: 9, risk: 'high' as const },
+    { courseCode: 'MAT101', courseName: t('courses.calculus'), attended: 36, total: 40, limit: 12, risk: 'low' as const },
+    { courseCode: 'YMH317', courseName: t('courses.algoDesign'), attended: 28, total: 32, limit: 9, risk: 'low' as const },
 ];
 
 export const MOCK_STATS = MOCK_ACADEMIC_STATS;

@@ -32,6 +32,7 @@ export const ProfileScreen: React.FC = () => {
 
     const quickAccessItems = useMemo(() => [
         { id: '1', title: t('profile.quickActions.schedule'), icon: 'calendar', color: '#3B82F6', action: () => navigation.navigate('HomeStack', { screen: 'Schedule' }) },
+        { id: 'attendance', title: t('profile.quickActions.attendance'), icon: 'pie-chart', color: '#10B981', action: () => navigation.navigate('Attendance') },
         { id: '2', title: t('profile.quickActions.transcript'), icon: 'document-text', color: '#8B5CF6', action: () => navigation.navigate('Transcript') },
         { id: '3', title: t('profile.quickActions.academicCalendar'), icon: 'time', color: '#10B981', action: () => setShowCalendarModal(true) },
         { id: '4', title: t('profile.quickActions.examSchedule'), icon: 'notifications', color: '#F59E0B', action: () => navigation.navigate('ExamSchedule') },
