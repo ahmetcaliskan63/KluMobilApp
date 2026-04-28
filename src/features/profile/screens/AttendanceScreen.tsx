@@ -1,5 +1,5 @@
 import React, { useMemo, useEffect, useRef } from 'react';
-import { View, Text, ScrollView, StatusBar, Animated, TouchableOpacity, Easing } from 'react-native';
+import { View, Text, ScrollView, StatusBar, Animated, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppTheme } from '@/shared/hooks/useAppTheme';
 import { useTranslation } from 'react-i18next';

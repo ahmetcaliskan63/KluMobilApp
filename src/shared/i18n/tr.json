@@ -350,6 +350,17 @@
         "rectorMessage": "Değerli öğrencilerimiz, modern ve yenilikçi eğitim anlayışımızla sizleri geleceğe hazırlıyoruz.",
         "vision": "Evrensel değerlere sahip, yenilikçi ve girişimci bireyler yetiştirmek.",
         "mission": "Bilimsel araştırmalarla topluma katkı sağlamak ve kaliteli eğitim sunmak.",
+        "drawer": {
+            "title": "KIRKLARELİ",
+            "subtitle": "ÜNİVERSİTESİ",
+            "quickAccess": "HIZLI ERİŞİM",
+            "ourUniversity": "Üniversitemiz",
+            "candidateStudent": "Aday Öğrenci",
+            "contact": "İletişim",
+            "kluSocial": "KLÜ Sosyal",
+            "infoBox": "Kırklareli Üniversitesi Mobil Uygulaması ile kampüs yaşamı parmaklarınızın ucunda.",
+            "copyright": "© 2026 Kırklareli Üniversitesi"
+        },
         "units": {
             "administrative": "İDARİ BİRİMLER",
             "institutes": "ENSTİTÜLER",
