@@ -28,7 +28,6 @@ export const TabBarIcon: React.FC<TabBarIconProps> = ({ name, focused, color, is
     return (
         <View style={styles.iconWrapper}>
             <Icon name={name as any} size={24} color={color} />
-            {focused && <View style={styles.activeDot} />}
         </View>
     );
 };
