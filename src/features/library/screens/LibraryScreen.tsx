@@ -75,8 +75,9 @@ export const LibraryScreen: React.FC = () => {
 
             {/* Grid Services */}
             <ScrollView
-                contentContainerStyle={[s.scrollContent, { paddingBottom: insets.bottom + 100 }]}
+                contentContainerStyle={[s.scrollContent, { paddingBottom: insets.bottom + 20 }]}
                 showsVerticalScrollIndicator={false}
+                alwaysBounceVertical={false}
             >
                 <View style={s.servicesContainer}>
                     <View style={s.servicesGrid}>
