@@ -731,13 +731,13 @@ export const MOCK_CALENDAR_PDFS = (t: any) => [
 ];
 
 export const MOCK_LIBRARY_SERVICES = (t: any) => [
-    { id: '1', title: t('library.loan'), icon: 'book', color: '#1976D2', url: 'https://kutuphane.klu.edu.tr/sayfalar/odunc-verme-kurallari' },
-    { id: '2', title: t('library.remoteAccess'), icon: 'cloud-done', color: '#388E3C', url: 'https://kutuphane.klu.edu.tr/sayfalar/veritabanlari-uzaktan-erisim' },
-    { id: '3', title: t('library.catalog'), icon: 'library', color: '#F57C00', url: 'https://katalog.klu.edu.tr/' },
-    { id: '4', title: t('library.memberLogin'), icon: 'person', color: '#D32F2F', url: 'http://katalog.klu.edu.tr/yordambt/yordam.php?sayfa=uye_girisi' },
-    { id: '5', title: t('library.forms'), icon: 'document-text', color: '#7B1FA2', url: 'https://kutuphane.klu.edu.tr/sayfalar/formlar' },
-    { id: '6', title: t('library.archive'), icon: 'folder-open', color: '#0288D1', url: 'https://acikerisim.klu.edu.tr/xmlui/' },
-    { id: '7', title: t('library.mobileApp'), icon: 'phone-portrait', color: '#00796B', url: 'https://kutuphane.klu.edu.tr/sayfalar/cep-kutuphanem' },
-    { id: '8', title: t('library.announcements'), icon: 'megaphone', color: '#C2185B', url: 'https://kutuphane.klu.edu.tr/duyurular' },
-    { id: '9', title: t('library.feedback'), icon: 'chatbubbles', color: '#455A64', url: 'https://kutuphane.klu.edu.tr/sayfalar/iletisim' },
+    { id: '1', title: t('library.loan'), icon: 'book', color: '#1976D2', url: 'https://kddb.klu.edu.tr/Sayfalar/74-odunc-verme-hizmeti.klu' },
+    { id: '2', title: t('library.remoteAccess'), icon: 'cloud-done', color: '#388E3C', url: 'https://katalog.klu.edu.tr/vetisbt/' },
+    { id: '3', title: t('library.catalog'), icon: 'library', color: '#F57C00', url: 'https://katalog.klu.edu.tr/yordam/' },
+    { id: '4', title: t('library.memberLogin'), icon: 'person', color: '#D32F2F', url: 'https://katalog.klu.edu.tr/yordam/?p=0&dil=0' },
+    { id: '5', title: t('library.forms'), icon: 'document-text', color: '#7B1FA2', url: 'https://kddb.klu.edu.tr/Sayfalar/12266-formlar.klu' },
+    { id: '6', title: t('library.archive'), icon: 'folder-open', color: '#0288D1', url: 'http://acikerisim.kirklareli.edu.tr:8080/xmlui/' },
+    { id: '7', title: t('library.mobileApp'), icon: 'phone-portrait', color: '#00796B', url: 'https://kddb.klu.edu.tr/Sayfalar/7460-cep-kutuphanem-uygulamasi-hk.klu' },
+    { id: '8', title: t('library.announcements'), icon: 'megaphone', color: '#C2185B', url: 'https://kddb.klu.edu.tr/Sayfa_Gruplari/21-duyurular.klu/detay/' },
+    { id: '9', title: t('library.feedback'), icon: 'chatbubbles', color: '#455A64', url: 'https://kddb.klu.edu.tr/Formlar/66-soru-istek-ve-oneri.klu' },
 ];
