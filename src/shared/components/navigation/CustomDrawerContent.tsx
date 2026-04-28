@@ -72,8 +72,8 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props
                 <View style={[s.glowCircle, { bottom: -20, left: -20, backgroundColor: isDarkMode ? '#6366F110' : '#6366F130' }]} />
 
                 {/* Back / Close Button */}
-                <TouchableOpacity 
-                    style={s.closeButton} 
+                <TouchableOpacity
+                    style={s.closeButton}
                     onPress={() => props.navigation.closeDrawer()}
                     activeOpacity={0.7}
                 >
